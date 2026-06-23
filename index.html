@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Garaż 🔧</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8f7f5;--card:#fff;--card2:#f1efe8;
+  --t1:#1a1a18;--t2:#6b6b67;--t3:#9e9e9a;
+  --b1:#c8c6be;--b2:#d4d2ca;--b3:#e8e6de;
+  --radius:8px;--radius-lg:12px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1c1c1a;--card:#252523;--card2:#2c2c2a;
+  --t1:#f0ede8;--t2:#9e9e9a;--t3:#6b6b67;
+  --b1:#4a4a47;--b2:#3a3a37;--b3:#313130;
+}}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--t1);font-size:14px;line-height:1.5;min-height:100vh}
+button{font-family:inherit;cursor:pointer;border:0.5px solid var(--b1);background:var(--card);color:var(--t1);border-radius:var(--radius);padding:6px 13px;font-size:13px}
+button:hover{background:var(--card2)}
+button:active{transform:scale(.98)}
+input,select,textarea{font-family:inherit;font-size:13px;color:var(--t1);background:var(--card);border:0.5px solid var(--b1);border-radius:var(--radius);padding:6px 10px;outline:none;width:100%;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:#7f77dd}
+textarea{resize:vertical}
+
+.app{max-width:1200px;margin:0 auto;padding:1rem}
+header{display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
+header h1{font-size:17px;font-weight:500;flex:1}
+.status{font-size:12px;color:var(--t2);display:flex;align-items:center;gap:5px}
+.dot{width:7px;height:7px;border-radius:50%;background:#22c55e;flex:none}
+.dot.off{background:#f59e0b}
+.topbar{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
+.topbar input{flex:1;min-width:180px}
+.tabs{display:flex;border:0.5px solid var(--b3);border-radius:var(--radius);overflow:hidden;width:fit-content;margin-bottom:1.25rem}
+.tab{padding:6px 14px;font-size:13px;cursor:pointer;border:none;background:transparent;color:var(--t2);border-radius:0;display:flex;align-items:center;gap:5px}
+.tab.active{background:var(--card2);color:var(--t1);font-weight:500}
+.btn-primary{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC;font-weight:500}
+.btn-primary:hover{background:#CECBF6}
+.btn-danger{color:#A32D2D;border-color:#F09595}
+.btn-danger:hover{background:#FCEBEB}
+.btn-move{background:#E1F5EE;color:#085041;border-color:#5DCAA5;font-size:12px;padding:4px 10px}
+.btn-move:hover{background:#9FE1CB}
+
+/* SZKIC */
+.garage{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+@media(max-width:800px){.garage{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:440px){.garage{grid-template-columns:1fr}}
+.shelf-unit{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius-lg);overflow:hidden}
+.shelf-header{background:var(--card2);padding:9px 14px;font-size:13px;font-weight:500;color:var(--t2);border-bottom:0.5px solid var(--b3);display:flex;justify-content:space-between;align-items:center}
+.shelf-header b{color:var(--t1);font-weight:600;font-size:14px}
+.shelf-body{padding:8px 10px;display:flex;flex-direction:column;gap:7px}
+.shelf-row{background:var(--card2);border:0.5px solid var(--b3);border-radius:8px;padding:6px 8px;min-height:58px;position:relative;transition:border-color .15s,background .15s}
+.shelf-row.drag-over{border-color:#7f77dd;background:#EEEDFE}
+.shelf-row-lbl{font-size:10px;color:var(--t3);position:absolute;top:4px;left:8px;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.slots{display:flex;gap:5px;padding-top:20px;flex-wrap:wrap;align-items:flex-end}
+.slot{height:32px;min-width:38px;max-width:90px;border-radius:5px;border:0.5px solid;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:grab;padding:3px 7px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.2;position:relative;user-select:none;font-weight:500}
+.slot:hover{opacity:.8}
+.slot.dragging{opacity:.35;cursor:grabbing}
+.slot-qty{position:absolute;top:-6px;right:-5px;background:#3C3489;color:#fff;font-size:9px;border-radius:10px;padding:0 5px;min-width:16px;text-align:center;line-height:16px;height:16px;font-weight:600}
+.slot-low{position:absolute;top:-6px;right:-5px;background:#A32D2D;color:#fff;font-size:9px;border-radius:10px;padding:0 5px;min-width:16px;text-align:center;line-height:16px;height:16px;font-weight:600}
+.s-loose{background:#F1EFE8;color:#444441;border-color:#B4B2A9}
+.s-box{background:#E1F5EE;color:#085041;border-color:#5DCAA5}
+.s-original{background:#E6F1FB;color:#0C447C;border-color:#85B7EB}
+.s-custom{background:#FAEEDA;color:#633806;border-color:#EF9F27}
+.slot-add{height:32px;width:32px;border-radius:5px;border:0.5px dashed var(--b1);background:transparent;color:var(--t3);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none;padding:0;line-height:1}
+.slot-add:hover{border-color:#AFA9EC;color:#3C3489;background:#EEEDFE}
+.slot-placeholder{height:32px;min-width:28px;border-radius:5px;border:0.5px dashed var(--b2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--t3);padding:2px 5px;flex:none}
+.slot-stack{display:flex;flex-direction:column;gap:2px;cursor:pointer;min-width:38px;max-width:90px}
+.slot-stack:hover{opacity:.75}
+.stack-layer{height:26px;border-radius:4px;border:0.5px solid;display:flex;align-items:center;justify-content:center;font-size:10px;padding:2px 6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.2;font-weight:500}
+.stack-lbl{font-size:9px;color:var(--t3);text-align:center;line-height:1.4}
+
+/* LISTA */
+.list{display:flex;flex-direction:column;gap:5px}
+.list-row{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius);padding:9px 12px;display:flex;align-items:center;gap:9px;cursor:pointer}
+.list-row:hover{border-color:var(--b1)}
+.iname{font-size:13px;font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.imeta{font-size:11px;color:var(--t2)}
+.loc{font-size:11px;padding:2px 7px;border-radius:20px;background:#EEEDFE;color:#3C3489;border:0.5px solid #AFA9EC;white-space:nowrap}
+.pill{font-size:11px;padding:2px 7px;border-radius:20px;border:0.5px solid;white-space:nowrap}
+.p-loose{background:#F1EFE8;color:#444441;border-color:#B4B2A9}
+.p-box{background:#E1F5EE;color:#085041;border-color:#5DCAA5}
+.p-original{background:#E6F1FB;color:#0C447C;border-color:#85B7EB}
+.p-custom{background:#FAEEDA;color:#633806;border-color:#EF9F27}
+.cnt{background:var(--card2);border:0.5px solid var(--b3);border-radius:20px;padding:1px 7px;font-size:11px;color:var(--t2);margin-left:4px}
+.qty-badge{font-size:11px;padding:2px 8px;border-radius:20px;background:#EEEDFE;color:#3C3489;border:0.5px solid #AFA9EC;white-space:nowrap;font-weight:500}
+.qty-low{background:#FCEBEB;color:#A32D2D;border-color:#F09595}
+
+/* ZAPASY */
+.stock-grid{display:flex;flex-direction:column;gap:6px}
+.stock-row{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius);padding:10px 14px}
+.stock-row.low{border-left:3px solid #E24B4A}
+.stock-row.ok{border-left:3px solid #1D9E75}
+.stock-name{font-size:13px;font-weight:500;margin-bottom:4px}
+.stock-meta{font-size:11px;color:var(--t2);margin-bottom:8px}
+.stock-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.stock-num{font-size:20px;font-weight:500;min-width:40px;text-align:center}
+.stock-num.low{color:#A32D2D}
+.qty-btn{width:30px;height:30px;border-radius:50%;padding:0;display:flex;align-items:center;justify-content:center;font-size:18px;flex:none}
+.stock-input{width:60px;flex:none;text-align:center;font-size:13px}
+.alert-banner{background:#FCEBEB;border:0.5px solid #F09595;border-radius:var(--radius);padding:10px 14px;margin-bottom:12px;font-size:13px;color:#A32D2D;display:flex;align-items:center;gap:8px}
+.stock-section-title{font-size:11px;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin:12px 0 6px}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-start;justify-content:center;padding:32px 12px;z-index:100;overflow-y:auto}
+.modal{background:var(--card);border-radius:var(--radius-lg);border:0.5px solid var(--b3);padding:1.25rem;width:100%;max-width:500px}
+.mhead{display:flex;align-items:center;gap:8px;margin-bottom:1rem}
+.mhead h2{font-size:15px;font-weight:500;flex:1;margin:0}
+.frow{margin-bottom:10px}
+.frow label{display:block;font-size:11px;color:var(--t2);margin-bottom:3px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fgrid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.fsec{font-size:10px;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px;padding-bottom:3px;border-bottom:0.5px solid var(--b3)}
+.brow{display:flex;gap:8px;justify-content:flex-end;margin-top:1rem;flex-wrap:wrap}
+.pos-slots{display:flex;gap:3px;flex-wrap:wrap;margin-top:5px}
+.pslot{width:26px;height:26px;border-radius:4px;border:0.5px solid var(--b1);background:var(--card2);font-size:11px;color:var(--t2);display:flex;align-items:center;justify-content:center}
+.pslot.mine{background:#FAECE7;border-color:#F0997B;color:#712B13;font-weight:500}
+.pslot.taken{background:var(--b3);color:var(--t3)}
+.pos-hint{font-size:11px;color:var(--t3);margin-top:4px}
+.subs{display:flex;flex-direction:column;gap:5px;margin-bottom:7px}
+.subrow{display:flex;gap:5px;align-items:center}
+.subrow input{flex:1}
+.subrow .q{width:62px;flex:none}
+.subrow .u{width:62px;flex:none}
+.subrow .thr{width:54px;flex:none}
+.sub-chip{display:inline-flex;align-items:center;gap:3px;font-size:11px;padding:2px 8px;background:#FAEEDA;color:#633806;border:0.5px solid #EF9F27;border-radius:20px;margin:2px}
+.sub-chip.low{background:#FCEBEB;color:#A32D2D;border-color:#F09595}
+.photo-lbl{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:0.5px solid var(--b1);border-radius:var(--radius);cursor:pointer;font-size:12px;color:var(--t2)}
+.photo-lbl:hover{background:var(--card2)}
+.photo-lbl input{display:none}
+.photo-prev{width:100%;max-height:180px;object-fit:contain;border-radius:var(--radius);border:0.5px solid var(--b3);margin-top:6px}
+.drow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:0.5px solid var(--b3);font-size:13px;gap:10px}
+.drow:last-child{border-bottom:none}
+.dlbl{color:var(--t2);flex:none;font-size:12px}
+.dphotos{width:100%;border-radius:var(--radius);margin-bottom:8px;max-height:200px;object-fit:contain}
+.empty{padding:3rem;text-align:center;color:var(--t3);font-size:13px}
+/* szybki licznik w modalu */
+.quick-stock{display:flex;align-items:center;gap:10px;background:var(--card2);border-radius:var(--radius);padding:10px 14px;margin-top:10px}
+.quick-stock-num{font-size:22px;font-weight:500;min-width:36px;text-align:center}
+.quick-stock-num.low{color:#A32D2D}
+
+/* LOGOWANIE */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
+.login-card{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius-lg);padding:2rem;width:100%;max-width:340px}
+.login-card h1{font-size:20px;font-weight:500;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.login-card p{font-size:13px;color:var(--t2);margin-bottom:1.5rem}
+.login-label{display:block;font-size:11px;color:var(--t2);margin-bottom:4px}
+.login-err{font-size:12px;color:#A32D2D;margin-bottom:10px;min-height:18px}
+</style>
+</head>
+<body>
+<div id="login-screen" class="login-wrap" style="display:none">
+  <div class="login-card">
+    <h1><i class="ti ti-tool" aria-hidden="true"></i> Garaż</h1>
+    <p>Wpisz hasło, żeby wejść.</p>
+    <label class="login-label">Hasło</label>
+    <input id="lpwd" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="login-err" id="lerr"></div>
+    <button class="btn-primary" style="width:100%;justify-content:center;display:flex;gap:6px" onclick="doLogin()">
+      <i class="ti ti-lock-open" aria-hidden="true"></i> Zaloguj
+    </button>
+  </div>
+</div>
+
+<div class="app" id="main-app" style="display:none">
+  <header>
+    <i class="ti ti-tool" style="font-size:20px" aria-hidden="true"></i>
+    <h1>Garaż</h1>
+    <span class="status"><span class="dot off" id="dot"></span><span id="stxt" style="font-size:11px">lokalnie</span></span>
+    <button onclick="exportCSV()" title="CSV" style="padding:6px 10px"><i class="ti ti-file-spreadsheet" aria-hidden="true"></i></button>
+    <button onclick="doLogout()" title="Wyloguj" style="padding:6px 10px"><i class="ti ti-logout" aria-hidden="true"></i></button>
+  </header>
+  <div class="topbar">
+    <input id="srch" placeholder="Szukaj: nazwa, kategoria, lokalizacja, zawartość…" oninput="onSearch(this.value)">
+    <button class="btn-primary" onclick="openAdd(null,null)"><i class="ti ti-plus" aria-hidden="true"></i> Dodaj</button>
+  </div>
+  <div id="root"></div>
+</div>
+
+<div class="modal-overlay" id="modal" style="display:none" onclick="overlayClick(event)">
+  <div class="modal" id="mbox"></div>
+</div>
+
+<script>
+const REGALY=['R1','R2','R3','R4'],POLKI=['P1','P2','P3','P4'];
+const NORM={loose:'Luzem',box:'Pudełko',original:'Oryg. opak.'};
+const NORM_BACK={'Luzem':'loose','Pudełko':'box','Oryginalne opakowanie':'original','Oryg. opak.':'original'};
+const CATS=['Narzędzia ręczne','Narzędzia elektryczne','Elektronika','Akcesoria','Materiały','Części','Chemia','Malarstwo','Ogród','Inne'];
+const STORAGES=['Luzem','Pudełko','Oryginalne opakowanie','Skrzynka','Worek','Torba','Szuflada'];
+
+let items=[],nextId=1,view='garage',search='',fSubs=[],fPhoto=null,fEditId=null;
+let ws=null,serverMode=false,authToken=null;
+let dragId=null; // id przeciąganego przedmiotu
+
+// ── Auth & storage ────────────────────────────────────────────────────────────
+function saveToken(t){try{localStorage.setItem('garaz_token',t);}catch(e){}}
+function loadToken(){try{return localStorage.getItem('garaz_token');}catch(e){return null;}}
+function clearToken(){try{localStorage.removeItem('garaz_token');}catch(e){}}
+function lsSave(){try{localStorage.setItem('garaz',JSON.stringify({items,nextId}));}catch(e){}}
+function lsLoad(){try{const d=JSON.parse(localStorage.getItem('garaz')||'null');if(d){items=d.items||[];nextId=d.nextId||1;}}catch(e){}}
+
+async function doLogin(){
+  const pwd=document.getElementById('lpwd').value;
+  const err=document.getElementById('lerr');err.textContent='';
+  if(!pwd){err.textContent='Wpisz hasło.';return;}
+  try{
+    const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pwd})});
+    if(!r.ok){err.textContent='Złe hasło.';return;}
+    authToken=(await r.json()).token;saveToken(authToken);showApp();
+  }catch(e){authToken=null;showApp();}
+}
+function showApp(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('main-app').style.display='block';
+  lsLoad();render();tryWS();
+}
+function doLogout(){
+  clearToken();authToken=null;serverMode=false;
+  if(ws){ws.close();ws=null;}
+  document.getElementById('main-app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('lpwd').value='';
+}
+
+// ── WebSocket ─────────────────────────────────────────────────────────────────
+function tryWS(){
+  if(!authToken)return;
+  try{
+    ws=new WebSocket(`${location.protocol==='https:'?'wss':'ws'}://${location.host}/?token=${authToken}`);
+    ws.onopen=()=>{serverMode=true;document.getElementById('dot').className='dot';document.getElementById('stxt').textContent='na żywo';};
+    ws.onclose=()=>{serverMode=false;document.getElementById('dot').className='dot off';document.getElementById('stxt').textContent='lokalnie';ws=null;setTimeout(tryWS,8000);};
+    ws.onerror=()=>{ws=null;};
+    ws.onmessage=e=>{
+      const m=JSON.parse(e.data);
+      if(m.type==='AUTH_ERROR'){doLogout();return;}
+      if(m.type==='INIT'){items=m.items;nextId=Math.max(0,...items.map(x=>x.id))+1;render();}
+      else if(m.type==='ITEM_ADDED'){items.push(m.item);render();}
+      else if(m.type==='ITEM_UPDATED'){const i=items.findIndex(x=>x.id===m.item.id);if(i>-1)items[i]=m.item;render();}
+      else if(m.type==='ITEM_DELETED'){items=items.filter(x=>x.id!==m.id);render();}
+    };
+  }catch(e){ws=null;}
+}
+
+// ── API ───────────────────────────────────────────────────────────────────────
+async function apiCall(method,path,body){
+  const h={'Content-Type':'application/json'};
+  if(authToken)h['Authorization']=`Bearer ${authToken}`;
+  const r=await fetch(path,{method,headers:h,body:body?JSON.stringify(body):undefined});
+  if(r.status===401){doLogout();throw new Error('Sesja wygasła');}
+  if(!r.ok)throw new Error(await r.text());
+  if(method==='DELETE')return null;
+  return r.json();
+}
+async function doSaveApi(body,editId){
+  if(serverMode)return editId?apiCall('PUT',`/api/items/${editId}`,body):apiCall('POST','/api/items',body);
+  if(editId){const i=items.findIndex(x=>x.id===editId);if(i>-1)items[i]={...items[i],...body,id:editId,updatedAt:new Date().toISOString()};}
+  else items.push({...body,id:nextId++,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+  lsSave();render();
+}
+async function doDeleteApi(id){
+  if(serverMode){await apiCall('DELETE',`/api/items/${id}`);return;}
+  items=items.filter(x=>x.id!==id);lsSave();render();
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function sLabel(v){return NORM[v]||v||''}
+function sSlot(v){return{loose:'s-loose',box:'s-box',original:'s-original'}[v]||'s-custom'}
+function sPill(v){return{loose:'p-loose',box:'p-box',original:'p-original'}[v]||'p-custom'}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function stackText(i){
+  if(!i.stackLevel)return'';
+  const lvl=parseInt(i.stackLevel),tot=parseInt(i.stackTotal)||'?';
+  return tot<=3&&lvl<=3?(['dół','środek','góra'][lvl-1]||`poziom ${lvl}`)+` z ${tot}`:`poziom ${lvl} z ${tot}`;
+}
+// Stan całego przedmiotu (qty) lub suma podpozycji
+function itemQty(i){return(i.qty!=null&&i.qty!=='')?parseInt(i.qty):null;}
+function isLow(i){
+  const q=itemQty(i);
+  if(q!=null&&i.qtyThreshold!=null&&q<=parseInt(i.qtyThreshold))return true;
+  return(i.subitems||[]).some(s=>s.qty!=null&&s.qtyThreshold!=null&&parseInt(s.qty)<=parseInt(s.qtyThreshold));
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function render(){
+  const q=search.trim().toLowerCase();
+  const fi=q?items.filter(i=>[i.name,i.cat,i.storage||'',i.note||'',i.regal+i.polka,stackText(i),(i.subitems||[]).map(s=>s.name).join(' ')].join(' ').toLowerCase().includes(q)):items;
+  const root=document.getElementById('root');
+  if(q){root.innerHTML=buildSearch(fi);return;}
+  root.innerHTML=`<div class="tabs">
+    <button class="tab${view==='garage'?' active':''}" onclick="setView('garage')"><i class="ti ti-layout-board" aria-hidden="true"></i> Szkic</button>
+    <button class="tab${view==='list'?' active':''}" onclick="setView('list')"><i class="ti ti-list" aria-hidden="true"></i> Lista</button>
+    <button class="tab${view==='stock'?' active':''}" onclick="setView('stock')"><i class="ti ti-package" aria-hidden="true"></i> Zapasy</button>
+  </div>${view==='garage'?buildGarage(fi):view==='stock'?buildStock():buildList(fi)}`;
+}
+function setView(v){view=v;render();}
+function onSearch(v){search=v;render();}
+
+// ── SZKIC z drag & drop ───────────────────────────────────────────────────────
+function buildGarage(items){
+  return`<div class="garage">${REGALY.map(r=>{
+    const ri=items.filter(x=>x.regal===r);
+    return`<div class="shelf-unit">
+      <div class="shelf-header"><b>Regał ${r.slice(1)}</b><span class="cnt">${ri.length} szt.</span></div>
+      <div class="shelf-body">${POLKI.map(p=>buildShelfRow(r,p,items)).join('')}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function buildShelfRow(r,p,items){
+  const pi=[...items.filter(x=>x.regal===r&&x.polka===p)].sort((a,b)=>(parseInt(a.posIndex)||999)-(parseInt(b.posIndex)||999));
+
+  // Ustal ile slotów pokazać (max posTotal wśród przedmiotów na tej półce, min 1)
+  const maxTotal=pi.reduce((m,i)=>Math.max(m,parseInt(i.posTotal)||0),0);
+
+  // Mapa pozycja→grupy (stosy)
+  const byPos=new Map();
+  pi.forEach(i=>{
+    const k=i.posIndex?parseInt(i.posIndex):null;
+    const key=k!=null?k:`_${i.id}`;
+    if(!byPos.has(key))byPos.set(key,[]);
+    byPos.get(key).push(i);
+  });
+
+  let slots='';
+  if(maxTotal>0){
+    // Renderuj N pozycji z placeholderami dla pustych
+    for(let pos=1;pos<=maxTotal;pos++){
+      const g=byPos.get(pos);
+      if(!g){
+        // Pusta pozycja — szary placeholder
+        slots+=`<div class="slot-placeholder" title="poz. ${pos} — puste">${pos}</div>`;
+      } else if(g.length===1){
+        slots+=renderSlot(g[0],pos,maxTotal);
+      } else {
+        // Stos
+        const sorted=[...g].sort((a,b)=>(parseInt(b.stackLevel)||1)-(parseInt(a.stackLevel)||1));
+        const layers=sorted.map(i=>{
+          const lbl=i.name.length>14?i.name.slice(0,13)+'…':i.name;
+          return`<div class="stack-layer ${slotColorClass(i)}" title="${esc(i.name)}" draggable="true" ondragstart="onDragStart(event,${i.id})" onclick="openDetail(${i.id})">${i.stackLevel?`P${i.stackLevel} `:''}${esc(lbl)}</div>`;
+        }).join('');
+        slots+=`<div class="slot-stack" title="poz. ${pos}"><div class="stack-lbl">↕${g.length} poz.${pos}</div>${layers}</div>`;
+      }
+    }
+    // Przedmioty bez pozycji (posIndex=null) dorzucamy na końcu
+    [...byPos.entries()].filter(([k])=>typeof k==='string'&&k.startsWith('_')).forEach(([,g])=>{
+      if(g.length===1) slots+=renderSlot(g[0],null,null);
+      else{
+        const sorted=[...g].sort((a,b)=>(parseInt(b.stackLevel)||1)-(parseInt(a.stackLevel)||1));
+        const layers=sorted.map(i=>{const lbl=i.name.length>14?i.name.slice(0,13)+'…':i.name;return`<div class="stack-layer ${slotColorClass(i)}" title="${esc(i.name)}" draggable="true" ondragstart="onDragStart(event,${i.id})" onclick="openDetail(${i.id})">${esc(lbl)}</div>`;}).join('');
+        slots+=`<div class="slot-stack"><div class="stack-lbl">↕${g.length}</div>${layers}</div>`;
+      }
+    });
+  } else {
+    // Nikt nie ma posTotal — renderuj normalnie bez siatki
+    pi.forEach(i=>{ slots+=renderSlot(i,null,null); });
+  }
+
+  return`<div class="shelf-row"
+    ondragover="onDragOver(event)"
+    ondragleave="onDragLeave(event)"
+    ondrop="onDrop(event,'${r}','${p}')"
+    data-regal="${r}" data-polka="${p}">
+    <span class="shelf-row-lbl">${p}</span>
+    <div class="slots">${slots}<button class="slot-add" onclick="openAdd('${r}','${p}')" title="Dodaj">+</button></div>
+  </div>`;
+}
+
+function slotColorClass(i){
+  // Kolor z pola customColor, albo z typu przechowywania
+  if(i.customColor){
+    // Zwróć inline style zamiast klasy — obsługujemy w renderSlot
+    return '__custom__';
+  }
+  return sSlot(i.storage);
+}
+
+function renderSlot(i,pos,total){
+  const lbl=i.name.length>14?i.name.slice(0,13)+'…':i.name;
+  const q=itemQty(i);const low=isLow(i);
+  const badge=q!=null?`<span class="${low?'slot-low':'slot-qty'}">${q}</span>`:'';
+  const posTitle=pos!=null&&total?` poz.${pos}/${total}`:'';
+  const colorStyle=i.customColor?`style="background:${i.customColor};border-color:${i.customColor};color:#fff"` :'';
+  const cls=i.customColor?'slot':(`slot ${sSlot(i.storage)}`);
+  return`<div class="${cls}" ${colorStyle}
+    title="${esc(i.name)}${posTitle}${stackText(i)?' · '+stackText(i):''}"
+    draggable="true"
+    ondragstart="onDragStart(event,${i.id})"
+    onclick="openDetail(${i.id})">${badge}${esc(lbl)}</div>`;
+}
+
+// ── Drag & Drop ───────────────────────────────────────────────────────────────
+function onDragStart(e,id){
+  dragId=id;
+  e.dataTransfer.effectAllowed='move';
+  setTimeout(()=>{const el=e.target;if(el)el.classList.add('dragging');},0);
+}
+function onDragOver(e){
+  e.preventDefault();e.dataTransfer.dropEffect='move';
+  e.currentTarget.classList.add('drag-over');
+}
+function onDragLeave(e){e.currentTarget.classList.remove('drag-over');}
+async function onDrop(e,regal,polka){
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if(!dragId)return;
+  const i=items.find(x=>x.id===dragId);
+  if(!i||i.regal===regal&&i.polka===polka){dragId=null;return;}
+  const body={...i,regal,polka};
+  try{await doSaveApi(body,dragId);}catch(err){alert('Błąd: '+err.message);}
+  dragId=null;
+}
+
+// ── LISTA ─────────────────────────────────────────────────────────────────────
+function buildList(items){
+  const sorted=[...items].sort((a,b)=>a.name.localeCompare(b.name,'pl'));
+  if(!sorted.length)return`<div class="empty"><i class="ti ti-tool" style="font-size:28px;display:block;margin-bottom:8px" aria-hidden="true"></i>Brak przedmiotów.</div>`;
+  return`<div class="list">${sorted.map(listRow).join('')}</div>`;
+}
+function buildSearch(fi){
+  if(!fi.length)return`<div class="empty"><i class="ti ti-search" style="font-size:28px;display:block;margin-bottom:8px" aria-hidden="true"></i>Brak wyników dla „${esc(search)}"</div>`;
+  return`<div style="font-size:12px;color:var(--t2);margin-bottom:8px">Znaleziono: ${fi.length}</div><div class="list">${fi.map(listRow).join('')}</div>`;
+}
+function listRow(i){
+  const sub=(i.subitems||[]).length,pos=i.posIndex&&i.posTotal?` · poz.${i.posIndex}/${i.posTotal}`:'';
+  const st=stackText(i)?` · ${stackText(i)}`:'';
+  const q=itemQty(i);const low=isLow(i);
+  const qbadge=q!=null?`<span class="qty-badge${low?' qty-low':''}">${q}${i.qtyUnit?' '+esc(i.qtyUnit):''}</span>`:'';
+  return`<div class="list-row" onclick="openDetail(${i.id})">
+    <span class="pill ${sPill(i.storage)}">${esc(sLabel(i.storage))}</span>
+    <div style="flex:1;min-width:0"><div class="iname">${esc(i.name)}</div>
+    <div class="imeta">${esc(i.cat)}${i.note?' · '+esc(i.note):''}${sub?' · '+sub+' poz.':''}${pos}${st}</div></div>
+    ${qbadge}
+    <span class="loc">${i.regal}/${i.polka}</span>
+    <button onclick="event.stopPropagation();openEdit(${i.id})" style="padding:5px 8px;flex:none"><i class="ti ti-edit" aria-hidden="true"></i></button>
+  </div>`;
+}
+
+// ── ZAPASY ────────────────────────────────────────────────────────────────────
+function buildStock(){
+  // Zbierz wszystkie pozycje ze stanem (przedmioty + podpozycje)
+  const tracked=[];
+  items.forEach(i=>{
+    if(itemQty(i)!=null){
+      tracked.push({type:'item',item:i,name:i.name,qty:parseInt(i.qty),unit:i.qtyUnit||'',threshold:i.qtyThreshold!=null?parseInt(i.qtyThreshold):null,low:isLow(i),id:i.id,subIdx:null});
+    }
+    (i.subitems||[]).forEach((s,si)=>{
+      if(s.qty!=null&&s.qty!==''){
+        const low=s.qtyThreshold!=null&&parseInt(s.qty)<=parseInt(s.qtyThreshold);
+        tracked.push({type:'sub',item:i,name:`${i.name} → ${s.name}`,qty:parseInt(s.qty),unit:s.unit||'',threshold:s.qtyThreshold!=null?parseInt(s.qtyThreshold):null,low,id:i.id,subIdx:si});
+      }
+    });
+  });
+  if(!tracked.length)return`<div class="empty"><i class="ti ti-package" style="font-size:28px;display:block;margin-bottom:8px" aria-hidden="true"></i>Brak pozycji z ustawionym stanem.<br><br>Dodaj przedmiot i wypełnij pole <b>Stan / ilość</b>.</div>`;
+  const low=tracked.filter(x=>x.low);
+  const ok=tracked.filter(x=>!x.low);
+  let html='';
+  if(low.length)html+=`<div class="alert-banner"><i class="ti ti-alert-triangle" aria-hidden="true"></i> ${low.length} pozycj${low.length===1?'a':'e'} poniżej progu!</div>`;
+  if(low.length){html+=`<div class="stock-section-title">⚠ Niski stan</div><div class="stock-grid">${low.map(t=>stockRow(t)).join('')}</div>`;}
+  if(ok.length){html+=`<div class="stock-section-title">Pozostałe zapasy</div><div class="stock-grid">${ok.map(t=>stockRow(t)).join('')}</div>`;}
+  return html;
+}
+
+function stockRow(t){
+  const pct=t.threshold?Math.min(100,Math.round(t.qty/t.threshold*100)):null;
+  return`<div class="stock-row ${t.low?'low':'ok'}">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+      <div>
+        <div class="stock-name">${esc(t.name)}</div>
+        <div class="stock-meta">${t.item.regal}/${t.item.polka}${t.threshold!=null?' · próg: '+t.threshold+' '+(t.unit||''):''}</div>
+      </div>
+      <div class="stock-controls">
+        <button class="qty-btn btn-danger" onclick="adjustQty(${t.id},${t.subIdx!=null?t.subIdx:'null'},-1)">−</button>
+        <span class="stock-num${t.low?' low':''}">${t.qty}${t.unit?' <small style="font-size:12px">'+esc(t.unit)+'</small>':''}</span>
+        <button class="qty-btn" onclick="adjustQty(${t.id},${t.subIdx!=null?t.subIdx:'null'},1)">+</button>
+        <input type="number" class="stock-input" value="${t.qty}" min="0"
+          onchange="setQty(${t.id},${t.subIdx!=null?t.subIdx:'null'},this.value)" title="Wpisz wartość">
+      </div>
+    </div>
+    ${pct!=null?`<div style="margin-top:6px;height:4px;background:var(--b3);border-radius:2px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${t.low?'#E24B4A':'#1D9E75'};border-radius:2px"></div></div>`:''}
+  </div>`;
+}
+
+async function adjustQty(id,subIdx,delta){
+  const i=items.find(x=>x.id===id);if(!i)return;
+  let body;
+  if(subIdx!=null){
+    const subs=[...(i.subitems||[])];
+    subs[subIdx]={...subs[subIdx],qty:Math.max(0,(parseInt(subs[subIdx].qty)||0)+delta)};
+    body={...i,subitems:subs};
+  }else{
+    body={...i,qty:Math.max(0,(parseInt(i.qty)||0)+delta)};
+  }
+  await doSaveApi(body,id);
+}
+async function setQty(id,subIdx,val){
+  const i=items.find(x=>x.id===id);if(!i)return;
+  const n=Math.max(0,parseInt(val)||0);
+  let body;
+  if(subIdx!=null){
+    const subs=[...(i.subitems||[])];
+    subs[subIdx]={...subs[subIdx],qty:n};
+    body={...i,subitems:subs};
+  }else{
+    body={...i,qty:n};
+  }
+  await doSaveApi(body,id);
+}
+
+// ── DETAIL ────────────────────────────────────────────────────────────────────
+function openDetail(id){
+  const i=items.find(x=>x.id===id);if(!i)return;
+  const sub=(i.subitems||[]);
+  const hp=i.posIndex&&i.posTotal&&i.posTotal>1;
+  const hs=i.stackLevel&&i.stackTotal&&i.stackTotal>1;
+  const q=itemQty(i);const low=isLow(i);
+  showModal(`
+    ${i.photo?`<img src="${i.photo}" class="dphotos" alt="">`:''}
+    <div class="mhead"><i class="ti ti-tool" style="font-size:17px" aria-hidden="true"></i><h2>${esc(i.name)}</h2><button onclick="closeModal()" style="padding:4px 9px">✕</button></div>
+    <div class="drow"><span class="dlbl">Lokalizacja</span>
+      <div style="display:flex;gap:6px;align-items:center">
+        <span class="loc">${i.regal} / ${i.polka}</span>
+        <button class="btn-move" onclick="openMove(${i.id})"><i class="ti ti-arrows-move" aria-hidden="true"></i> Przesuń</button>
+      </div>
+    </div>
+    ${hp?`<div class="drow"><span class="dlbl">Pozycja</span>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+        <span style="font-size:12px">${i.posIndex} z ${i.posTotal}</span>
+        <div style="display:flex;gap:2px">${Array.from({length:Math.min(i.posTotal,16)},(_,k)=>`<div style="width:16px;height:16px;border-radius:3px;border:0.5px solid;background:${k+1===parseInt(i.posIndex)?'#FAECE7':'var(--card2)'};border-color:${k+1===parseInt(i.posIndex)?'#F0997B':'var(--b3)'}"></div>`).join('')}</div>
+      </div></div>`:''}
+    ${hs?`<div class="drow"><span class="dlbl">Poziom w stosie</span>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+        <span style="font-size:12px">${stackText(i)}</span>
+        <div style="display:flex;flex-direction:column;gap:2px">${Array.from({length:Math.min(i.stackTotal,8)},(_,k)=>{const lvl=i.stackTotal-k;const a=lvl===parseInt(i.stackLevel);return`<div style="width:60px;height:13px;border-radius:3px;border:0.5px solid;background:${a?'#E1F5EE':'var(--card2)'};border-color:${a?'#5DCAA5':'var(--b3)'};display:flex;align-items:center;justify-content:center;font-size:9px;color:${a?'#085041':'var(--t3)'}"> ${a?'← tutaj':''}</div>`;}).join('')}</div>
+      </div></div>`:''}
+    <div class="drow"><span class="dlbl">Kategoria</span><span>${esc(i.cat)}</span></div>
+    <div class="drow"><span class="dlbl">Przechowywanie</span><span class="pill ${sPill(i.storage)}">${esc(sLabel(i.storage))}</span></div>
+    ${i.customColor?`<div class="drow"><span class="dlbl">Kolor</span><span style="display:inline-block;width:20px;height:20px;border-radius:4px;background:${i.customColor};border:0.5px solid var(--b1);vertical-align:middle"></span></div>`:''}
+    ${i.note?`<div class="drow"><span class="dlbl">Notatka</span><span style="text-align:right;font-size:12px">${esc(i.note)}</span></div>`:''}
+    ${q!=null?`<div class="drow"><span class="dlbl">Stan</span><span class="qty-badge${low?' qty-low':''}">${q}${i.qtyUnit?' '+esc(i.qtyUnit):''}</span></div>
+    <div class="quick-stock">
+      <button class="qty-btn btn-danger" onclick="adjustQty(${i.id},null,-1)">−</button>
+      <span class="quick-stock-num${low?' low':''}" id="qs-num">${q}</span>
+      <button class="qty-btn" onclick="adjustQty(${i.id},null,1)">+</button>
+      <input type="number" style="width:64px;text-align:center" value="${q}" min="0" onchange="setQty(${i.id},null,this.value)">
+      ${i.qtyThreshold!=null?`<span style="font-size:11px;color:var(--t2)">próg: ${i.qtyThreshold}</span>`:''}
+    </div>`:''}
+    ${sub.length?`<div style="margin-top:10px"><div style="font-size:11px;color:var(--t2);margin-bottom:5px;font-weight:500">Zawartość (${sub.length})</div>
+      ${sub.map((s,si)=>{
+        const sq=s.qty!=null&&s.qty!==''?parseInt(s.qty):null;
+        const slow=s.qtyThreshold!=null&&sq!=null&&sq<=parseInt(s.qtyThreshold);
+        return`<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap">
+          <span class="sub-chip${slow?' low':''}">${esc(s.name)}${sq!=null?' ×'+sq+' '+(s.unit||''):''}</span>
+          ${sq!=null?`<button class="qty-btn btn-danger" style="width:22px;height:22px;font-size:14px" onclick="adjustQty(${i.id},${si},-1)">−</button>
+          <span style="font-size:13px;font-weight:500;min-width:24px;text-align:center${slow?';color:#A32D2D':''}">${sq}</span>
+          <button class="qty-btn" style="width:22px;height:22px;font-size:14px" onclick="adjustQty(${i.id},${si},1)">+</button>`:''}
+        </div>`;
+      }).join('')}</div>`:''}
+    <div class="brow">
+      <button class="btn-danger" onclick="doDelete(${i.id})"><i class="ti ti-trash" aria-hidden="true"></i> Usuń</button>
+      <button onclick="openEdit(${i.id})"><i class="ti ti-edit" aria-hidden="true"></i> Edytuj</button>
+    </div>`);
+}
+
+// ── PRZESUŃ (modal wyboru lokalizacji) ───────────────────────────────────────
+function openMove(id){
+  const i=items.find(x=>x.id===id);if(!i)return;
+  const selR=REGALY.map(r=>`<option${r===i.regal?' selected':''}>${r}</option>`).join('');
+  const selP=POLKI.map(p=>`<option${p===i.polka?' selected':''}>${p}</option>`).join('');
+  showModal(`
+    <div class="mhead"><i class="ti ti-arrows-move" style="font-size:16px" aria-hidden="true"></i><h2>Przesuń: ${esc(i.name)}</h2><button onclick="closeModal()" style="padding:4px 9px">✕</button></div>
+    <div style="font-size:12px;color:var(--t2);margin-bottom:12px">Obecna lokalizacja: <b>${i.regal} / ${i.polka}</b></div>
+    <div class="fgrid">
+      <div class="frow"><label>Nowy regał</label><select id="mv-r">${selR}</select></div>
+      <div class="frow"><label>Nowa półka</label><select id="mv-p">${selP}</select></div>
+    </div>
+    <div class="brow">
+      <button onclick="closeModal()">Anuluj</button>
+      <button class="btn-primary" onclick="doMove(${id})"><i class="ti ti-check" aria-hidden="true"></i> Przesuń</button>
+    </div>`);
+}
+async function doMove(id){
+  const regal=document.getElementById('mv-r').value;
+  const polka=document.getElementById('mv-p').value;
+  const i=items.find(x=>x.id===id);if(!i)return;
+  try{await doSaveApi({...i,regal,polka},id);closeModal();}catch(e){alert('Błąd: '+e.message);}
+}
+
+// ── FORMULARZ ─────────────────────────────────────────────────────────────────
+function openAdd(regal,polka){fEditId=null;fSubs=[];fPhoto=null;showModal(buildForm(null,regal||'R1',polka||'P1'));}
+function openEdit(id){closeModal();const i=items.find(x=>x.id===id);if(!i)return;fEditId=id;fSubs=(i.subitems||[]).map(s=>({...s}));fPhoto=i.photo||null;showModal(buildForm(i,i.regal,i.polka));}
+
+function buildForm(item,preR,preP){
+  const v=k=>item?.[k]??'';
+  const regal=item?.regal||preR||'R1',polka=item?.polka||preP||'P1';
+  const selR=REGALY.map(r=>`<option${r===regal?' selected':''}>${r}</option>`).join('');
+  const selP=POLKI.map(p=>`<option${p===polka?' selected':''}>${p}</option>`).join('');
+  const catOpts=CATS.map(c=>`<option>${c}</option>`).join('');
+  const stOpts=STORAGES.map(s=>`<option>${s}</option>`).join('');
+  return`<div class="mhead">
+    <i class="ti ti-${item?'edit':'plus'}" style="font-size:16px" aria-hidden="true"></i>
+    <h2>${item?'Edytuj':'Dodaj przedmiot'}</h2>
+    <button onclick="closeModal()" style="padding:4px 9px">✕</button>
+  </div>
+  <div class="frow"><label>Nazwa *</label><input id="fn" value="${esc(v('name'))}" placeholder="np. Wiertarka Bosch"></div>
+  <div class="fgrid">
+    <div class="frow"><label>Kategoria</label>
+      <input id="fc" list="dl-cats" value="${esc(v('cat'))}" placeholder="wybierz lub wpisz">
+      <datalist id="dl-cats">${catOpts}</datalist>
+    </div>
+    <div class="frow"><label>Przechowywanie</label>
+      <input id="fs" list="dl-st" value="${esc(sLabel(v('storage')))}" placeholder="wybierz lub wpisz">
+      <datalist id="dl-st">${stOpts}</datalist>
+    </div>
+  </div>
+  <div class="frow">
+    <label>Kolor na szkicu (opcjonalnie — nadpisuje kolor przechowywania)</label>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <input type="color" id="fcol" value="${item?.customColor||'#5DCAA5'}" style="width:40px;height:34px;padding:2px;cursor:pointer;flex:none">
+      <div style="display:flex;gap:5px;flex-wrap:wrap" id="color-presets">
+        ${['','#5DCAA5','#85B7EB','#EF9F27','#F0997B','#AFA9EC','#f87171','#4ade80','#60a5fa','#e879f9','#facc15'].map(c=>
+          `<button type="button" onclick="pickColor('${c}')" style="width:22px;height:22px;border-radius:4px;padding:0;flex:none;background:${c||'var(--card2)'};border:${(!item?.customColor&&!c||item?.customColor===c)?'2px solid #3C3489':'0.5px solid var(--b1)'}" title="${c||'domyślny'}">${!c?'✕':''}</button>`
+        ).join('')}
+      </div>
+      <span style="font-size:11px;color:var(--t2)">✕ = użyj koloru przechowywania</span>
+    </div>
+  </div>
+  <div class="fsec">Lokalizacja</div>
+  <div class="fgrid">
+    <div class="frow"><label>Regał</label><select id="fr" onchange="refreshPos()">${selR}</select></div>
+    <div class="frow"><label>Półka</label><select id="fp" onchange="refreshPos()">${selP}</select></div>
+  </div>
+  <div class="frow">
+    <label>Pozycja na półce (od lewej, opcjonalnie)</label>
+    <div class="fgrid" style="margin-bottom:5px">
+      <div class="frow" style="margin:0"><label style="font-size:10px">Numer</label>
+        <input id="fpi" type="number" min="1" value="${esc(String(v('posIndex')))}" placeholder="np. 2" oninput="refreshPos()">
+      </div>
+      <div class="frow" style="margin:0"><label style="font-size:10px">Łącznie miejsc</label>
+        <input id="fpt" type="number" min="1" value="${esc(String(v('posTotal')))}" placeholder="np. 5" oninput="refreshPos()">
+      </div>
+    </div>
+    <div id="pospreview"></div>
+    <div class="pos-hint">Liczymy od lewej. Zostaw puste jeśli nie potrzebujesz.</div>
+  </div>
+  <div class="frow">
+    <label>Poziom w stosie (opcjonalnie)</label>
+    <div class="fgrid" style="margin-bottom:5px">
+      <div class="frow" style="margin:0"><label style="font-size:10px">Poziom (1=dół)</label>
+        <input id="fsl" type="number" min="1" value="${esc(String(v('stackLevel')))}" placeholder="np. 1">
+      </div>
+      <div class="frow" style="margin:0"><label style="font-size:10px">Łącznie poziomów</label>
+        <input id="fst" type="number" min="1" value="${esc(String(v('stackTotal')))}" placeholder="np. 2">
+      </div>
+    </div>
+    <div class="pos-hint">Przykład: dolna skrzynka = 1 z 2, górna = 2 z 2.</div>
+  </div>
+  <div class="fsec">Stan / ilość (opcjonalnie)</div>
+  <div class="fgrid3">
+    <div class="frow" style="margin:0"><label style="font-size:10px">Ilość</label>
+      <input id="fqty" type="number" min="0" value="${esc(String(v('qty')))}" placeholder="np. 10">
+    </div>
+    <div class="frow" style="margin:0"><label style="font-size:10px">Jednostka</label>
+      <input id="fqunit" value="${esc(v('qtyUnit'))}" placeholder="szt/kg/l…">
+    </div>
+    <div class="frow" style="margin:0"><label style="font-size:10px">Próg alertu</label>
+      <input id="fqthr" type="number" min="0" value="${esc(String(v('qtyThreshold')))}" placeholder="np. 2">
+    </div>
+  </div>
+  <div class="pos-hint" style="margin-bottom:8px">Zostaw puste jeśli nie śledzisz stanu tego przedmiotu.</div>
+  <div class="frow"><label>Notatka</label><textarea id="fnote" rows="2" placeholder="np. z kompletem wierteł…">${esc(v('note'))}</textarea></div>
+  <div class="fsec">Zawartość / podpozycje</div>
+  <div id="subs" class="subs">${fSubs.map((s,i)=>subRow(s,i)).join('')}</div>
+  <button onclick="addSub()" style="font-size:12px;padding:4px 10px"><i class="ti ti-plus" aria-hidden="true"></i> Dodaj pozycję</button>
+  <div class="fsec">Zdjęcie</div>
+  <label class="photo-lbl"><i class="ti ti-camera" aria-hidden="true"></i> Wybierz zdjęcie<input type="file" accept="image/*" onchange="handlePhoto(event)"></label>
+  ${fPhoto?`<div style="position:relative"><img src="${fPhoto}" class="photo-prev"><button class="btn-danger" onclick="fPhoto=null;rePhoto()" style="position:absolute;top:4px;right:4px;padding:2px 7px;font-size:11px">✕</button></div>`:'<div id="phtw"></div>'}
+  <div class="brow">
+    <button onclick="closeModal()">Anuluj</button>
+    <button class="btn-primary" onclick="doSave()"><i class="ti ti-check" aria-hidden="true"></i> ${item?'Zapisz':'Dodaj'}</button>
+  </div>`;
+}
+
+function subRow(s,idx){
+  return`<div class="subrow">
+    <input placeholder="wałek, pędzel…" value="${esc(s.name||'')}" oninput="fSubs[${idx}].name=this.value">
+    <input class="q" type="number" min="0" placeholder="ile" value="${s.qty??''}" oninput="fSubs[${idx}].qty=this.value===''?null:Number(this.value)">
+    <input class="u" placeholder="szt/m" value="${esc(s.unit||'')}" oninput="fSubs[${idx}].unit=this.value">
+    <input class="thr" type="number" min="0" placeholder="próg" title="Próg alertu" value="${s.qtyThreshold??''}" oninput="fSubs[${idx}].qtyThreshold=this.value===''?null:Number(this.value)">
+    <button onclick="removeSub(${idx})" class="btn-danger" style="padding:4px 7px;flex:none"><i class="ti ti-x" aria-hidden="true"></i></button>
+  </div>`;
+}
+function addSub(){fSubs.push({name:'',qty:null,unit:'',qtyThreshold:null});const l=document.getElementById('subs');if(l){const d=document.createElement('div');d.innerHTML=subRow(fSubs[fSubs.length-1],fSubs.length-1);l.appendChild(d.firstElementChild);}}
+function removeSub(idx){fSubs.splice(idx,1);const l=document.getElementById('subs');if(l)l.innerHTML=fSubs.map((s,i)=>subRow(s,i)).join('');}
+
+function pickColor(c){
+  const inp=document.getElementById('fcol');
+  if(inp)inp.value=c||'#5DCAA5';
+  document.querySelectorAll('#color-presets button').forEach((b,i)=>{
+    const colors=['','#5DCAA5','#85B7EB','#EF9F27','#F0997B','#AFA9EC','#f87171','#4ade80','#60a5fa','#e879f9','#facc15'];
+    b.style.border=colors[i]===c?'2px solid #3C3489':'0.5px solid var(--b1)';
+  });
+  if(!c){inp.style.opacity='.4';}else{inp.style.opacity='1';}
+  inp.dataset.clear=c?'':'1';
+}
+
+function refreshPos(){
+  const m=parseInt(document.getElementById('fpi')?.value)||0;
+  const r=document.getElementById('fr')?.value,p=document.getElementById('fp')?.value;
+  const w=document.getElementById('pospreview');if(!w)return;
+  if(!t){w.innerHTML='';return;}
+  const occ=new Set(items.filter(x=>x.regal===r&&x.polka===p&&x.id!==fEditId&&x.posIndex).map(x=>parseInt(x.posIndex)));
+  let s='';for(let i=1;i<=Math.min(t,16);i++){const im=i===m,tk=!im&&occ.has(i);s+=`<div class="pslot${im?' mine':tk?' taken':''}">${i}</div>`;}
+  w.innerHTML=`<div class="pos-slots">${s}</div>`;
+}
+
+function handlePhoto(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{fPhoto=ev.target.result;rePhoto();};r.readAsDataURL(f);}
+function rePhoto(){const w=document.getElementById('phtw');if(!w)return;w.innerHTML=fPhoto?`<div style="position:relative"><img src="${fPhoto}" class="photo-prev"><button class="btn-danger" onclick="fPhoto=null;rePhoto()" style="position:absolute;top:4px;right:4px;padding:2px 7px;font-size:11px">✕</button></div>`:'';
+}
+
+async function doSave(){
+  const name=document.getElementById('fn').value.trim();
+  if(!name){document.getElementById('fn').focus();return;}
+  const rawS=document.getElementById('fs').value.trim();
+  const storage=NORM_BACK[rawS]||rawS||'loose';
+  const qtyVal=document.getElementById('fqty').value;
+  const thrVal=document.getElementById('fqthr').value;
+  const colInp=document.getElementById('fcol');
+  const customColor=colInp?.dataset?.clear==='1'?null:(colInp?.value||null);
+  const body={name,
+    cat:document.getElementById('fc').value.trim()||'Inne',
+    regal:document.getElementById('fr').value,
+    polka:document.getElementById('fp').value,
+    storage,
+    customColor,
+    posIndex:parseInt(document.getElementById('fpi').value)||null,
+    posTotal:parseInt(document.getElementById('fpt').value)||null,
+    stackLevel:parseInt(document.getElementById('fsl').value)||null,
+    stackTotal:parseInt(document.getElementById('fst').value)||null,
+    qty:qtyVal===''?null:parseInt(qtyVal),
+    qtyUnit:document.getElementById('fqunit').value.trim()||null,
+    qtyThreshold:thrVal===''?null:parseInt(thrVal),
+    note:document.getElementById('fnote').value.trim(),
+    subitems:fSubs.filter(s=>s.name.trim()),
+    photo:fPhoto};
+
+  // ── Walidacja pozycji na półce ─────────────────────────────────────────────
+  const errors=validatePosition(body);
+  if(errors.length){
+    showFormError(errors.join('\n'));
+    return;
+  }
+
+  try{await doSaveApi(body,fEditId);closeModal();}catch(e){alert('Błąd: '+e.message);}
+}
+
+// Walidacja spójności pozycji na półce
+function validatePosition(body){
+  const errors=[];
+  const {regal,polka,posIndex,posTotal,stackLevel}=body;
+  if(!posIndex&&!posTotal) return []; // brak pozycji — nic nie walidujemy
+
+  // Inne przedmioty na tej samej półce (z wyjątkiem edytowanego)
+  const others=items.filter(x=>x.regal===regal&&x.polka===polka&&x.id!==fEditId&&x.posIndex);
+
+  // Reguła 1: spójność posTotal
+  if(posTotal){
+    const conflict=others.find(x=>x.posTotal&&parseInt(x.posTotal)!==posTotal);
+    if(conflict){
+      errors.push(
+        `Niezgodna liczba miejsc na półce ${regal}/${polka}:\n`+
+        `• Ten przedmiot: ${posTotal} miejsc\n`+
+        `• „${conflict.name}": ${conflict.posTotal} miejsc\n\n`+
+        `Wszystkie przedmioty na tej półce muszą mieć tę samą wartość „łącznie miejsc".`
+      );
+    }
+  }
+
+  // Reguła 2: konflikt pozycji (ta sama pozycja, ale nie stos)
+  if(posIndex){
+    const samePos=others.filter(x=>parseInt(x.posIndex)===posIndex);
+    if(samePos.length>0){
+      // Konflikt tylko jeśli ten przedmiot LUB tamten nie ma stackLevel
+      const realConflict=samePos.filter(x=>!stackLevel||!x.stackLevel);
+      if(realConflict.length>0){
+        const names=realConflict.map(x=>`„${x.name}"`).join(', ');
+        errors.push(
+          `Konflikt pozycji ${posIndex} na półce ${regal}/${polka}:\n`+
+          `• Zajęta przez: ${names}\n\n`+
+          `Jeśli chcesz ułożyć je jedną na drugiej, ustaw „Poziom w stosie" dla obu przedmiotów.`
+        );
+      }
+    }
+  }
+
+  return errors;
+}
+
+function showFormError(msg){
+  // Pokaż błąd w formularzu (nie alert)
+  let box=document.getElementById('form-error');
+  if(!box){
+    box=document.createElement('div');
+    box.id='form-error';
+    box.style.cssText='background:#FCEBEB;border:0.5px solid #F09595;border-radius:8px;padding:10px 14px;font-size:12px;color:#A32D2D;white-space:pre-line;margin-bottom:10px';
+    const brow=document.querySelector('.brow');
+    if(brow)brow.parentNode.insertBefore(box,brow);
+  }
+  box.innerHTML=`<b><i class="ti ti-alert-triangle" style="font-size:13px" aria-hidden="true"></i> Błąd walidacji</b>\n\n${esc(msg)}`;
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+async function doDelete(id){if(!confirm('Usunąć ten przedmiot?'))return;await doDeleteApi(id);closeModal();}
+
+function exportCSV(){
+  const makeCSV=()=>{
+    const h='ID,Nazwa,Kategoria,Regał,Półka,Pozycja,Miejsc,Poziom,Poziomów,Ilość,Jednostka,Próg,Przechowywanie,Notatka,Podpozycje\n';
+    const rows=items.map(i=>{const sub=(i.subitems||[]).map(s=>`${s.name}${s.qty!=null?' x'+s.qty:''}${s.unit?' '+s.unit:''}`).join(' | ');return[i.id,`"${(i.name||'').replace(/"/g,'""')}"`,`"${(i.cat||'').replace(/"/g,'""')}"`,i.regal,i.polka,i.posIndex||'',i.posTotal||'',i.stackLevel||'',i.stackTotal||'',i.qty??'',i.qtyUnit||'',i.qtyThreshold??'',`"${(i.storage||'').replace(/"/g,'""')}"`,`"${(i.note||'').replace(/"/g,'""')}"`,`"${sub.replace(/"/g,'""')}"`].join(',');});
+    return'\uFEFF'+h+rows.join('\n');
+  };
+  if(serverMode){
+    fetch('/api/export/csv',{headers:{'Authorization':`Bearer ${authToken}`}}).then(r=>r.blob()).then(blob=>{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='garaz.csv';a.click();});
+    return;
+  }
+  const blob=new Blob([makeCSV()],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='garaz.csv';a.click();
+}
+
+function showModal(html){document.getElementById('mbox').innerHTML=html;document.getElementById('modal').style.display='flex';setTimeout(refreshPos,30);}
+function closeModal(){document.getElementById('modal').style.display='none';}
+function overlayClick(e){if(e.target===document.getElementById('modal'))closeModal();}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+(async function boot(){
+  // Najpierw pokaż aplikację w trybie lokalnym — zawsze działa
+  lsLoad();
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('main-app').style.display='block';
+  render();
+
+  // W tle spróbuj połączyć się z serwerem Node.js
+  const saved=loadToken();
+  try{
+    const r=await fetch('/api/items',{
+      headers:saved?{'Authorization':`Bearer ${saved}`}:{},
+      signal:AbortSignal.timeout(2000) // 2 sekundy timeout
+    });
+    if(r.status===401){
+      // Serwer jest ale potrzeba logowania
+      document.getElementById('main-app').style.display='none';
+      document.getElementById('login-screen').style.display='flex';
+      return;
+    }
+    if(r.ok&&saved){
+      // Zalogowany i serwer odpowiada
+      authToken=saved;
+      items=await r.json();
+      nextId=Math.max(0,...items.map(x=>x.id))+1;
+      render();
+      tryWS();
+    }
+  }catch(e){
+    // Brak serwera Node.js — zostajemy w trybie lokalnym, nic nie robimy
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+# Render Blueprint — automatyczna konfiguracja web service + baza PostgreSQL
+# Po wgraniu repozytorium na Render, ten plik pozwala wdrożyć wszystko
+# jednym kliknięciem: "New" → "Blueprint" → wskaż repo z tym plikiem.
+
+services:
+  - type: web
+    name: garaz-manager
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: GARAZ_PASSWORD
+        sync: false        # Render zapyta Cię o wartość przy wdrożeniu
+      - key: DATABASE_URL
+        fromDatabase:
+          name: garaz-db
+          property: connectionString
+      - key: NODE_VERSION
+        value: 20
+
+databases:
+  - name: garaz-db
+    plan: free
+    databaseName: garaz
+    user: garaz
