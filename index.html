@@ -375,10 +375,7 @@ function buildShelfRow(r,p,items){
         slots+=renderSlot(g[0],pos,maxTotal);
       } else {
         const sorted=[...g].sort((a,b)=>(parseInt(b.stackLevel)||1)-(parseInt(a.stackLevel)||1));
-        const layers=sorted.map(i=>{
-          const lbl=i.name.length>14?i.name.slice(0,13)+'…':i.name;
-          return`<div class="stack-layer ${slotColorClass(i)}" title="${esc(i.name)}" draggable="true" ondragstart="onDragStart(event,${i.id})" onclick="openDetail(${i.id})">${i.stackLevel?`P${i.stackLevel} `:''}${esc(lbl)}</div>`;
-        }).join('');
+        const layers=sorted.map(i=>renderStackLayer(i)).join('');
         slots+=`<div class="slot-stack" title="poz. ${pos}"><div class="stack-lbl">↕${g.length} poz.${pos}</div>${layers}</div>`;
       }
     }
@@ -386,7 +383,7 @@ function buildShelfRow(r,p,items){
       if(g.length===1) slots+=renderSlot(g[0],null,null);
       else{
         const sorted=[...g].sort((a,b)=>(parseInt(b.stackLevel)||1)-(parseInt(a.stackLevel)||1));
-        const layers=sorted.map(i=>{const lbl=i.name.length>14?i.name.slice(0,13)+'…':i.name;return`<div class="stack-layer ${slotColorClass(i)}" title="${esc(i.name)}" draggable="true" ondragstart="onDragStart(event,${i.id})" onclick="openDetail(${i.id})">${esc(lbl)}</div>`;}).join('');
+        const layers=sorted.map(i=>renderStackLayer(i)).join('');
         slots+=`<div class="slot-stack"><div class="stack-lbl">↕${g.length}</div>${layers}</div>`;
       }
     });
@@ -407,12 +404,20 @@ function buildShelfRow(r,p,items){
 }
 
 function slotColorClass(i){
-  // Kolor z pola customColor, albo z typu przechowywania
-  if(i.customColor){
-    // Zwróć inline style zamiast klasy — obsługujemy w renderSlot
-    return '__custom__';
-  }
-  return sSlot(i.storage);
+  return sSlot(i.storage); // klasa CSS zawsze na podstawie storage
+}
+
+function slotColorStyle(i){
+  // Inline styl tylko gdy jest własny kolor
+  return i.customColor?`style="background:${i.customColor};border-color:${i.customColor};color:#fff"`:'';
+}
+
+function renderStackLayer(i){
+  const lbl=i.name.length>14?i.name.slice(0,13)+'…':i.name;
+  const cls=i.customColor?'stack-layer':`stack-layer ${sSlot(i.storage)}`;
+  const style=slotColorStyle(i);
+  const lvlTitle=stackText(i)?` · ${stackText(i)}`:'';
+  return`<div class="${cls}" ${style} title="${esc(i.name)}${lvlTitle}" draggable="true" ondragstart="onDragStart(event,${i.id})" onclick="openDetail(${i.id})">${esc(lbl)}</div>`;
 }
 
 function renderSlot(i,pos,total){
@@ -420,9 +425,9 @@ function renderSlot(i,pos,total){
   const q=itemQty(i);const low=isLow(i);
   const badge=q!=null?`<span class="${low?'slot-low':'slot-qty'}">${q}</span>`:'';
   const posTitle=pos!=null&&total?` poz.${pos}/${total}`:'';
-  const colorStyle=i.customColor?`style="background:${i.customColor};border-color:${i.customColor};color:#fff"` :'';
-  const cls=i.customColor?'slot':(`slot ${sSlot(i.storage)}`);
-  return`<div class="${cls}" ${colorStyle}
+  const cls=i.customColor?'slot':`slot ${sSlot(i.storage)}`;
+  const style=slotColorStyle(i);
+  return`<div class="${cls}" ${style}
     title="${esc(i.name)}${posTitle}${stackText(i)?' · '+stackText(i):''}"
     draggable="true"
     ondragstart="onDragStart(event,${i.id})"
