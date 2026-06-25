@@ -134,6 +134,22 @@ app.get('/api/items', requireAuth, (req, res) => {
   res.json(db.items);
 });
 
+// Etykiety i konfiguracja regałów/półek
+app.get('/api/labels', requireAuth, (req, res) => {
+  res.json({ shelfLabels: db.shelfLabels||{}, shelfConfig: db.shelfConfig||{} });
+});
+app.put('/api/labels', requireAuth, async (req, res) => {
+  db.shelfLabels = req.body.shelfLabels || {};
+  db.shelfConfig = req.body.shelfConfig || {};
+  try {
+    await persist();
+    broadcast({ type: 'LABELS_UPDATED', shelfLabels: db.shelfLabels, shelfConfig: db.shelfConfig });
+    res.json({ shelfLabels: db.shelfLabels, shelfConfig: db.shelfConfig });
+  } catch(e) {
+    res.status(500).json({ error: 'Błąd zapisu' });
+  }
+});
+
 app.post('/api/items', requireAuth, async (req, res) => {
   const item = {
     id: db.nextId++,

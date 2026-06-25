@@ -67,7 +67,8 @@ header h1{font-size:17px;font-weight:500;flex:1}
 .s-custom{background:#FAEEDA;color:#633806;border-color:#EF9F27}
 .slot-add{height:32px;width:32px;border-radius:5px;border:0.5px dashed var(--b1);background:transparent;color:var(--t3);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none;padding:0;line-height:1}
 .slot-add:hover{border-color:#AFA9EC;color:#3C3489;background:#EEEDFE}
-.slot-placeholder{height:32px;min-width:28px;border-radius:5px;border:0.5px dashed var(--b2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--t3);padding:2px 5px;flex:none}
+.slot-placeholder{height:32px;min-width:28px;border-radius:5px;border:0.5px dashed var(--b2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--t3);padding:2px 5px;flex:none;cursor:pointer}
+.slot-placeholder:hover{border-color:#AFA9EC;color:#3C3489;background:#EEEDFE}
 .slot-stack{display:flex;flex-direction:column;gap:2px;cursor:pointer;min-width:38px;max-width:90px}
 .slot-stack:hover{opacity:.75}
 .stack-layer{height:26px;border-radius:4px;border:0.5px solid;display:flex;align-items:center;justify-content:center;font-size:10px;padding:2px 6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.2;font-weight:500}
@@ -193,7 +194,11 @@ const STORAGES=['Luzem','Pudełko','Oryginalne opakowanie','Skrzynka','Worek','T
 
 let items=[],nextId=1,view='garage',search='',fSubs=[],fPhoto=null,fEditId=null;
 let ws=null,serverMode=false,authToken=null;
-let dragId=null; // id przeciąganego przedmiotu
+let dragId=null;
+// Nazwy regałów i półek — przechowywane lokalnie (nie w bazie przedmiotów)
+let shelfLabels={}; // klucz: 'R1', 'R2', 'R1_P1', 'R1_P2' itd.
+// Konfiguracja półek — liczba miejsc per półka
+let shelfConfig={}; // klucz: 'R1_P1' → { posTotal: 6 }
 
 // ── Auth & storage ────────────────────────────────────────────────────────────
 function saveToken(t){try{localStorage.setItem('garaz_token',t);}catch(e){}}
@@ -201,7 +206,35 @@ function loadToken(){try{return localStorage.getItem('garaz_token');}catch(e){re
 function clearToken(){try{localStorage.removeItem('garaz_token');}catch(e){}}
 function lsSave(){try{localStorage.setItem('garaz',JSON.stringify({items,nextId}));}catch(e){}}
 function lsLoad(){try{const d=JSON.parse(localStorage.getItem('garaz')||'null');if(d){items=d.items||[];nextId=d.nextId||1;}}catch(e){}}
+function lsSaveLabels(){try{localStorage.setItem('garaz_labels',JSON.stringify({shelfLabels,shelfConfig}));}catch(e){}}
+function lsLoadLabels(){try{const d=JSON.parse(localStorage.getItem('garaz_labels')||'null');if(d){shelfLabels=d.shelfLabels||{};shelfConfig=d.shelfConfig||{};}}catch(e){}}
 
+// Etykiety i konfiguracja półek — osobne API endpointy lub localStorage
+async function saveLabels(){
+  if(serverMode){
+    try{await apiCall('PUT','/api/labels',{shelfLabels,shelfConfig});}
+    catch(e){lsSaveLabels();} // fallback
+  } else {
+    lsSaveLabels();
+  }
+}
+async function loadLabels(){
+  if(serverMode){
+    try{
+      const d=await apiCall('GET','/api/labels');
+      if(d){shelfLabels=d.shelfLabels||{};shelfConfig=d.shelfConfig||{};}
+    }catch(e){lsLoadLabels();}
+  } else {
+    lsLoadLabels();
+  }
+}
+
+function regalLabel(r){return shelfLabels[r]||`Regał ${r.slice(1)}`;}
+function polkaLabel(r,p){return shelfLabels[`${r}_${p}`]||p;}
+function shelfPosTotal(r,p){
+  // Konfiguracja półki nadpisuje posTotal z przedmiotów
+  return shelfConfig[`${r}_${p}`]?.posTotal||null;
+}
 async function doLogin(){
   const pwd=document.getElementById('lpwd').value;
   const err=document.getElementById('lerr');err.textContent='';
@@ -215,7 +248,8 @@ async function doLogin(){
 function showApp(){
   document.getElementById('login-screen').style.display='none';
   document.getElementById('main-app').style.display='block';
-  lsLoad();render();tryWS();
+  lsLoad();lsLoadLabels();render();tryWS();
+  loadLabels().then(render);
 }
 function doLogout(){
   clearToken();authToken=null;serverMode=false;
@@ -240,6 +274,7 @@ function tryWS(){
       else if(m.type==='ITEM_ADDED'){items.push(m.item);render();}
       else if(m.type==='ITEM_UPDATED'){const i=items.findIndex(x=>x.id===m.item.id);if(i>-1)items[i]=m.item;render();}
       else if(m.type==='ITEM_DELETED'){items=items.filter(x=>x.id!==m.id);render();}
+      else if(m.type==='LABELS_UPDATED'){shelfLabels=m.shelfLabels||{};shelfConfig=m.shelfConfig||{};render();}
     };
   }catch(e){ws=null;}
 }
@@ -303,7 +338,13 @@ function buildGarage(items){
   return`<div class="garage">${REGALY.map(r=>{
     const ri=items.filter(x=>x.regal===r);
     return`<div class="shelf-unit">
-      <div class="shelf-header"><b>Regał ${r.slice(1)}</b><span class="cnt">${ri.length} szt.</span></div>
+      <div class="shelf-header" style="cursor:pointer" onclick="openEditRegal('${r}')" title="Kliknij żeby zmienić nazwę regału">
+        <b>${esc(regalLabel(r))}</b>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="cnt">${ri.length} szt.</span>
+          <i class="ti ti-pencil" style="font-size:11px;opacity:.5" aria-hidden="true"></i>
+        </div>
+      </div>
       <div class="shelf-body">${POLKI.map(p=>buildShelfRow(r,p,items)).join('')}</div>
     </div>`;
   }).join('')}</div>`;
@@ -312,10 +353,10 @@ function buildGarage(items){
 function buildShelfRow(r,p,items){
   const pi=[...items.filter(x=>x.regal===r&&x.polka===p)].sort((a,b)=>(parseInt(a.posIndex)||999)-(parseInt(b.posIndex)||999));
 
-  // Ustal ile slotów pokazać (max posTotal wśród przedmiotów na tej półce, min 1)
-  const maxTotal=pi.reduce((m,i)=>Math.max(m,parseInt(i.posTotal)||0),0);
+  // posTotal: z konfiguracji półki (nadrzędne) lub max z przedmiotów
+  const configTotal=shelfPosTotal(r,p);
+  const maxTotal=configTotal||pi.reduce((m,i)=>Math.max(m,parseInt(i.posTotal)||0),0);
 
-  // Mapa pozycja→grupy (stosy)
   const byPos=new Map();
   pi.forEach(i=>{
     const k=i.posIndex?parseInt(i.posIndex):null;
@@ -326,16 +367,13 @@ function buildShelfRow(r,p,items){
 
   let slots='';
   if(maxTotal>0){
-    // Renderuj N pozycji z placeholderami dla pustych
     for(let pos=1;pos<=maxTotal;pos++){
       const g=byPos.get(pos);
       if(!g){
-        // Pusta pozycja — szary placeholder
-        slots+=`<div class="slot-placeholder" title="poz. ${pos} — puste">${pos}</div>`;
+        slots+=`<div class="slot-placeholder" title="poz. ${pos} — puste. Kliknij żeby dodać" onclick="openAdd('${r}','${p}',${pos},${maxTotal})">+${pos}</div>`;
       } else if(g.length===1){
         slots+=renderSlot(g[0],pos,maxTotal);
       } else {
-        // Stos
         const sorted=[...g].sort((a,b)=>(parseInt(b.stackLevel)||1)-(parseInt(a.stackLevel)||1));
         const layers=sorted.map(i=>{
           const lbl=i.name.length>14?i.name.slice(0,13)+'…':i.name;
@@ -344,7 +382,6 @@ function buildShelfRow(r,p,items){
         slots+=`<div class="slot-stack" title="poz. ${pos}"><div class="stack-lbl">↕${g.length} poz.${pos}</div>${layers}</div>`;
       }
     }
-    // Przedmioty bez pozycji (posIndex=null) dorzucamy na końcu
     [...byPos.entries()].filter(([k])=>typeof k==='string'&&k.startsWith('_')).forEach(([,g])=>{
       if(g.length===1) slots+=renderSlot(g[0],null,null);
       else{
@@ -354,16 +391,17 @@ function buildShelfRow(r,p,items){
       }
     });
   } else {
-    // Nikt nie ma posTotal — renderuj normalnie bez siatki
     pi.forEach(i=>{ slots+=renderSlot(i,null,null); });
   }
 
+  const lbl=polkaLabel(r,p);
+  const cfgInfo=configTotal?` · ${configTotal} miejsc`:'';
   return`<div class="shelf-row"
     ondragover="onDragOver(event)"
     ondragleave="onDragLeave(event)"
     ondrop="onDrop(event,'${r}','${p}')"
     data-regal="${r}" data-polka="${p}">
-    <span class="shelf-row-lbl">${p}</span>
+    <span class="shelf-row-lbl" style="cursor:pointer" onclick="openEditPolka('${r}','${p}')" title="Kliknij żeby edytować półkę">${esc(lbl)}${cfgInfo} <i class="ti ti-pencil" style="font-size:8px;opacity:.5"></i></span>
     <div class="slots">${slots}<button class="slot-add" onclick="openAdd('${r}','${p}')" title="Dodaj">+</button></div>
   </div>`;
 }
@@ -472,41 +510,77 @@ function stockRow(t){
         <div class="stock-meta">${t.item.regal}/${t.item.polka}${t.threshold!=null?' · próg: '+t.threshold+' '+(t.unit||''):''}</div>
       </div>
       <div class="stock-controls">
-        <button class="qty-btn btn-danger" onclick="adjustQty(${t.id},${t.subIdx!=null?t.subIdx:'null'},-1)">−</button>
-        <span class="stock-num${t.low?' low':''}">${t.qty}${t.unit?' <small style="font-size:12px">'+esc(t.unit)+'</small>':''}</span>
-        <button class="qty-btn" onclick="adjustQty(${t.id},${t.subIdx!=null?t.subIdx:'null'},1)">+</button>
+        <button class="qty-btn btn-danger" onclick="adjustQtyLocal(${t.id},${t.subIdx!=null?t.subIdx:'null'},-1)">−</button>
+        <span id="qty-display-${pendingKey(t.id,t.subIdx)}" class="stock-num${t.low?' low':''}">${t.qty}${t.unit?' <small style="font-size:12px">'+esc(t.unit)+'</small>':''}</span>
+        <button class="qty-btn" onclick="adjustQtyLocal(${t.id},${t.subIdx!=null?t.subIdx:'null'},1)">+</button>
         <input type="number" class="stock-input" value="${t.qty}" min="0"
           onchange="setQty(${t.id},${t.subIdx!=null?t.subIdx:'null'},this.value)" title="Wpisz wartość">
+        <button id="save-qty-${t.id}" class="btn-primary" style="display:none;padding:5px 10px;font-size:12px;gap:4px" onclick="saveQtyChanges(${t.id})">
+          <i class="ti ti-device-floppy" aria-hidden="true"></i> Zapisz
+        </button>
       </div>
     </div>
     ${pct!=null?`<div style="margin-top:6px;height:4px;background:var(--b3);border-radius:2px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${t.low?'#E24B4A':'#1D9E75'};border-radius:2px"></div></div>`:''}
   </div>`;
 }
 
-async function adjustQty(id,subIdx,delta){
-  const i=items.find(x=>x.id===id);if(!i)return;
-  let body;
-  if(subIdx!=null){
-    const subs=[...(i.subitems||[])];
-    subs[subIdx]={...subs[subIdx],qty:Math.max(0,(parseInt(subs[subIdx].qty)||0)+delta)};
-    body={...i,subitems:subs};
-  }else{
-    body={...i,qty:Math.max(0,(parseInt(i.qty)||0)+delta)};
-  }
-  await doSaveApi(body,id);
+// Tymczasowe zmiany ilości — nie zapisywane do bazy dopóki użytkownik nie kliknie "Zapisz"
+let pendingQty = {}; // { 'itemId': newQty, 'itemId_subIdx': newQty }
+
+function pendingKey(id, subIdx) {
+  return subIdx != null ? `${id}_${subIdx}` : `${id}`;
 }
-async function setQty(id,subIdx,val){
-  const i=items.find(x=>x.id===id);if(!i)return;
-  const n=Math.max(0,parseInt(val)||0);
-  let body;
-  if(subIdx!=null){
-    const subs=[...(i.subitems||[])];
-    subs[subIdx]={...subs[subIdx],qty:n};
-    body={...i,subitems:subs};
-  }else{
-    body={...i,qty:n};
+
+function adjustQtyLocal(id, subIdx, delta) {
+  const i = items.find(x => x.id === id); if (!i) return;
+  const key = pendingKey(id, subIdx);
+  let cur;
+  if (subIdx != null) {
+    cur = pendingQty[key] != null ? pendingQty[key] : (parseInt((i.subitems||[])[subIdx]?.qty) || 0);
+  } else {
+    cur = pendingQty[key] != null ? pendingQty[key] : (parseInt(i.qty) || 0);
   }
-  await doSaveApi(body,id);
+  pendingQty[key] = Math.max(0, cur + delta);
+  // Zaktualizuj wyświetlaną liczbę bez zapisu
+  const el = document.getElementById(`qty-display-${key}`);
+  if (el) {
+    el.textContent = pendingQty[key];
+    el.style.color = '#854f0b'; // pomarańczowy = niezapisane
+  }
+  // Pokaż przycisk zapisu
+  const saveBtn = document.getElementById(`save-qty-${id}`);
+  if (saveBtn) saveBtn.style.display = 'flex';
+}
+
+async function saveQtyChanges(id) {
+  const i = items.find(x => x.id === id); if (!i) return;
+  let body = {...i};
+  // Zapisz ilość główną
+  const mainKey = pendingKey(id, null);
+  if (pendingQty[mainKey] != null) body.qty = pendingQty[mainKey];
+  // Zapisz ilości podpozycji
+  const subs = [...(i.subitems || [])];
+  subs.forEach((s, si) => {
+    const k = pendingKey(id, si);
+    if (pendingQty[k] != null) subs[si] = {...s, qty: pendingQty[k]};
+  });
+  body.subitems = subs;
+  try {
+    await doSaveApi(body, id);
+    // Wyczyść pending
+    Object.keys(pendingQty).filter(k => k === String(id) || k.startsWith(`${id}_`))
+      .forEach(k => delete pendingQty[k]);
+    openDetail(id);
+  } catch(e) { alert('Błąd zapisu: ' + e.message); }
+}
+
+async function setQty(id,subIdx,val){
+  const key=pendingKey(id,subIdx);
+  pendingQty[key]=Math.max(0,parseInt(val)||0);
+  const el=document.getElementById(`qty-display-${key}`);
+  if(el){el.textContent=pendingQty[key];el.style.color='#854f0b';}
+  const saveBtn=document.getElementById(`save-qty-${id}`);
+  if(saveBtn) saveBtn.style.display='flex';
 }
 
 // ── DETAIL ────────────────────────────────────────────────────────────────────
@@ -541,27 +615,127 @@ function openDetail(id){
     ${i.note?`<div class="drow"><span class="dlbl">Notatka</span><span style="text-align:right;font-size:12px">${esc(i.note)}</span></div>`:''}
     ${q!=null?`<div class="drow"><span class="dlbl">Stan</span><span class="qty-badge${low?' qty-low':''}">${q}${i.qtyUnit?' '+esc(i.qtyUnit):''}</span></div>
     <div class="quick-stock">
-      <button class="qty-btn btn-danger" onclick="adjustQty(${i.id},null,-1)">−</button>
-      <span class="quick-stock-num${low?' low':''}" id="qs-num">${q}</span>
-      <button class="qty-btn" onclick="adjustQty(${i.id},null,1)">+</button>
+      <button class="qty-btn btn-danger" onclick="adjustQtyLocal(${i.id},null,-1)">−</button>
+      <span id="qty-display-${i.id}" style="font-size:22px;font-weight:500;min-width:36px;text-align:center${low?';color:#A32D2D':''}">${q}</span>
+      <button class="qty-btn" onclick="adjustQtyLocal(${i.id},null,1)">+</button>
       <input type="number" style="width:64px;text-align:center" value="${q}" min="0" onchange="setQty(${i.id},null,this.value)">
       ${i.qtyThreshold!=null?`<span style="font-size:11px;color:var(--t2)">próg: ${i.qtyThreshold}</span>`:''}
     </div>`:''}
     ${sub.length?`<div style="margin-top:10px"><div style="font-size:11px;color:var(--t2);margin-bottom:5px;font-weight:500">Zawartość (${sub.length})</div>
       ${sub.map((s,si)=>{
-        const sq=s.qty!=null&&s.qty!==''?parseInt(s.qty):null;
+        const sq=(s.qty!=null&&s.qty!=='')?parseInt(s.qty):null;
         const slow=s.qtyThreshold!=null&&sq!=null&&sq<=parseInt(s.qtyThreshold);
+        const hasQty=sq!=null&&!isNaN(sq);
+        const key=pendingKey(i.id,si);
         return`<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap">
-          <span class="sub-chip${slow?' low':''}">${esc(s.name)}${sq!=null?' ×'+sq+' '+(s.unit||''):''}</span>
-          ${sq!=null?`<button class="qty-btn btn-danger" style="width:22px;height:22px;font-size:14px" onclick="adjustQty(${i.id},${si},-1)">−</button>
-          <span style="font-size:13px;font-weight:500;min-width:24px;text-align:center${slow?';color:#A32D2D':''}">${sq}</span>
-          <button class="qty-btn" style="width:22px;height:22px;font-size:14px" onclick="adjustQty(${i.id},${si},1)">+</button>`:''}
+          <span class="sub-chip${slow?' low':''}">${esc(s.name)}</span>
+          ${hasQty?`
+          <button class="qty-btn btn-danger" style="width:26px;height:26px;font-size:16px;padding:0;flex:none" onclick="adjustQtyLocal(${i.id},${si},-1)">−</button>
+          <span id="qty-display-${key}" style="font-size:14px;font-weight:500;min-width:28px;text-align:center${slow?';color:#A32D2D':''}">${sq}</span>
+          ${s.unit?`<small style="font-size:11px;color:var(--t2)">${esc(s.unit)}</small>`:''}
+          <button class="qty-btn" style="width:26px;height:26px;font-size:16px;padding:0;flex:none" onclick="adjustQtyLocal(${i.id},${si},1)">+</button>`
+          :`<span style="font-size:12px;color:var(--t2)">${s.unit?esc(s.unit):''}</span>`}
         </div>`;
       }).join('')}</div>`:''}
+    <div id="save-qty-${i.id}" style="display:none;margin-top:10px">
+      <button class="btn-primary" style="width:100%;justify-content:center;display:flex;gap:6px;padding:9px" onclick="saveQtyChanges(${i.id})">
+        <i class="ti ti-device-floppy" aria-hidden="true"></i> Zapisz zmiany ilości
+      </button>
+    </div>
+      <div style="font-size:11px;color:var(--t2);margin-bottom:5px;font-weight:500">${sub.length?'Dodaj do zawartości':'Zawartość — dodaj pierwszą pozycję'}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+        <input id="qi-name" placeholder="nazwa (np. płyn do szyb)" style="flex:1;min-width:120px">
+        <input id="qi-qty" type="number" min="0" placeholder="ile" style="width:60px;flex:none">
+        <input id="qi-unit" placeholder="szt/l/kg" style="width:60px;flex:none">
+        <button class="btn-primary" onclick="addSubitemQuick(${i.id})" style="flex:none;padding:6px 10px"><i class="ti ti-plus" aria-hidden="true"></i> Dodaj</button>
+      </div>
+    </div>
     <div class="brow">
       <button class="btn-danger" onclick="doDelete(${i.id})"><i class="ti ti-trash" aria-hidden="true"></i> Usuń</button>
       <button onclick="openEdit(${i.id})"><i class="ti ti-edit" aria-hidden="true"></i> Edytuj</button>
     </div>`);
+}
+
+// ── SZYBKIE DODANIE PODPOZYCJI Z OKNA SZCZEGÓŁÓW ─────────────────────────────
+async function addSubitemQuick(id){
+  const name=document.getElementById('qi-name')?.value.trim();
+  if(!name) return;
+  const qty=document.getElementById('qi-qty')?.value;
+  const unit=document.getElementById('qi-unit')?.value.trim();
+  const i=items.find(x=>x.id===id); if(!i) return;
+  const subs=[...(i.subitems||[]),{
+    name,
+    qty: qty===''||qty==null ? null : parseInt(qty),
+    unit: unit||'',
+    qtyThreshold: null,
+  }];
+  await doSaveApi({...i,subitems:subs},id);
+  openDetail(id); // odśwież okno szczegółów
+}
+
+// ── EDYCJA REGAŁU i PÓŁKI ─────────────────────────────────────────────────────
+function openEditRegal(r){
+  showModal(`
+    <div class="mhead"><i class="ti ti-stack-2" style="font-size:17px" aria-hidden="true"></i>
+      <h2>Edytuj regał ${r.slice(1)}</h2>
+      <button onclick="closeModal()" style="padding:4px 9px">✕</button>
+    </div>
+    <div class="frow">
+      <label>Nazwa regału</label>
+      <input id="rl-name" value="${esc(regalLabel(r))}" placeholder="np. Regał narzędziowy">
+    </div>
+    <div class="fsec">Półki w tym regale — kliknij żeby edytować</div>
+    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">
+      ${POLKI.map(p=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--card2);border-radius:var(--radius);border:0.5px solid var(--b3)">
+          <span style="font-size:13px">${esc(polkaLabel(r,p))}${shelfPosTotal(r,p)?` <small style="color:var(--t2)">· ${shelfPosTotal(r,p)} miejsc</small>`:''}</span>
+          <button onclick="openEditPolka('${r}','${p}')" style="padding:4px 9px;font-size:12px"><i class="ti ti-pencil" aria-hidden="true"></i> Edytuj</button>
+        </div>`).join('')}
+    </div>
+    <div class="brow">
+      <button onclick="closeModal()">Anuluj</button>
+      <button class="btn-primary" onclick="saveRegalLabel('${r}')"><i class="ti ti-check" aria-hidden="true"></i> Zapisz nazwę</button>
+    </div>`);
+}
+
+async function saveRegalLabel(r){
+  shelfLabels[r]=document.getElementById('rl-name').value.trim()||`Regał ${r.slice(1)}`;
+  await saveLabels();
+  render();closeModal();
+}
+
+function openEditPolka(r,p){
+  const cfg=shelfConfig[`${r}_${p}`]||{};
+  showModal(`
+    <div class="mhead"><i class="ti ti-layout-rows" style="font-size:17px" aria-hidden="true"></i>
+      <h2>Edytuj półkę</h2>
+      <button onclick="closeModal()" style="padding:4px 9px">✕</button>
+    </div>
+    <div style="font-size:12px;color:var(--t2);margin-bottom:12px">Regał: <b>${esc(regalLabel(r))}</b></div>
+    <div class="frow">
+      <label>Nazwa półki</label>
+      <input id="pl-name" value="${esc(polkaLabel(r,p))}" placeholder="np. Górna, Środkowa, Narzędzia…">
+    </div>
+    <div class="frow">
+      <label>Liczba miejsc na półce (posTotal)</label>
+      <input id="pl-total" type="number" min="0" value="${esc(String(cfg.posTotal||''))}" placeholder="np. 6 — zostaw puste jeśli nie używasz pozycji">
+      <div class="pos-hint">Ustawienie tutaj nadpisuje wartość z poszczególnych przedmiotów. Pozwala zdefiniować siatkę miejsc na pustej półce.</div>
+    </div>
+    <div class="brow">
+      <button onclick="closeModal()">Anuluj</button>
+      <button onclick="openEditRegal('${r}')" style="font-size:12px"><i class="ti ti-arrow-left" aria-hidden="true"></i> Wróć do regału</button>
+      <button class="btn-primary" onclick="savePolkaConfig('${r}','${p}')"><i class="ti ti-check" aria-hidden="true"></i> Zapisz</button>
+    </div>`);
+}
+
+async function savePolkaConfig(r,p){
+  const name=document.getElementById('pl-name').value.trim();
+  const total=parseInt(document.getElementById('pl-total').value)||null;
+  shelfLabels[`${r}_${p}`]=name||p;
+  if(total){shelfConfig[`${r}_${p}`]={posTotal:total};}
+  else{delete shelfConfig[`${r}_${p}`];}
+  await saveLabels();
+  render();closeModal();
 }
 
 // ── PRZESUŃ (modal wyboru lokalizacji) ───────────────────────────────────────
@@ -589,12 +763,14 @@ async function doMove(id){
 }
 
 // ── FORMULARZ ─────────────────────────────────────────────────────────────────
-function openAdd(regal,polka){fEditId=null;fSubs=[];fPhoto=null;showModal(buildForm(null,regal||'R1',polka||'P1'));}
+function openAdd(regal,polka,posIndex,posTotal){fEditId=null;fSubs=[];fPhoto=null;showModal(buildForm(null,regal||'R1',polka||'P1',posIndex||null,posTotal||null));}
 function openEdit(id){closeModal();const i=items.find(x=>x.id===id);if(!i)return;fEditId=id;fSubs=(i.subitems||[]).map(s=>({...s}));fPhoto=i.photo||null;showModal(buildForm(i,i.regal,i.polka));}
 
-function buildForm(item,preR,preP){
+function buildForm(item,preR,preP,prePosIndex,prePosTotal){
   const v=k=>item?.[k]??'';
   const regal=item?.regal||preR||'R1',polka=item?.polka||preP||'P1';
+  const initPosIndex=item?.posIndex||prePosIndex||'';
+  const initPosTotal=item?.posTotal||prePosTotal||'';
   const selR=REGALY.map(r=>`<option${r===regal?' selected':''}>${r}</option>`).join('');
   const selP=POLKI.map(p=>`<option${p===polka?' selected':''}>${p}</option>`).join('');
   const catOpts=CATS.map(c=>`<option>${c}</option>`).join('');
@@ -636,10 +812,10 @@ function buildForm(item,preR,preP){
     <label>Pozycja na półce (od lewej, opcjonalnie)</label>
     <div class="fgrid" style="margin-bottom:5px">
       <div class="frow" style="margin:0"><label style="font-size:10px">Numer</label>
-        <input id="fpi" type="number" min="1" value="${esc(String(v('posIndex')))}" placeholder="np. 2" oninput="refreshPos()">
+        <input id="fpi" type="number" min="1" value="${esc(String(initPosIndex))}" placeholder="np. 2" oninput="refreshPos()">
       </div>
       <div class="frow" style="margin:0"><label style="font-size:10px">Łącznie miejsc</label>
-        <input id="fpt" type="number" min="1" value="${esc(String(v('posTotal')))}" placeholder="np. 5" oninput="refreshPos()">
+        <input id="fpt" type="number" min="1" value="${esc(String(initPosTotal))}" placeholder="np. 5" oninput="refreshPos()">
       </div>
     </div>
     <div id="pospreview"></div>
