@@ -106,7 +106,20 @@ header h1{font-size:17px;font-weight:500;flex:1}
 .slot-stack:hover{opacity:.75}
 .stack-layer{height:26px;border-radius:4px;border:0.5px solid;display:flex;align-items:center;justify-content:center;font-size:10px;padding:2px 6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.2;font-weight:500}
 .stack-lbl{font-size:9px;color:var(--t3);text-align:center;line-height:1.4}
-/* element bez półek (biurko, domek itp) */
+/* PODGLĄD KONTEKSTOWY (prawy klik / długie przytrzymanie) */
+.ctx-preview{position:fixed;z-index:500;background:var(--card);border:0.5px solid var(--b2);border-radius:var(--radius-lg);box-shadow:0 8px 32px rgba(0,0,0,.18);padding:12px;min-width:200px;max-width:280px;pointer-events:none}
+.ctx-preview.visible{pointer-events:auto}
+.ctx-preview-name{font-size:14px;font-weight:600;margin-bottom:4px}
+.ctx-preview-loc{font-size:11px;color:var(--t2);margin-bottom:8px}
+.ctx-preview-img{width:100%;max-height:120px;object-fit:contain;border-radius:var(--radius);margin-bottom:8px;background:var(--card2)}
+.ctx-preview-subs{font-size:11px;color:var(--t2);line-height:1.6}
+.ctx-preview-qty{font-size:12px;font-weight:500;color:#3C3489;margin-top:4px}
+.ctx-preview-actions{display:flex;gap:6px;margin-top:10px;pointer-events:auto}
+.ctx-preview-actions button{flex:1;font-size:11px;padding:5px 8px}
+/* QR */
+.qr-wrap{text-align:center;padding:8px 0}
+.qr-wrap canvas{border-radius:var(--radius);border:0.5px solid var(--b3)}
+.qr-label{font-size:12px;color:var(--t2);margin-top:8px;word-break:break-all}
 .flat-unit{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius-lg);overflow:hidden}
 .flat-body{padding:8px 10px;min-height:58px}
 /* LISTA */
@@ -205,7 +218,8 @@ header h1{font-size:17px;font-weight:500;flex:1}
     <i class="ti ti-tool" style="font-size:20px" aria-hidden="true"></i>
     <h1>Garaż</h1>
     <span class="status"><span class="dot off" id="dot"></span><span id="stxt" style="font-size:11px">lokalnie</span></span>
-    <button onclick="exportCSV()" title="CSV" style="padding:6px 10px"><i class="ti ti-file-spreadsheet" aria-hidden="true"></i></button>
+    <button onclick="exportCSV()" title="Eksportuj CSV" style="padding:6px 10px"><i class="ti ti-file-spreadsheet" aria-hidden="true"></i></button>
+    <button onclick="openImportCSV()" title="Importuj CSV" style="padding:6px 10px"><i class="ti ti-file-upload" aria-hidden="true"></i></button>
     <button onclick="doLogout()" title="Wyloguj" style="padding:6px 10px"><i class="ti ti-logout" aria-hidden="true"></i></button>
   </header>
   <div class="topbar">
@@ -217,6 +231,8 @@ header h1{font-size:17px;font-weight:500;flex:1}
 <div class="modal-overlay" id="modal" style="display:none" onclick="overlayClick(event)">
   <div class="modal" id="mbox"></div>
 </div>
+<div id="ctx-preview" class="ctx-preview" style="display:none"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 // ── Stałe ─────────────────────────────────────────────────────────────────────
 const NORM={loose:'Luzem',box:'Pudełko',original:'Oryg. opak.'};
@@ -495,10 +511,20 @@ function buildShelfRow(cid,shelf,items){
 }
 
 function slotColorStyle(i){return i.customColor?`style="background:${i.customColor};border-color:${i.customColor};color:#fff"`:''}
+function slotAttrs(i){
+  return`draggable="true"
+    ondragstart="onDragStart(event,${i.id})"
+    onclick="openDetail(${i.id})"
+    oncontextmenu="showPreview(event,${i.id})"
+    ontouchstart="startLongPress(event,${i.id})"
+    ontouchend="cancelLongPress()"
+    ontouchmove="cancelLongPress()"`;
+}
+
 function renderStackLayer(i){
   const lbl=i.name.length>14?i.name.slice(0,13)+'…':i.name;
   const cls=i.customColor?'stack-layer':`stack-layer ${sSlot(i.storage)}`;
-  return`<div class="${cls}" ${slotColorStyle(i)} title="${esc(i.name)}${stackText(i)?' · '+stackText(i):''}" draggable="true" ondragstart="onDragStart(event,${i.id})" onclick="openDetail(${i.id})">${esc(lbl)}</div>`;
+  return`<div class="${cls}" ${slotColorStyle(i)} title="${esc(i.name)}" ${slotAttrs(i)}>${esc(lbl)}</div>`;
 }
 function renderSlot(i,pos,total){
   const lbl=i.name.length>14?i.name.slice(0,13)+'…':i.name;
@@ -506,7 +532,7 @@ function renderSlot(i,pos,total){
   const badge=q!=null?`<span class="${low?'slot-low':'slot-qty'}">${q}</span>`:'';
   const posTitle=pos!=null&&total?` poz.${pos}/${total}`:'';
   const cls=i.customColor?'slot':`slot ${sSlot(i.storage)}`;
-  return`<div class="${cls}" ${slotColorStyle(i)} title="${esc(i.name)}${posTitle}${stackText(i)?' · '+stackText(i):''}" draggable="true" ondragstart="onDragStart(event,${i.id})" onclick="openDetail(${i.id})">${badge}${esc(lbl)}</div>`;
+  return`<div class="${cls}" ${slotColorStyle(i)} title="${esc(i.name)}${posTitle}" ${slotAttrs(i)}>${badge}${esc(lbl)}</div>`;
 }
 
 // ── Drag & Drop ───────────────────────────────────────────────────────────────
@@ -1136,6 +1162,264 @@ function exportCSV(){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='garaz.csv';a.click();
 }
 
+// ── IMPORT CSV ────────────────────────────────────────────────────────────────
+function openImportCSV(){
+  showModal(`
+    <div class="mhead"><i class="ti ti-file-upload" style="font-size:17px" aria-hidden="true"></i>
+      <h2>Importuj CSV</h2>
+      <button onclick="closeModal()" style="padding:4px 9px">✕</button>
+    </div>
+    <div style="font-size:13px;margin-bottom:12px">
+      Wgraj plik CSV wyeksportowany z tej aplikacji lub przygotowany ręcznie.<br>
+      <span style="color:var(--t2);font-size:12px">Wymagane kolumny: <b>Nazwa</b>. Opcjonalne: Kategoria, Element (ID regału), Półka, Pozycja, Miejsc, Przechowywanie, Notatka, Ilość, Jednostka, Próg.</span>
+    </div>
+    <div class="frow">
+      <label>Plik CSV</label>
+      <input type="file" id="csv-file" accept=".csv,text/csv" style="padding:8px">
+    </div>
+    <div class="frow">
+      <label>Co zrobić z istniejącymi danymi?</label>
+      <select id="csv-mode">
+        <option value="add">Dodaj do istniejących (nie usuwaj)</option>
+        <option value="replace">Zastąp wszystkie dane (usuń obecne)</option>
+      </select>
+    </div>
+    <div id="csv-preview" style="margin-top:10px;font-size:12px;color:var(--t2)"></div>
+    <div class="brow">
+      <button onclick="closeModal()">Anuluj</button>
+      <button class="btn-primary" onclick="doImportCSV()"><i class="ti ti-check" aria-hidden="true"></i> Importuj</button>
+    </div>`);
+  document.getElementById('csv-file').addEventListener('change',previewCSV);
+}
+
+function parseCSVLine(line){
+  const result=[];let cur='',inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}
+    else if(ch===','&&!inQ){result.push(cur);cur='';}
+    else cur+=ch;
+  }
+  result.push(cur);
+  return result;
+}
+
+function previewCSV(){
+  const file=document.getElementById('csv-file').files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const lines=e.target.result.replace(/^\uFEFF/,'').split(/\r?\n/).filter(l=>l.trim());
+    const prev=document.getElementById('csv-preview');
+    if(prev)prev.textContent=`Znaleziono ${lines.length-1} wierszy do importu.`;
+  };
+  reader.readAsText(file,'UTF-8');
+}
+
+async function doImportCSV(){
+  const file=document.getElementById('csv-file').files[0];
+  if(!file){alert('Wybierz plik CSV.');return;}
+  const mode=document.getElementById('csv-mode').value;
+  const reader=new FileReader();
+  reader.onload=async e=>{
+    const text=e.target.result.replace(/^\uFEFF/,'');
+    const lines=text.split(/\r?\n/).filter(l=>l.trim());
+    if(lines.length<2){alert('Plik jest pusty lub nie zawiera danych.');return;}
+    // Nagłówki
+    const headers=parseCSVLine(lines[0]).map(h=>h.trim().toLowerCase());
+    const col=name=>{
+      const aliases={
+        'id':['id'],
+        'nazwa':['nazwa','name'],
+        'kategoria':['kategoria','cat','kategoria'],
+        'element':['element','regał','regal'],
+        'półka':['półka','polka','shelf'],
+        'pozycja':['pozycja','posindex'],
+        'miejsc':['miejsc','postotal'],
+        'poziom':['poziom','stacklevel'],
+        'poziomów':['poziomów','stacktotal'],
+        'ilość':['ilość','qty','ilosc'],
+        'jednostka':['jednostka','qtyunit'],
+        'próg':['próg','qtythreshold','prog'],
+        'przechowywanie':['przechowywanie','storage'],
+        'notatka':['notatka','note'],
+        'podpozycje':['podpozycje','subitems'],
+      };
+      const variants=aliases[name]||[name];
+      for(const v of variants){const idx=headers.findIndex(h=>h===v||h.includes(v));if(idx>-1)return idx;}
+      return -1;
+    };
+    const imported=[];
+    for(let li=1;li<lines.length;li++){
+      const row=parseCSVLine(lines[li]);
+      if(row.every(c=>!c.trim()))continue;
+      const name=(row[col('nazwa')]||'').trim();
+      if(!name)continue;
+      // Mapuj przechowywanie
+      const rawStorage=(row[col('przechowywanie')]||'').trim();
+      const storage=NORM_BACK[rawStorage]||rawStorage||'loose';
+      // Podpozycje — format: "wałek x3 szt | pędzel x1"
+      const subRaw=(row[col('podpozycje')]||'').trim();
+      const subitems=subRaw?subRaw.split('|').map(s=>{
+        const m=s.trim().match(/^(.+?)\s*x(\d+)\s*(.*)$/i);
+        if(m)return{name:m[1].trim(),qty:parseInt(m[2]),unit:m[3].trim()||'',qtyThreshold:null};
+        return{name:s.trim(),qty:null,unit:'',qtyThreshold:null};
+      }).filter(s=>s.name):[];
+      const qtyVal=col('ilość')>-1?(row[col('ilość')]||'').trim():'';
+      const thrVal=col('próg')>-1?(row[col('próg')]||'').trim():'';
+      imported.push({
+        name,
+        cat:(row[col('kategoria')]||'Inne').trim()||'Inne',
+        regal:(row[col('element')]||containers[0]?.id||'R1').trim(),
+        polka:(row[col('półka')]||'P1').trim(),
+        posIndex:parseInt(row[col('pozycja')])||null,
+        posTotal:parseInt(row[col('miejsc')])||null,
+        stackLevel:parseInt(row[col('poziom')])||null,
+        stackTotal:parseInt(row[col('poziomów')])||null,
+        storage,
+        note:(row[col('notatka')]||'').trim(),
+        qty:qtyVal===''?null:parseInt(qtyVal),
+        qtyUnit:(row[col('jednostka')]||'').trim()||null,
+        qtyThreshold:thrVal===''?null:parseInt(thrVal),
+        subitems,
+        photo:null,
+        customColor:null,
+      });
+    }
+    if(!imported.length){alert('Nie znaleziono żadnych wierszy do importu.');return;}
+    if(mode==='replace'){
+      if(!confirm(`Zastąpić ${items.length} istniejących przedmiotów ${imported.length} nowymi z pliku?`))return;
+      items=[];nextId=1;
+    }
+    let added=0;
+    for(const body of imported){
+      try{await doSaveApi(body,null);added++;}catch(e){console.error('Import error:',e);}
+    }
+    closeModal();
+    alert(`Zaimportowano ${added} z ${imported.length} przedmiotów.`);
+  };
+  reader.readAsText(file,'UTF-8');
+}
+
+// ── PODGLĄD (prawy klik / długie przytrzymanie) ───────────────────────────────
+let longPressTimer=null;
+let previewVisible=false;
+
+function showPreview(e,id){
+  e.preventDefault();
+  e.stopPropagation();
+  const i=items.find(x=>x.id===id);if(!i)return;
+  const sub=(i.subitems||[]).filter(s=>s.name);
+  const q=itemQty(i);const low=isLow(i);
+  const wrap=document.getElementById('ctx-preview');
+  wrap.innerHTML=`
+    ${i.photo?`<img src="${i.photo}" class="ctx-preview-img" alt="">`:''}
+    <div class="ctx-preview-name">${esc(i.name)}</div>
+    <div class="ctx-preview-loc"><i class="ti ti-map-pin" style="font-size:10px" aria-hidden="true"></i> ${esc(itemLocLabel(i))}${i.posIndex&&i.posTotal?' · poz.'+i.posIndex+'/'+i.posTotal:''}</div>
+    ${q!=null?`<div class="ctx-preview-qty${low?' qty-low':''}">${q}${i.qtyUnit?' '+esc(i.qtyUnit):''}${low?' ⚠':''}</div>`:''}
+    ${sub.length?`<div class="ctx-preview-subs">${sub.slice(0,5).map(s=>`<span>• ${esc(s.name)}${s.qty!=null?' ×'+s.qty:''}</span>`).join('<br>')}${sub.length>5?`<br><span style="color:var(--t3)">…i ${sub.length-5} więcej</span>`:''}</div>`:''}
+    <div class="ctx-preview-actions">
+      <button onclick="openDetail(${id});hidePreview()" style="background:var(--card2)"><i class="ti ti-eye" aria-hidden="true"></i> Szczegóły</button>
+      <button onclick="showQR(${id});hidePreview()" style="background:#EEEDFE;color:#3C3489;border-color:#AFA9EC"><i class="ti ti-qrcode" aria-hidden="true"></i> QR</button>
+    </div>`;
+
+  // Pozycjonowanie — unikaj wyjścia poza ekran
+  const x=e.clientX||e.touches?.[0]?.clientX||0;
+  const y=e.clientY||e.touches?.[0]?.clientY||0;
+  wrap.style.display='block';
+  wrap.classList.add('visible');
+  const pw=wrap.offsetWidth||260,ph=wrap.offsetHeight||200;
+  wrap.style.left=Math.min(x+8,window.innerWidth-pw-12)+'px';
+  wrap.style.top=Math.min(y+8,window.innerHeight-ph-12)+'px';
+  previewVisible=true;
+
+  // Zamknij po kliknięciu gdziekolwiek
+  setTimeout(()=>document.addEventListener('click',hidePreviewOnce,{once:true,capture:true}),50);
+}
+
+function hidePreview(){
+  const wrap=document.getElementById('ctx-preview');
+  if(wrap){wrap.style.display='none';wrap.classList.remove('visible');}
+  previewVisible=false;
+}
+function hidePreviewOnce(){hidePreview();}
+
+function startLongPress(e,id){
+  cancelLongPress();
+  longPressTimer=setTimeout(()=>{
+    longPressTimer=null;
+    showPreview(e,id);
+  },600);
+}
+function cancelLongPress(){
+  if(longPressTimer){clearTimeout(longPressTimer);longPressTimer=null;}
+}
+
+// ── QR KOD ────────────────────────────────────────────────────────────────────
+function showQR(id){
+  const i=items.find(x=>x.id===id);if(!i)return;
+  const url=`${location.origin}${location.pathname}?item=${id}`;
+  showModal(`
+    <div class="mhead"><i class="ti ti-qrcode" style="font-size:17px" aria-hidden="true"></i>
+      <h2>QR: ${esc(i.name)}</h2>
+      <button onclick="closeModal()" style="padding:4px 9px">✕</button>
+    </div>
+    <div class="qr-wrap">
+      <div id="qr-canvas"></div>
+      <div class="qr-label">${esc(url)}</div>
+      <div style="font-size:11px;color:var(--t2);margin-top:6px">Zeskanuj aparatem → od razu otwiera szczegóły przedmiotu</div>
+    </div>
+    <div style="font-size:12px;color:var(--t2);margin:8px 0 4px">Lokalizacja: <b>${esc(itemLocLabel(i))}</b></div>
+    ${i.posIndex&&i.posTotal?`<div style="font-size:12px;color:var(--t2);margin-bottom:4px">Pozycja: <b>${i.posIndex} z ${i.posTotal}</b></div>`:''}
+    <div class="brow">
+      <button onclick="printQR(${id})"><i class="ti ti-printer" aria-hidden="true"></i> Drukuj etykietę</button>
+      <button onclick="closeModal()">Zamknij</button>
+    </div>`);
+  // Generuj QR po renderowaniu modala
+  setTimeout(()=>{
+    const el=document.getElementById('qr-canvas');
+    if(el&&typeof QRCode!=='undefined'){
+      new QRCode(el,{text:url,width:200,height:200,colorDark:'#1a1a18',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+    }
+  },50);
+}
+
+function printQR(id){
+  const i=items.find(x=>x.id===id);if(!i)return;
+  const url=`${location.origin}${location.pathname}?item=${id}`;
+  const canvas=document.querySelector('#qr-canvas canvas');
+  const qrDataUrl=canvas?canvas.toDataURL():'';
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>Etykieta QR — ${i.name}</title>
+    <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,sans-serif;padding:20px}
+    .label{border:1.5px solid #ccc;border-radius:8px;padding:16px;max-width:260px;text-align:center}
+    .name{font-size:16px;font-weight:600;margin:10px 0 4px}
+    .loc{font-size:12px;color:#666;margin-bottom:4px}
+    .url{font-size:9px;color:#999;word-break:break-all;margin-top:8px}
+    @media print{body{padding:0}}</style>
+  </head><body>
+    <div class="label">
+      ${qrDataUrl?`<img src="${qrDataUrl}" width="180" height="180">`:''}
+      <div class="name">${i.name}</div>
+      <div class="loc">${itemLocLabel(i)}${i.posIndex&&i.posTotal?' · poz.'+i.posIndex+'/'+i.posTotal:''}</div>
+      <div class="url">${url}</div>
+    </div>
+    <script>window.onload=()=>window.print()<\/script>
+  </body></html>`);
+  w.document.close();
+}
+
+// Obsługa linku ?item=ID przy wejściu na stronę
+function handleItemLink(){
+  const params=new URLSearchParams(location.search);
+  const id=parseInt(params.get('item'));
+  if(id&&items.find(x=>x.id===id)){
+    setTimeout(()=>openDetail(id),300);
+    // Wyczyść URL bez przeładowania
+    history.replaceState(null,'',location.pathname);
+  }
+}
+
 function showModal(html){document.getElementById('mbox').innerHTML=html;document.getElementById('modal').style.display='flex';setTimeout(refreshPos,30);}
 function closeModal(){document.getElementById('modal').style.display='none';}
 function overlayClick(e){
@@ -1161,6 +1445,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElement
       nextId=Math.max(0,...items.map(x=>x.id))+1;
       await loadContainersFromServer();
       render();tryWS();
+      handleItemLink();
     }
   }catch(e){}
 })();
