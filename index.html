@@ -525,7 +525,7 @@ function slotAttrs(i){
     ondragstart="onDragStart(event,${i.id})"
     onclick="openDetail(${i.id})"
     onmouseenter="startHoverPreview(event,${i.id})"
-    onmouseleave="cancelHoverPreview()"
+    onmouseleave="cancelHoverTimer()"
     ontouchstart="startLongPress(event,${i.id})"
     ontouchend="cancelLongPress()"
     ontouchmove="cancelLongPress()"`;
@@ -534,7 +534,7 @@ function slotAttrs(i){
 function renderStackLayer(i){
   const lbl=i.name.length>14?i.name.slice(0,13)+'…':i.name;
   const cls=i.customColor?'stack-layer':`stack-layer ${sSlot(i.storage)}`;
-  return`<div class="${cls}" ${slotColorStyle(i)} title="${esc(i.name)}" ${slotAttrs(i)}>${esc(lbl)}</div>`;
+  return`<div class="${cls}" ${slotColorStyle(i)} ${slotAttrs(i)}>${esc(lbl)}</div>`;
 }
 function renderSlot(i,pos,total){
   const lbl=i.name.length>14?i.name.slice(0,13)+'…':i.name;
@@ -542,7 +542,7 @@ function renderSlot(i,pos,total){
   const badge=q!=null?`<span class="${low?'slot-low':'slot-qty'}">${q}</span>`:'';
   const posTitle=pos!=null&&total?` poz.${pos}/${total}`:'';
   const cls=i.customColor?'slot':`slot ${sSlot(i.storage)}`;
-  return`<div class="${cls}" ${slotColorStyle(i)} title="${esc(i.name)}${posTitle}" ${slotAttrs(i)}>${badge}${esc(lbl)}</div>`;
+  return`<div class="${cls}" ${slotColorStyle(i)} ${slotAttrs(i)}>${badge}${esc(lbl)}</div>`;
 }
 
 // ── Drag & Drop ───────────────────────────────────────────────────────────────
@@ -1314,27 +1314,30 @@ async function doImportCSV(){
 // ── PODGLĄD (prawy klik / długie przytrzymanie) ───────────────────────────────
 let longPressTimer=null;
 let hoverTimer=null;
+let hideTimer=null;
 let previewVisible=false;
 
 function startHoverPreview(e,id){
-  cancelHoverPreview();
-  // Zachowaj pozycję myszy w momencie najechania
+  // Anuluj ewentualne chowanie
+  if(hideTimer){clearTimeout(hideTimer);hideTimer=null;}
+  // Anuluj poprzedni timer
+  if(hoverTimer){clearTimeout(hoverTimer);hoverTimer=null;}
   const ex=e.clientX, ey=e.clientY;
   hoverTimer=setTimeout(()=>{
     hoverTimer=null;
-    // Stwórz sztuczny event z zapamiętaną pozycją
-    showPreview({clientX:ex, clientY:ey},id,true);
+    showPreview({clientX:ex,clientY:ey},id,true);
   },2000);
 }
 
-function cancelHoverPreview(){
+function cancelHoverTimer(){
+  // Wywoływane gdy mysz opuszcza slot — anuluj timer ALE nie chowaj okienka od razu
   if(hoverTimer){clearTimeout(hoverTimer);hoverTimer=null;}
-  // Nie chowamy natychmiast — dajemy 300ms żeby móc wejść kursorem w okienko
-  setTimeout(()=>{
-    if(!document.getElementById('ctx-preview')?.matches(':hover')){
-      hidePreview();
-    }
-  },300);
+  // Daj 400ms żeby móc wjechać kursorem w okienko
+  hideTimer=setTimeout(()=>{
+    const wrap=document.getElementById('ctx-preview');
+    if(!wrap?.matches(':hover')) hidePreview();
+    hideTimer=null;
+  },400);
 }
 
 function showPreview(e,id,fromHover){
@@ -1353,6 +1356,7 @@ function showPreview(e,id,fromHover){
       <button onclick="openDetail(${id});hidePreview()" style="background:var(--card2)"><i class="ti ti-eye" aria-hidden="true"></i> Szczegóły</button>
       <button onclick="showQR(${id});hidePreview()" style="background:#EEEDFE;color:#3C3489;border-color:#AFA9EC"><i class="ti ti-qrcode" aria-hidden="true"></i> QR</button>
     </div>`;
+  wrap.onmouseenter=()=>{if(hideTimer){clearTimeout(hideTimer);hideTimer=null;}};
   wrap.onmouseleave=()=>hidePreview();
   const x=e.clientX||e.touches?.[0]?.clientX||0;
   const y=e.clientY||e.touches?.[0]?.clientY||0;
