@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Garaż 🔧</title>
+<!-- PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#3C3489">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Garaż">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -420,13 +428,14 @@ function render(){
       <button class="tab${view==='list'?' active':''}" onclick="setView('list')"><i class="ti ti-list" aria-hidden="true"></i> Lista</button>
       <button class="tab${view==='stock'?' active':''}" onclick="setView('stock')"><i class="ti ti-package" aria-hidden="true"></i> Zapasy</button>
       <button class="tab${view==='manage'?' active':''}" onclick="setView('manage')"><i class="ti ti-settings" aria-hidden="true"></i> Elementy</button>
+      <button class="tab${view==='3d'?' active':''}" onclick="setView('3d')"><i class="ti ti-box" aria-hidden="true"></i> 3D</button>
     </div>
     ${view==='garage'?`<div class="layout-toggle" title="Zmień układ">
       <button class="layout-btn${garageLayout==='horizontal'?' active':''}" onclick="setLayout('horizontal')" title="Poziomo"><i class="ti ti-layout-columns" aria-hidden="true"></i></button>
       <button class="layout-btn${garageLayout==='vertical'?' active':''}" onclick="setLayout('vertical')" title="Pionowo"><i class="ti ti-layout-rows" aria-hidden="true"></i></button>
     </div>`:''}
   </div>
-  ${view==='garage'?buildGarage(fi):view==='stock'?buildStock():view==='manage'?buildManage():buildList(fi)}`;
+  ${view==='garage'?buildGarage(fi):view==='stock'?buildStock():view==='manage'?buildManage():view==='3d'?build3DView():buildList(fi)}`;
 }
 function setView(v){view=v;render();}
 function setLayout(l){
@@ -515,7 +524,8 @@ function slotAttrs(i){
   return`draggable="true"
     ondragstart="onDragStart(event,${i.id})"
     onclick="openDetail(${i.id})"
-    oncontextmenu="showPreview(event,${i.id})"
+    onmouseenter="startHoverPreview(event,${i.id})"
+    onmouseleave="cancelHoverPreview()"
     ontouchstart="startLongPress(event,${i.id})"
     ontouchend="cancelLongPress()"
     ontouchmove="cancelLongPress()"`;
@@ -1044,7 +1054,7 @@ function buildForm(item,preC,preS,prePosIndex,prePosTotal){
   <div id="subs" class="subs">${fSubs.map((s,i)=>subRow(s,i)).join('')}</div>
   <button onclick="addSub()" style="font-size:12px;padding:4px 10px"><i class="ti ti-plus" aria-hidden="true"></i> Dodaj pozycję</button>
   <div class="fsec">Zdjęcie</div>
-  <label class="photo-lbl"><i class="ti ti-camera" aria-hidden="true"></i> Wybierz zdjęcie<input type="file" accept="image/*" onchange="handlePhoto(event)"></label>
+  <label class="photo-lbl"><i class="ti ti-camera" aria-hidden="true"></i> Zdjęcie / aparat<input type="file" accept="image/*" capture="environment" onchange="handlePhoto(event)"></label>
   ${fPhoto?`<div style="position:relative"><img src="${fPhoto}" class="photo-prev"><button class="btn-danger" onclick="fPhoto=null;rePhoto()" style="position:absolute;top:4px;right:4px;padding:2px 7px;font-size:11px">✕</button></div>`:'<div id="phtw"></div>'}
   <div class="brow">
     <button onclick="closeModal()">Anuluj</button>
@@ -1303,11 +1313,32 @@ async function doImportCSV(){
 
 // ── PODGLĄD (prawy klik / długie przytrzymanie) ───────────────────────────────
 let longPressTimer=null;
+let hoverTimer=null;
 let previewVisible=false;
 
-function showPreview(e,id){
-  e.preventDefault();
-  e.stopPropagation();
+function startHoverPreview(e,id){
+  cancelHoverPreview();
+  // Zachowaj pozycję myszy w momencie najechania
+  const ex=e.clientX, ey=e.clientY;
+  hoverTimer=setTimeout(()=>{
+    hoverTimer=null;
+    // Stwórz sztuczny event z zapamiętaną pozycją
+    showPreview({clientX:ex, clientY:ey},id,true);
+  },2000);
+}
+
+function cancelHoverPreview(){
+  if(hoverTimer){clearTimeout(hoverTimer);hoverTimer=null;}
+  // Nie chowamy natychmiast — dajemy 300ms żeby móc wejść kursorem w okienko
+  setTimeout(()=>{
+    if(!document.getElementById('ctx-preview')?.matches(':hover')){
+      hidePreview();
+    }
+  },300);
+}
+
+function showPreview(e,id,fromHover){
+  if(e&&e.preventDefault)e.preventDefault();
   const i=items.find(x=>x.id===id);if(!i)return;
   const sub=(i.subitems||[]).filter(s=>s.name);
   const q=itemQty(i);const low=isLow(i);
@@ -1322,19 +1353,15 @@ function showPreview(e,id){
       <button onclick="openDetail(${id});hidePreview()" style="background:var(--card2)"><i class="ti ti-eye" aria-hidden="true"></i> Szczegóły</button>
       <button onclick="showQR(${id});hidePreview()" style="background:#EEEDFE;color:#3C3489;border-color:#AFA9EC"><i class="ti ti-qrcode" aria-hidden="true"></i> QR</button>
     </div>`;
-
-  // Pozycjonowanie — unikaj wyjścia poza ekran
+  wrap.onmouseleave=()=>hidePreview();
   const x=e.clientX||e.touches?.[0]?.clientX||0;
   const y=e.clientY||e.touches?.[0]?.clientY||0;
   wrap.style.display='block';
   wrap.classList.add('visible');
   const pw=wrap.offsetWidth||260,ph=wrap.offsetHeight||200;
-  wrap.style.left=Math.min(x+8,window.innerWidth-pw-12)+'px';
+  wrap.style.left=Math.min(x+12,window.innerWidth-pw-12)+'px';
   wrap.style.top=Math.min(y+8,window.innerHeight-ph-12)+'px';
   previewVisible=true;
-
-  // Zamknij po kliknięciu gdziekolwiek
-  setTimeout(()=>document.addEventListener('click',hidePreviewOnce,{once:true,capture:true}),50);
 }
 
 function hidePreview(){
@@ -1342,7 +1369,6 @@ function hidePreview(){
   if(wrap){wrap.style.display='none';wrap.classList.remove('visible');}
   previewVisible=false;
 }
-function hidePreviewOnce(){hidePreview();}
 
 function startLongPress(e,id){
   cancelLongPress();
@@ -1448,6 +1474,13 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElement
       handleItemLink();
     }
   }catch(e){}
+  // Rejestracja PWA Service Worker
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  }
+  // Obsługa skrótu ?action=add
+  const params=new URLSearchParams(location.search);
+  if(params.get('action')==='add'){setTimeout(()=>openAdd(null,null),400);}
 })();
 </script>
 </body>
