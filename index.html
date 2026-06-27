@@ -25,7 +25,6 @@ button:active{transform:scale(.98)}
 input,select,textarea{font-family:inherit;font-size:13px;color:var(--t1);background:var(--card);border:0.5px solid var(--b1);border-radius:var(--radius);padding:6px 10px;outline:none;width:100%;transition:border-color .15s}
 input:focus,select:focus,textarea:focus{border-color:#7f77dd}
 textarea{resize:vertical}
-
 .app{max-width:1200px;margin:0 auto;padding:1rem}
 header{display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
 header h1{font-size:17px;font-weight:500;flex:1}
@@ -34,7 +33,7 @@ header h1{font-size:17px;font-weight:500;flex:1}
 .dot.off{background:#f59e0b}
 .topbar{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
 .topbar input{flex:1;min-width:180px}
-.tabs{display:flex;border:0.5px solid var(--b3);border-radius:var(--radius);overflow:hidden;width:fit-content;margin-bottom:1.25rem}
+.tabs{display:flex;border:0.5px solid var(--b3);border-radius:var(--radius);overflow:hidden;width:fit-content;margin-bottom:1.25rem;flex-wrap:wrap}
 .tab{padding:6px 14px;font-size:13px;cursor:pointer;border:none;background:transparent;color:var(--t2);border-radius:0;display:flex;align-items:center;gap:5px}
 .tab.active{background:var(--card2);color:var(--t1);font-weight:500}
 .btn-primary{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC;font-weight:500}
@@ -43,18 +42,18 @@ header h1{font-size:17px;font-weight:500;flex:1}
 .btn-danger:hover{background:#FCEBEB}
 .btn-move{background:#E1F5EE;color:#085041;border-color:#5DCAA5;font-size:12px;padding:4px 10px}
 .btn-move:hover{background:#9FE1CB}
-
 /* SZKIC */
-.garage{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-@media(max-width:800px){.garage{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:440px){.garage{grid-template-columns:1fr}}
+.garage{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
 .shelf-unit{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius-lg);overflow:hidden}
-.shelf-header{background:var(--card2);padding:9px 14px;font-size:13px;font-weight:500;color:var(--t2);border-bottom:0.5px solid var(--b3);display:flex;justify-content:space-between;align-items:center}
+.shelf-header{background:var(--card2);padding:9px 14px;font-size:13px;font-weight:500;color:var(--t2);border-bottom:0.5px solid var(--b3);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.shelf-header:hover{background:#EEEDFE}
 .shelf-header b{color:var(--t1);font-weight:600;font-size:14px}
+.shelf-header-icons{display:flex;align-items:center;gap:6px}
 .shelf-body{padding:8px 10px;display:flex;flex-direction:column;gap:7px}
 .shelf-row{background:var(--card2);border:0.5px solid var(--b3);border-radius:8px;padding:6px 8px;min-height:58px;position:relative;transition:border-color .15s,background .15s}
 .shelf-row.drag-over{border-color:#7f77dd;background:#EEEDFE}
-.shelf-row-lbl{font-size:10px;color:var(--t3);position:absolute;top:4px;left:8px;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.shelf-row-lbl{font-size:10px;color:var(--t3);position:absolute;top:4px;left:8px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;cursor:pointer}
+.shelf-row-lbl:hover{color:var(--t1)}
 .slots{display:flex;gap:5px;padding-top:20px;flex-wrap:wrap;align-items:flex-end}
 .slot{height:32px;min-width:38px;max-width:90px;border-radius:5px;border:0.5px solid;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:grab;padding:3px 7px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.2;position:relative;user-select:none;font-weight:500}
 .slot:hover{opacity:.8}
@@ -73,7 +72,9 @@ header h1{font-size:17px;font-weight:500;flex:1}
 .slot-stack:hover{opacity:.75}
 .stack-layer{height:26px;border-radius:4px;border:0.5px solid;display:flex;align-items:center;justify-content:center;font-size:10px;padding:2px 6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.2;font-weight:500}
 .stack-lbl{font-size:9px;color:var(--t3);text-align:center;line-height:1.4}
-
+/* element bez półek (biurko, domek itp) */
+.flat-unit{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius-lg);overflow:hidden}
+.flat-body{padding:8px 10px;min-height:58px}
 /* LISTA */
 .list{display:flex;flex-direction:column;gap:5px}
 .list-row{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius);padding:9px 12px;display:flex;align-items:center;gap:9px;cursor:pointer}
@@ -89,7 +90,6 @@ header h1{font-size:17px;font-weight:500;flex:1}
 .cnt{background:var(--card2);border:0.5px solid var(--b3);border-radius:20px;padding:1px 7px;font-size:11px;color:var(--t2);margin-left:4px}
 .qty-badge{font-size:11px;padding:2px 8px;border-radius:20px;background:#EEEDFE;color:#3C3489;border:0.5px solid #AFA9EC;white-space:nowrap;font-weight:500}
 .qty-low{background:#FCEBEB;color:#A32D2D;border-color:#F09595}
-
 /* ZAPASY */
 .stock-grid{display:flex;flex-direction:column;gap:6px}
 .stock-row{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius);padding:10px 14px}
@@ -104,10 +104,9 @@ header h1{font-size:17px;font-weight:500;flex:1}
 .stock-input{width:60px;flex:none;text-align:center;font-size:13px}
 .alert-banner{background:#FCEBEB;border:0.5px solid #F09595;border-radius:var(--radius);padding:10px 14px;margin-bottom:12px;font-size:13px;color:#A32D2D;display:flex;align-items:center;gap:8px}
 .stock-section-title{font-size:11px;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin:12px 0 6px}
-
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-start;justify-content:center;padding:32px 12px;z-index:100;overflow-y:auto}
-.modal{background:var(--card);border-radius:var(--radius-lg);border:0.5px solid var(--b3);padding:1.25rem;width:100%;max-width:500px}
+.modal{background:var(--card);border-radius:var(--radius-lg);border:0.5px solid var(--b3);padding:1.25rem;width:100%;max-width:520px}
 .mhead{display:flex;align-items:center;gap:8px;margin-bottom:1rem}
 .mhead h2{font-size:15px;font-weight:500;flex:1;margin:0}
 .frow{margin-bottom:10px}
@@ -138,11 +137,13 @@ header h1{font-size:17px;font-weight:500;flex:1}
 .dlbl{color:var(--t2);flex:none;font-size:12px}
 .dphotos{width:100%;border-radius:var(--radius);margin-bottom:8px;max-height:200px;object-fit:contain}
 .empty{padding:3rem;text-align:center;color:var(--t3);font-size:13px}
-/* szybki licznik w modalu */
 .quick-stock{display:flex;align-items:center;gap:10px;background:var(--card2);border-radius:var(--radius);padding:10px 14px;margin-top:10px}
-.quick-stock-num{font-size:22px;font-weight:500;min-width:36px;text-align:center}
-.quick-stock-num.low{color:#A32D2D}
-
+/* Zarządzanie elementami garażu */
+.container-list{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.container-item{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius);padding:10px 14px;display:flex;align-items:center;gap:10px}
+.container-item-name{flex:1;font-size:13px;font-weight:500}
+.container-item-meta{font-size:11px;color:var(--t2)}
+.type-icon{font-size:18px;color:var(--t3);flex:none}
 /* LOGOWANIE */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
 .login-card{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius-lg);padding:2rem;width:100%;max-width:340px}
@@ -165,7 +166,6 @@ header h1{font-size:17px;font-weight:500;flex:1}
     </button>
   </div>
 </div>
-
 <div class="app" id="main-app" style="display:none">
   <header>
     <i class="ti ti-tool" style="font-size:20px" aria-hidden="true"></i>
@@ -176,29 +176,60 @@ header h1{font-size:17px;font-weight:500;flex:1}
   </header>
   <div class="topbar">
     <input id="srch" placeholder="Szukaj: nazwa, kategoria, lokalizacja, zawartość…" oninput="onSearch(this.value)">
-    <button class="btn-primary" onclick="openAdd(null,null)"><i class="ti ti-plus" aria-hidden="true"></i> Dodaj</button>
+    <button class="btn-primary" onclick="openAdd(null,null)"><i class="ti ti-plus" aria-hidden="true"></i> Dodaj przedmiot</button>
   </div>
   <div id="root"></div>
 </div>
-
 <div class="modal-overlay" id="modal" style="display:none" onclick="overlayClick(event)">
   <div class="modal" id="mbox"></div>
 </div>
-
 <script>
-const REGALY=['R1','R2','R3','R4'],POLKI=['P1','P2','P3','P4'];
+// ── Stałe ─────────────────────────────────────────────────────────────────────
 const NORM={loose:'Luzem',box:'Pudełko',original:'Oryg. opak.'};
 const NORM_BACK={'Luzem':'loose','Pudełko':'box','Oryginalne opakowanie':'original','Oryg. opak.':'original'};
 const CATS=['Narzędzia ręczne','Narzędzia elektryczne','Elektronika','Akcesoria','Materiały','Części','Chemia','Malarstwo','Ogród','Inne'];
 const STORAGES=['Luzem','Pudełko','Oryginalne opakowanie','Skrzynka','Worek','Torba','Szuflada'];
 
+// Typy kontenerów z ikonami
+const CONTAINER_TYPES=[
+  {v:'shelf_unit', l:'Regał (z półkami)', icon:'ti-stack-2'},
+  {v:'cabinet',    l:'Szafka wisząca (z półkami)', icon:'ti-door'},
+  {v:'desk',       l:'Biurko (bez półek)', icon:'ti-layout-board'},
+  {v:'toolbox',    l:'Domek narzędziowy (z półkami)', icon:'ti-home'},
+  {v:'drawer',     l:'Komoda/szuflady (z półkami)', icon:'ti-layout-rows'},
+  {v:'flat',       l:'Inne — bez półek', icon:'ti-box'},
+  {v:'other',      l:'Inne — z półkami', icon:'ti-archive'},
+];
+function ctypeIcon(v){return CONTAINER_TYPES.find(t=>t.v===v)?.icon||'ti-box';}
+function ctypeLabel(v){return CONTAINER_TYPES.find(t=>t.v===v)?.l||v;}
+function ctypeHasShelves(v){return!['desk','flat'].includes(v);}
+
+// ── Stan ──────────────────────────────────────────────────────────────────────
 let items=[],nextId=1,view='garage',search='',fSubs=[],fPhoto=null,fEditId=null;
-let ws=null,serverMode=false,authToken=null;
-let dragId=null;
-// Nazwy regałów i półek — przechowywane lokalnie (nie w bazie przedmiotów)
-let shelfLabels={}; // klucz: 'R1', 'R2', 'R1_P1', 'R1_P2' itd.
-// Konfiguracja półek — liczba miejsc per półka
-let shelfConfig={}; // klucz: 'R1_P1' → { posTotal: 6 }
+let ws=null,serverMode=false,authToken=null,dragId=null;
+let pendingQty={};
+
+// Dynamiczne kontenery (regały, szafki, biurka…)
+// Domyślnie R1-R4 zachowane jako "Regał 1-4"
+let containers=[
+  {id:'R1',name:'Regał 1',type:'shelf_unit',shelves:[
+    {id:'P1',name:'P1',posTotal:null},{id:'P2',name:'P2',posTotal:null},
+    {id:'P3',name:'P3',posTotal:null},{id:'P4',name:'P4',posTotal:null}
+  ]},
+  {id:'R2',name:'Regał 2',type:'shelf_unit',shelves:[
+    {id:'P1',name:'P1',posTotal:null},{id:'P2',name:'P2',posTotal:null},
+    {id:'P3',name:'P3',posTotal:null},{id:'P4',name:'P4',posTotal:null}
+  ]},
+  {id:'R3',name:'Regał 3',type:'shelf_unit',shelves:[
+    {id:'P1',name:'P1',posTotal:null},{id:'P2',name:'P2',posTotal:null},
+    {id:'P3',name:'P3',posTotal:null},{id:'P4',name:'P4',posTotal:null}
+  ]},
+  {id:'R4',name:'Regał 4',type:'shelf_unit',shelves:[
+    {id:'P1',name:'P1',posTotal:null},{id:'P2',name:'P2',posTotal:null},
+    {id:'P3',name:'P3',posTotal:null},{id:'P4',name:'P4',posTotal:null}
+  ]},
+];
+let nextContainerId=5;
 
 // ── Auth & storage ────────────────────────────────────────────────────────────
 function saveToken(t){try{localStorage.setItem('garaz_token',t);}catch(e){}}
@@ -206,35 +237,19 @@ function loadToken(){try{return localStorage.getItem('garaz_token');}catch(e){re
 function clearToken(){try{localStorage.removeItem('garaz_token');}catch(e){}}
 function lsSave(){try{localStorage.setItem('garaz',JSON.stringify({items,nextId}));}catch(e){}}
 function lsLoad(){try{const d=JSON.parse(localStorage.getItem('garaz')||'null');if(d){items=d.items||[];nextId=d.nextId||1;}}catch(e){}}
-function lsSaveLabels(){try{localStorage.setItem('garaz_labels',JSON.stringify({shelfLabels,shelfConfig}));}catch(e){}}
-function lsLoadLabels(){try{const d=JSON.parse(localStorage.getItem('garaz_labels')||'null');if(d){shelfLabels=d.shelfLabels||{};shelfConfig=d.shelfConfig||{};}}catch(e){}}
+function lsSaveContainers(){try{localStorage.setItem('garaz_containers',JSON.stringify({containers,nextContainerId}));}catch(e){}}
+function lsLoadContainers(){try{const d=JSON.parse(localStorage.getItem('garaz_containers')||'null');if(d){containers=d.containers||containers;nextContainerId=d.nextContainerId||nextContainerId;}}catch(e){}}
 
-// Etykiety i konfiguracja półek — osobne API endpointy lub localStorage
-async function saveLabels(){
-  if(serverMode){
-    try{await apiCall('PUT','/api/labels',{shelfLabels,shelfConfig});}
-    catch(e){lsSaveLabels();} // fallback
-  } else {
-    lsSaveLabels();
-  }
+async function saveContainersToServer(){
+  if(serverMode){try{await apiCall('PUT','/api/labels',{containers,nextContainerId});}catch(e){lsSaveContainers();}}
+  else{lsSaveContainers();}
 }
-async function loadLabels(){
-  if(serverMode){
-    try{
-      const d=await apiCall('GET','/api/labels');
-      if(d){shelfLabels=d.shelfLabels||{};shelfConfig=d.shelfConfig||{};}
-    }catch(e){lsLoadLabels();}
-  } else {
-    lsLoadLabels();
-  }
+async function loadContainersFromServer(){
+  if(serverMode){try{const d=await apiCall('GET','/api/labels');if(d&&d.containers){containers=d.containers;nextContainerId=d.nextContainerId||nextContainerId;}}catch(e){lsLoadContainers();}}
+  else{lsLoadContainers();}
 }
 
-function regalLabel(r){return shelfLabels[r]||`Regał ${r.slice(1)}`;}
-function polkaLabel(r,p){return shelfLabels[`${r}_${p}`]||p;}
-function shelfPosTotal(r,p){
-  // Konfiguracja półki nadpisuje posTotal z przedmiotów
-  return shelfConfig[`${r}_${p}`]?.posTotal||null;
-}
+// ── Auth ──────────────────────────────────────────────────────────────────────
 async function doLogin(){
   const pwd=document.getElementById('lpwd').value;
   const err=document.getElementById('lerr');err.textContent='';
@@ -248,8 +263,8 @@ async function doLogin(){
 function showApp(){
   document.getElementById('login-screen').style.display='none';
   document.getElementById('main-app').style.display='block';
-  lsLoad();lsLoadLabels();render();tryWS();
-  loadLabels().then(render);
+  lsLoad();lsLoadContainers();render();tryWS();
+  loadContainersFromServer().then(render);
 }
 function doLogout(){
   clearToken();authToken=null;serverMode=false;
@@ -274,7 +289,7 @@ function tryWS(){
       else if(m.type==='ITEM_ADDED'){items.push(m.item);render();}
       else if(m.type==='ITEM_UPDATED'){const i=items.findIndex(x=>x.id===m.item.id);if(i>-1)items[i]=m.item;render();}
       else if(m.type==='ITEM_DELETED'){items=items.filter(x=>x.id!==m.id);render();}
-      else if(m.type==='LABELS_UPDATED'){shelfLabels=m.shelfLabels||{};shelfConfig=m.shelfConfig||{};render();}
+      else if(m.type==='LABELS_UPDATED'){if(m.containers)containers=m.containers;if(m.nextContainerId)nextContainerId=m.nextContainerId;render();}
     };
   }catch(e){ws=null;}
 }
@@ -310,53 +325,78 @@ function stackText(i){
   const lvl=parseInt(i.stackLevel),tot=parseInt(i.stackTotal)||'?';
   return tot<=3&&lvl<=3?(['dół','środek','góra'][lvl-1]||`poziom ${lvl}`)+` z ${tot}`:`poziom ${lvl} z ${tot}`;
 }
-// Stan całego przedmiotu (qty) lub suma podpozycji
 function itemQty(i){return(i.qty!=null&&i.qty!=='')?parseInt(i.qty):null;}
 function isLow(i){
   const q=itemQty(i);
   if(q!=null&&i.qtyThreshold!=null&&q<=parseInt(i.qtyThreshold))return true;
   return(i.subitems||[]).some(s=>s.qty!=null&&s.qtyThreshold!=null&&parseInt(s.qty)<=parseInt(s.qtyThreshold));
 }
+function pendingKey(id,subIdx){return subIdx!=null?`${id}_${subIdx}`:`${id}`;}
+// Pobierz kontener i półkę po id
+function getContainer(cid){return containers.find(c=>c.id===cid);}
+function getShelf(cid,sid){return getContainer(cid)?.shelves?.find(s=>s.id===sid);}
+// Czytelna lokalizacja przedmiotu
+function itemLocLabel(i){
+  const c=getContainer(i.regal);
+  const cname=c?c.name:i.regal;
+  if(!i.polka||i.polka==='_')return cname;
+  const s=getShelf(i.regal,i.polka);
+  const sname=s?s.name:i.polka;
+  return`${cname} / ${sname}`;
+}
 
 // ── Render ────────────────────────────────────────────────────────────────────
 function render(){
   const q=search.trim().toLowerCase();
-  const fi=q?items.filter(i=>[i.name,i.cat,i.storage||'',i.note||'',i.regal+i.polka,stackText(i),(i.subitems||[]).map(s=>s.name).join(' ')].join(' ').toLowerCase().includes(q)):items;
+  const fi=q?items.filter(i=>[i.name,i.cat,i.storage||'',i.note||'',itemLocLabel(i),(i.subitems||[]).map(s=>s.name).join(' ')].join(' ').toLowerCase().includes(q)):items;
   const root=document.getElementById('root');
   if(q){root.innerHTML=buildSearch(fi);return;}
   root.innerHTML=`<div class="tabs">
     <button class="tab${view==='garage'?' active':''}" onclick="setView('garage')"><i class="ti ti-layout-board" aria-hidden="true"></i> Szkic</button>
     <button class="tab${view==='list'?' active':''}" onclick="setView('list')"><i class="ti ti-list" aria-hidden="true"></i> Lista</button>
     <button class="tab${view==='stock'?' active':''}" onclick="setView('stock')"><i class="ti ti-package" aria-hidden="true"></i> Zapasy</button>
-  </div>${view==='garage'?buildGarage(fi):view==='stock'?buildStock():buildList(fi)}`;
+    <button class="tab${view==='manage'?' active':''}" onclick="setView('manage')"><i class="ti ti-settings" aria-hidden="true"></i> Elementy</button>
+  </div>${view==='garage'?buildGarage(fi):view==='stock'?buildStock():view==='manage'?buildManage():buildList(fi)}`;
 }
 function setView(v){view=v;render();}
 function onSearch(v){search=v;render();}
 
-// ── SZKIC z drag & drop ───────────────────────────────────────────────────────
+// ── SZKIC ─────────────────────────────────────────────────────────────────────
 function buildGarage(items){
-  return`<div class="garage">${REGALY.map(r=>{
-    const ri=items.filter(x=>x.regal===r);
-    return`<div class="shelf-unit">
-      <div class="shelf-header" style="cursor:pointer" onclick="openEditRegal('${r}')" title="Kliknij żeby zmienić nazwę regału">
-        <b>${esc(regalLabel(r))}</b>
-        <div style="display:flex;align-items:center;gap:6px">
-          <span class="cnt">${ri.length} szt.</span>
-          <i class="ti ti-pencil" style="font-size:11px;opacity:.5" aria-hidden="true"></i>
-        </div>
-      </div>
-      <div class="shelf-body">${POLKI.map(p=>buildShelfRow(r,p,items)).join('')}</div>
-    </div>`;
-  }).join('')}</div>`;
+  return`<div class="garage">${containers.map(c=>buildContainer(c,items)).join('')}</div>`;
 }
 
-function buildShelfRow(r,p,items){
-  const pi=[...items.filter(x=>x.regal===r&&x.polka===p)].sort((a,b)=>(parseInt(a.posIndex)||999)-(parseInt(b.posIndex)||999));
+function buildContainer(c,items){
+  const ci=items.filter(x=>x.regal===c.id);
+  const hasShelves=ctypeHasShelves(c.type)&&c.shelves&&c.shelves.length>0;
+  const icon=ctypeIcon(c.type);
+  return`<div class="shelf-unit">
+    <div class="shelf-header" onclick="openEditContainer('${c.id}')" title="Kliknij żeby edytować">
+      <div style="display:flex;align-items:center;gap:7px">
+        <i class="ti ${icon}" style="font-size:14px;flex:none" aria-hidden="true"></i>
+        <b>${esc(c.name)}</b>
+      </div>
+      <div class="shelf-header-icons">
+        <span class="cnt">${ci.length} szt.</span>
+        <i class="ti ti-pencil" style="font-size:11px;opacity:.5" aria-hidden="true"></i>
+      </div>
+    </div>
+    ${hasShelves
+      ? `<div class="shelf-body">${c.shelves.map(s=>buildShelfRow(c.id,s,items)).join('')}</div>`
+      : `<div class="flat-body">${buildFlatSlots(c,items)}</div>`}
+  </div>`;
+}
 
-  // posTotal: z konfiguracji półki (nadrzędne) lub max z przedmiotów
-  const configTotal=shelfPosTotal(r,p);
-  const maxTotal=configTotal||pi.reduce((m,i)=>Math.max(m,parseInt(i.posTotal)||0),0);
+function buildFlatSlots(c,items){
+  // Element bez półek — pokazuje sloty bezpośrednio
+  const ci=items.filter(x=>x.regal===c.id);
+  const slots=ci.map(i=>renderSlot(i,null,null)).join('');
+  return`<div class="slots" style="padding-top:8px">${slots}<button class="slot-add" onclick="openAdd('${c.id}','_')" title="Dodaj">+</button></div>`;
+}
 
+function buildShelfRow(cid,shelf,items){
+  const pi=[...items.filter(x=>x.regal===cid&&x.polka===shelf.id)].sort((a,b)=>(parseInt(a.posIndex)||999)-(parseInt(b.posIndex)||999));
+  const maxTotal=shelf.posTotal||pi.reduce((m,i)=>Math.max(m,parseInt(i.posTotal)||0),0);
   const byPos=new Map();
   pi.forEach(i=>{
     const k=i.posIndex?parseInt(i.posIndex):null;
@@ -364,13 +404,12 @@ function buildShelfRow(r,p,items){
     if(!byPos.has(key))byPos.set(key,[]);
     byPos.get(key).push(i);
   });
-
   let slots='';
   if(maxTotal>0){
     for(let pos=1;pos<=maxTotal;pos++){
       const g=byPos.get(pos);
       if(!g){
-        slots+=`<div class="slot-placeholder" title="poz. ${pos} — puste. Kliknij żeby dodać" onclick="openAdd('${r}','${p}',${pos},${maxTotal})">+${pos}</div>`;
+        slots+=`<div class="slot-placeholder" title="poz. ${pos} — puste" onclick="openAdd('${cid}','${shelf.id}',${pos},${maxTotal})">+${pos}</div>`;
       } else if(g.length===1){
         slots+=renderSlot(g[0],pos,maxTotal);
       } else {
@@ -380,80 +419,225 @@ function buildShelfRow(r,p,items){
       }
     }
     [...byPos.entries()].filter(([k])=>typeof k==='string'&&k.startsWith('_')).forEach(([,g])=>{
-      if(g.length===1) slots+=renderSlot(g[0],null,null);
-      else{
-        const sorted=[...g].sort((a,b)=>(parseInt(b.stackLevel)||1)-(parseInt(a.stackLevel)||1));
-        const layers=sorted.map(i=>renderStackLayer(i)).join('');
-        slots+=`<div class="slot-stack"><div class="stack-lbl">↕${g.length}</div>${layers}</div>`;
-      }
+      if(g.length===1)slots+=renderSlot(g[0],null,null);
+      else{const sorted=[...g].sort((a,b)=>(parseInt(b.stackLevel)||1)-(parseInt(a.stackLevel)||1));slots+=`<div class="slot-stack"><div class="stack-lbl">↕${g.length}</div>${sorted.map(i=>renderStackLayer(i)).join('')}</div>`;}
     });
   } else {
-    pi.forEach(i=>{ slots+=renderSlot(i,null,null); });
+    pi.forEach(i=>{slots+=renderSlot(i,null,null);});
   }
-
-  const lbl=polkaLabel(r,p);
-  const cfgInfo=configTotal?` · ${configTotal} miejsc`:'';
+  const cfgInfo=shelf.posTotal?` · ${shelf.posTotal} miejsc`:'';
   return`<div class="shelf-row"
-    ondragover="onDragOver(event)"
-    ondragleave="onDragLeave(event)"
-    ondrop="onDrop(event,'${r}','${p}')"
-    data-regal="${r}" data-polka="${p}">
-    <span class="shelf-row-lbl" style="cursor:pointer" onclick="openEditPolka('${r}','${p}')" title="Kliknij żeby edytować półkę">${esc(lbl)}${cfgInfo} <i class="ti ti-pencil" style="font-size:8px;opacity:.5"></i></span>
-    <div class="slots">${slots}<button class="slot-add" onclick="openAdd('${r}','${p}')" title="Dodaj">+</button></div>
+    ondragover="onDragOver(event)" ondragleave="onDragLeave(event)"
+    ondrop="onDrop(event,'${cid}','${shelf.id}')"
+    data-regal="${cid}" data-polka="${shelf.id}">
+    <span class="shelf-row-lbl" onclick="event.stopPropagation();openEditContainer('${cid}')" title="Edytuj">${esc(shelf.name)}${cfgInfo}</span>
+    <div class="slots">${slots}<button class="slot-add" onclick="openAdd('${cid}','${shelf.id}')" title="Dodaj">+</button></div>
   </div>`;
 }
 
-function slotColorClass(i){
-  return sSlot(i.storage); // klasa CSS zawsze na podstawie storage
-}
-
-function slotColorStyle(i){
-  // Inline styl tylko gdy jest własny kolor
-  return i.customColor?`style="background:${i.customColor};border-color:${i.customColor};color:#fff"`:'';
-}
-
+function slotColorStyle(i){return i.customColor?`style="background:${i.customColor};border-color:${i.customColor};color:#fff"`:''}
 function renderStackLayer(i){
   const lbl=i.name.length>14?i.name.slice(0,13)+'…':i.name;
   const cls=i.customColor?'stack-layer':`stack-layer ${sSlot(i.storage)}`;
-  const style=slotColorStyle(i);
-  const lvlTitle=stackText(i)?` · ${stackText(i)}`:'';
-  return`<div class="${cls}" ${style} title="${esc(i.name)}${lvlTitle}" draggable="true" ondragstart="onDragStart(event,${i.id})" onclick="openDetail(${i.id})">${esc(lbl)}</div>`;
+  return`<div class="${cls}" ${slotColorStyle(i)} title="${esc(i.name)}${stackText(i)?' · '+stackText(i):''}" draggable="true" ondragstart="onDragStart(event,${i.id})" onclick="openDetail(${i.id})">${esc(lbl)}</div>`;
 }
-
 function renderSlot(i,pos,total){
   const lbl=i.name.length>14?i.name.slice(0,13)+'…':i.name;
   const q=itemQty(i);const low=isLow(i);
   const badge=q!=null?`<span class="${low?'slot-low':'slot-qty'}">${q}</span>`:'';
   const posTitle=pos!=null&&total?` poz.${pos}/${total}`:'';
   const cls=i.customColor?'slot':`slot ${sSlot(i.storage)}`;
-  const style=slotColorStyle(i);
-  return`<div class="${cls}" ${style}
-    title="${esc(i.name)}${posTitle}${stackText(i)?' · '+stackText(i):''}"
-    draggable="true"
-    ondragstart="onDragStart(event,${i.id})"
-    onclick="openDetail(${i.id})">${badge}${esc(lbl)}</div>`;
+  return`<div class="${cls}" ${slotColorStyle(i)} title="${esc(i.name)}${posTitle}${stackText(i)?' · '+stackText(i):''}" draggable="true" ondragstart="onDragStart(event,${i.id})" onclick="openDetail(${i.id})">${badge}${esc(lbl)}</div>`;
 }
 
 // ── Drag & Drop ───────────────────────────────────────────────────────────────
-function onDragStart(e,id){
-  dragId=id;
-  e.dataTransfer.effectAllowed='move';
-  setTimeout(()=>{const el=e.target;if(el)el.classList.add('dragging');},0);
-}
-function onDragOver(e){
-  e.preventDefault();e.dataTransfer.dropEffect='move';
-  e.currentTarget.classList.add('drag-over');
-}
+function onDragStart(e,id){dragId=id;e.dataTransfer.effectAllowed='move';setTimeout(()=>{const el=e.target;if(el)el.classList.add('dragging');},0);}
+function onDragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';e.currentTarget.classList.add('drag-over');}
 function onDragLeave(e){e.currentTarget.classList.remove('drag-over');}
 async function onDrop(e,regal,polka){
-  e.preventDefault();
-  e.currentTarget.classList.remove('drag-over');
+  e.preventDefault();e.currentTarget.classList.remove('drag-over');
   if(!dragId)return;
   const i=items.find(x=>x.id===dragId);
   if(!i||i.regal===regal&&i.polka===polka){dragId=null;return;}
-  const body={...i,regal,polka};
-  try{await doSaveApi(body,dragId);}catch(err){alert('Błąd: '+err.message);}
+  try{await doSaveApi({...i,regal,polka},dragId);}catch(err){alert('Błąd: '+err.message);}
   dragId=null;
+}
+
+// ── ZARZĄDZAJ ELEMENTAMI ──────────────────────────────────────────────────────
+function buildManage(){
+  return`<div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-size:13px;color:var(--t2)">Kliknij element żeby edytować</div>
+      <button class="btn-primary" onclick="openAddContainer()"><i class="ti ti-plus" aria-hidden="true"></i> Nowy element</button>
+    </div>
+    <div class="container-list">
+      ${containers.map((c,idx)=>`
+        <div class="container-item">
+          <i class="ti ${ctypeIcon(c.type)} type-icon" aria-hidden="true"></i>
+          <div style="flex:1">
+            <div class="container-item-name">${esc(c.name)}</div>
+            <div class="container-item-meta">${ctypeLabel(c.type)}${c.shelves?` · ${c.shelves.length} półek`:' · bez półek'} · ${items.filter(x=>x.regal===c.id).length} przedmiotów</div>
+          </div>
+          <button onclick="openEditContainer('${c.id}')" style="padding:5px 9px;font-size:12px"><i class="ti ti-pencil" aria-hidden="true"></i></button>
+          <button onclick="moveContainer('${c.id}',-1)" title="W górę" style="padding:5px 8px" ${idx===0?'disabled':''}><i class="ti ti-arrow-up" aria-hidden="true"></i></button>
+          <button onclick="moveContainer('${c.id}',1)" title="W dół" style="padding:5px 8px" ${idx===containers.length-1?'disabled':''}><i class="ti ti-arrow-down" aria-hidden="true"></i></button>
+          <button onclick="confirmDeleteContainer('${c.id}')" class="btn-danger" style="padding:5px 8px"><i class="ti ti-trash" aria-hidden="true"></i></button>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function openAddContainer(){
+  showModal(`
+    <div class="mhead"><i class="ti ti-plus" style="font-size:17px" aria-hidden="true"></i><h2>Nowy element garażu</h2><button onclick="closeModal()" style="padding:4px 9px">✕</button></div>
+    <div class="frow"><label>Nazwa *</label><input id="cn-name" placeholder="np. Szafka wisząca, Biurko, Domek narzędziowy"></div>
+    <div class="frow"><label>Typ</label>
+      <select id="cn-type" onchange="updateShelfFields()">
+        ${CONTAINER_TYPES.map(t=>`<option value="${t.v}">${t.l}</option>`).join('')}
+      </select>
+    </div>
+    <div id="cn-shelf-section">
+      <div class="fsec">Półki</div>
+      <div class="frow">
+        <label>Liczba półek</label>
+        <input id="cn-shelves" type="number" min="1" max="20" value="4" placeholder="np. 4">
+        <div class="pos-hint">Możesz dodać/zmienić półki po utworzeniu elementu.</div>
+      </div>
+    </div>
+    <div class="brow">
+      <button onclick="closeModal()">Anuluj</button>
+      <button class="btn-primary" onclick="doAddContainer()"><i class="ti ti-check" aria-hidden="true"></i> Utwórz</button>
+    </div>`);
+}
+
+function updateShelfFields(){
+  const type=document.getElementById('cn-type')?.value;
+  const sec=document.getElementById('cn-shelf-section');
+  if(sec)sec.style.display=ctypeHasShelves(type)?'block':'none';
+}
+
+async function doAddContainer(){
+  const name=document.getElementById('cn-name').value.trim();
+  if(!name){document.getElementById('cn-name').focus();return;}
+  const type=document.getElementById('cn-type').value;
+  const hasShelves=ctypeHasShelves(type);
+  const shelfCount=hasShelves?Math.max(1,parseInt(document.getElementById('cn-shelves')?.value)||4):0;
+  const id=`C${nextContainerId++}`;
+  const shelves=hasShelves?Array.from({length:shelfCount},(_,i)=>({id:`P${i+1}`,name:`P${i+1}`,posTotal:null})):[];
+  containers.push({id,name,type,shelves});
+  await saveContainersToServer();
+  closeModal();
+  setView('garage');
+}
+
+function openEditContainer(cid){
+  const c=getContainer(cid);if(!c)return;
+  const hasShelves=ctypeHasShelves(c.type);
+  showModal(`
+    <div class="mhead"><i class="ti ${ctypeIcon(c.type)}" style="font-size:17px" aria-hidden="true"></i>
+      <h2>Edytuj: ${esc(c.name)}</h2>
+      <button onclick="closeModal()" style="padding:4px 9px">✕</button>
+    </div>
+    <div class="frow"><label>Nazwa</label><input id="ce-name" value="${esc(c.name)}"></div>
+    <div class="frow"><label>Typ</label>
+      <select id="ce-type">
+        ${CONTAINER_TYPES.map(t=>`<option value="${t.v}"${t.v===c.type?' selected':''}>${t.l}</option>`).join('')}
+      </select>
+    </div>
+    ${hasShelves?`
+    <div class="fsec">Półki <small style="font-weight:400;text-transform:none;letter-spacing:0">(kliknij żeby edytować)</small></div>
+    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">
+      ${(c.shelves||[]).map((s,si)=>`
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--card2);border-radius:var(--radius);border:0.5px solid var(--b3)">
+          <span style="flex:1;font-size:13px">${esc(s.name)}${s.posTotal?` <small style="color:var(--t2)">· ${s.posTotal} miejsc</small>`:''}</span>
+          <button onclick="openEditShelf('${cid}',${si})" style="padding:4px 8px;font-size:12px"><i class="ti ti-pencil" aria-hidden="true"></i></button>
+          <button onclick="deleteShelf('${cid}',${si})" class="btn-danger" style="padding:4px 8px;font-size:12px"><i class="ti ti-x" aria-hidden="true"></i></button>
+        </div>`).join('')}
+    </div>
+    <button onclick="addShelf('${cid}')" style="font-size:12px;padding:5px 10px;margin-bottom:10px"><i class="ti ti-plus" aria-hidden="true"></i> Dodaj półkę</button>`:''}
+    <div class="brow">
+      <button class="btn-danger" onclick="confirmDeleteContainer('${cid}')"><i class="ti ti-trash" aria-hidden="true"></i> Usuń element</button>
+      <button onclick="closeModal()">Anuluj</button>
+      <button class="btn-primary" onclick="doEditContainer('${cid}')"><i class="ti ti-check" aria-hidden="true"></i> Zapisz</button>
+    </div>`);
+}
+
+async function doEditContainer(cid){
+  const c=getContainer(cid);if(!c)return;
+  c.name=document.getElementById('ce-name').value.trim()||c.name;
+  c.type=document.getElementById('ce-type').value;
+  if(!ctypeHasShelves(c.type))c.shelves=[];
+  await saveContainersToServer();
+  closeModal();render();
+}
+
+function openEditShelf(cid,si){
+  const c=getContainer(cid);if(!c)return;
+  const s=c.shelves[si];if(!s)return;
+  showModal(`
+    <div class="mhead"><i class="ti ti-layout-rows" aria-hidden="true"></i>
+      <h2>Edytuj półkę</h2>
+      <button onclick="closeModal()" style="padding:4px 9px">✕</button>
+    </div>
+    <div style="font-size:12px;color:var(--t2);margin-bottom:12px">Kontener: <b>${esc(c.name)}</b></div>
+    <div class="frow"><label>Nazwa półki</label><input id="se-name" value="${esc(s.name)}" placeholder="np. Górna, Środkowa…"></div>
+    <div class="frow"><label>Liczba miejsc (posTotal)</label>
+      <input id="se-total" type="number" min="0" value="${s.posTotal||''}" placeholder="zostaw puste jeśli nie używasz pozycji">
+      <div class="pos-hint">Ustawia siatkę placeholderów na półce.</div>
+    </div>
+    <div class="brow">
+      <button onclick="openEditContainer('${cid}')"><i class="ti ti-arrow-left" aria-hidden="true"></i> Wróć</button>
+      <button class="btn-primary" onclick="doEditShelf('${cid}',${si})"><i class="ti ti-check" aria-hidden="true"></i> Zapisz</button>
+    </div>`);
+}
+
+async function doEditShelf(cid,si){
+  const c=getContainer(cid);if(!c)return;
+  c.shelves[si].name=document.getElementById('se-name').value.trim()||c.shelves[si].name;
+  c.shelves[si].posTotal=parseInt(document.getElementById('se-total').value)||null;
+  await saveContainersToServer();
+  openEditContainer(cid);
+}
+
+async function addShelf(cid){
+  const c=getContainer(cid);if(!c)return;
+  const n=c.shelves.length+1;
+  c.shelves.push({id:`P${n}`,name:`P${n}`,posTotal:null});
+  await saveContainersToServer();
+  openEditContainer(cid);
+}
+
+async function deleteShelf(cid,si){
+  const c=getContainer(cid);if(!c)return;
+  const s=c.shelves[si];
+  const count=items.filter(x=>x.regal===cid&&x.polka===s.id).length;
+  if(count>0&&!confirm(`Na tej półce jest ${count} przedmiotów. Usunięcie półki nie usuwa przedmiotów, ale stracą przypisanie do półki. Kontynuować?`))return;
+  c.shelves.splice(si,1);
+  await saveContainersToServer();
+  openEditContainer(cid);
+}
+
+function confirmDeleteContainer(cid){
+  const c=getContainer(cid);if(!c)return;
+  const count=items.filter(x=>x.regal===cid).length;
+  if(count>0){
+    if(!confirm(`Element "${c.name}" zawiera ${count} przedmiotów. Usunięcie elementu NIE usunie przedmiotów — stracą tylko przypisanie lokalizacji. Kontynuować?`))return;
+  } else {
+    if(!confirm(`Usunąć "${c.name}"?`))return;
+  }
+  containers=containers.filter(x=>x.id!==cid);
+  saveContainersToServer();
+  closeModal();render();
+}
+
+async function moveContainer(cid,dir){
+  const idx=containers.findIndex(c=>c.id===cid);
+  if(idx<0)return;
+  const ni=idx+dir;
+  if(ni<0||ni>=containers.length)return;
+  [containers[idx],containers[ni]]=[containers[ni],containers[idx]];
+  await saveContainersToServer();
+  render();
 }
 
 // ── LISTA ─────────────────────────────────────────────────────────────────────
@@ -476,19 +660,16 @@ function listRow(i){
     <div style="flex:1;min-width:0"><div class="iname">${esc(i.name)}</div>
     <div class="imeta">${esc(i.cat)}${i.note?' · '+esc(i.note):''}${sub?' · '+sub+' poz.':''}${pos}${st}</div></div>
     ${qbadge}
-    <span class="loc">${i.regal}/${i.polka}</span>
+    <span class="loc">${esc(itemLocLabel(i))}</span>
     <button onclick="event.stopPropagation();openEdit(${i.id})" style="padding:5px 8px;flex:none"><i class="ti ti-edit" aria-hidden="true"></i></button>
   </div>`;
 }
 
 // ── ZAPASY ────────────────────────────────────────────────────────────────────
 function buildStock(){
-  // Zbierz wszystkie pozycje ze stanem (przedmioty + podpozycje)
   const tracked=[];
   items.forEach(i=>{
-    if(itemQty(i)!=null){
-      tracked.push({type:'item',item:i,name:i.name,qty:parseInt(i.qty),unit:i.qtyUnit||'',threshold:i.qtyThreshold!=null?parseInt(i.qtyThreshold):null,low:isLow(i),id:i.id,subIdx:null});
-    }
+    if(itemQty(i)!=null)tracked.push({type:'item',item:i,name:i.name,qty:parseInt(i.qty),unit:i.qtyUnit||'',threshold:i.qtyThreshold!=null?parseInt(i.qtyThreshold):null,low:isLow(i),id:i.id,subIdx:null});
     (i.subitems||[]).forEach((s,si)=>{
       if(s.qty!=null&&s.qty!==''){
         const low=s.qtyThreshold!=null&&parseInt(s.qty)<=parseInt(s.qtyThreshold);
@@ -497,30 +678,27 @@ function buildStock(){
     });
   });
   if(!tracked.length)return`<div class="empty"><i class="ti ti-package" style="font-size:28px;display:block;margin-bottom:8px" aria-hidden="true"></i>Brak pozycji z ustawionym stanem.<br><br>Dodaj przedmiot i wypełnij pole <b>Stan / ilość</b>.</div>`;
-  const low=tracked.filter(x=>x.low);
-  const ok=tracked.filter(x=>!x.low);
+  const low=tracked.filter(x=>x.low),ok=tracked.filter(x=>!x.low);
   let html='';
   if(low.length)html+=`<div class="alert-banner"><i class="ti ti-alert-triangle" aria-hidden="true"></i> ${low.length} pozycj${low.length===1?'a':'e'} poniżej progu!</div>`;
-  if(low.length){html+=`<div class="stock-section-title">⚠ Niski stan</div><div class="stock-grid">${low.map(t=>stockRow(t)).join('')}</div>`;}
-  if(ok.length){html+=`<div class="stock-section-title">Pozostałe zapasy</div><div class="stock-grid">${ok.map(t=>stockRow(t)).join('')}</div>`;}
+  if(low.length)html+=`<div class="stock-section-title">⚠ Niski stan</div><div class="stock-grid">${low.map(t=>stockRow(t)).join('')}</div>`;
+  if(ok.length)html+=`<div class="stock-section-title">Pozostałe zapasy</div><div class="stock-grid">${ok.map(t=>stockRow(t)).join('')}</div>`;
   return html;
 }
-
 function stockRow(t){
   const pct=t.threshold?Math.min(100,Math.round(t.qty/t.threshold*100)):null;
+  const key=pendingKey(t.id,t.subIdx);
   return`<div class="stock-row ${t.low?'low':'ok'}">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
-      <div>
-        <div class="stock-name">${esc(t.name)}</div>
-        <div class="stock-meta">${t.item.regal}/${t.item.polka}${t.threshold!=null?' · próg: '+t.threshold+' '+(t.unit||''):''}</div>
+      <div><div class="stock-name">${esc(t.name)}</div>
+        <div class="stock-meta">${esc(itemLocLabel(t.item))}${t.threshold!=null?' · próg: '+t.threshold+' '+(t.unit||''):''}</div>
       </div>
       <div class="stock-controls">
         <button class="qty-btn btn-danger" onclick="adjustQtyLocal(${t.id},${t.subIdx!=null?t.subIdx:'null'},-1)">−</button>
-        <span id="qty-display-${pendingKey(t.id,t.subIdx)}" class="stock-num${t.low?' low':''}">${t.qty}${t.unit?' <small style="font-size:12px">'+esc(t.unit)+'</small>':''}</span>
+        <span id="qty-display-${key}" class="stock-num${t.low?' low':''}">${t.qty}${t.unit?' <small style="font-size:12px">'+esc(t.unit)+'</small>':''}</span>
         <button class="qty-btn" onclick="adjustQtyLocal(${t.id},${t.subIdx!=null?t.subIdx:'null'},1)">+</button>
-        <input type="number" class="stock-input" value="${t.qty}" min="0"
-          onchange="setQty(${t.id},${t.subIdx!=null?t.subIdx:'null'},this.value)" title="Wpisz wartość">
-        <button id="save-qty-${t.id}" class="btn-primary" style="display:none;padding:5px 10px;font-size:12px;gap:4px" onclick="saveQtyChanges(${t.id})">
+        <input type="number" class="stock-input" value="${t.qty}" min="0" onchange="setQty(${t.id},${t.subIdx!=null?t.subIdx:'null'},this.value)">
+        <button id="save-qty-${t.id}" class="btn-primary" style="display:none;padding:5px 10px;font-size:12px" onclick="saveQtyChanges(${t.id})">
           <i class="ti ti-device-floppy" aria-hidden="true"></i> Zapisz
         </button>
       </div>
@@ -529,63 +707,40 @@ function stockRow(t){
   </div>`;
 }
 
-// Tymczasowe zmiany ilości — nie zapisywane do bazy dopóki użytkownik nie kliknie "Zapisz"
-let pendingQty = {}; // { 'itemId': newQty, 'itemId_subIdx': newQty }
-
-function pendingKey(id, subIdx) {
-  return subIdx != null ? `${id}_${subIdx}` : `${id}`;
-}
-
-function adjustQtyLocal(id, subIdx, delta) {
-  const i = items.find(x => x.id === id); if (!i) return;
-  const key = pendingKey(id, subIdx);
+// ── Qty management ────────────────────────────────────────────────────────────
+function adjustQtyLocal(id,subIdx,delta){
+  const i=items.find(x=>x.id===id);if(!i)return;
+  const key=pendingKey(id,subIdx);
   let cur;
-  if (subIdx != null) {
-    cur = pendingQty[key] != null ? pendingQty[key] : (parseInt((i.subitems||[])[subIdx]?.qty) || 0);
-  } else {
-    cur = pendingQty[key] != null ? pendingQty[key] : (parseInt(i.qty) || 0);
-  }
-  pendingQty[key] = Math.max(0, cur + delta);
-  // Zaktualizuj wyświetlaną liczbę bez zapisu
-  const el = document.getElementById(`qty-display-${key}`);
-  if (el) {
-    el.textContent = pendingQty[key];
-    el.style.color = '#854f0b'; // pomarańczowy = niezapisane
-  }
-  // Pokaż przycisk zapisu
-  const saveBtn = document.getElementById(`save-qty-${id}`);
-  if (saveBtn) saveBtn.style.display = 'flex';
+  if(subIdx!=null){cur=pendingQty[key]!=null?pendingQty[key]:(parseInt((i.subitems||[])[subIdx]?.qty)||0);}
+  else{cur=pendingQty[key]!=null?pendingQty[key]:(parseInt(i.qty)||0);}
+  pendingQty[key]=Math.max(0,cur+delta);
+  const el=document.getElementById(`qty-display-${key}`);
+  if(el){el.textContent=pendingQty[key];el.style.color='#854f0b';}
+  const saveBtn=document.getElementById(`save-qty-${id}`);
+  if(saveBtn)saveBtn.style.display='flex';
 }
-
-async function saveQtyChanges(id) {
-  const i = items.find(x => x.id === id); if (!i) return;
-  let body = {...i};
-  // Zapisz ilość główną
-  const mainKey = pendingKey(id, null);
-  if (pendingQty[mainKey] != null) body.qty = pendingQty[mainKey];
-  // Zapisz ilości podpozycji
-  const subs = [...(i.subitems || [])];
-  subs.forEach((s, si) => {
-    const k = pendingKey(id, si);
-    if (pendingQty[k] != null) subs[si] = {...s, qty: pendingQty[k]};
-  });
-  body.subitems = subs;
-  try {
-    await doSaveApi(body, id);
-    // Wyczyść pending
-    Object.keys(pendingQty).filter(k => k === String(id) || k.startsWith(`${id}_`))
-      .forEach(k => delete pendingQty[k]);
+async function saveQtyChanges(id){
+  const i=items.find(x=>x.id===id);if(!i)return;
+  let body={...i};
+  const mainKey=pendingKey(id,null);
+  if(pendingQty[mainKey]!=null)body.qty=pendingQty[mainKey];
+  const subs=[...(i.subitems||[])];
+  subs.forEach((s,si)=>{const k=pendingKey(id,si);if(pendingQty[k]!=null)subs[si]={...s,qty:pendingQty[k]};});
+  body.subitems=subs;
+  try{
+    await doSaveApi(body,id);
+    Object.keys(pendingQty).filter(k=>k===String(id)||k.startsWith(`${id}_`)).forEach(k=>delete pendingQty[k]);
     openDetail(id);
-  } catch(e) { alert('Błąd zapisu: ' + e.message); }
+  }catch(e){alert('Błąd zapisu: '+e.message);}
 }
-
 async function setQty(id,subIdx,val){
   const key=pendingKey(id,subIdx);
   pendingQty[key]=Math.max(0,parseInt(val)||0);
   const el=document.getElementById(`qty-display-${key}`);
   if(el){el.textContent=pendingQty[key];el.style.color='#854f0b';}
   const saveBtn=document.getElementById(`save-qty-${id}`);
-  if(saveBtn) saveBtn.style.display='flex';
+  if(saveBtn)saveBtn.style.display='flex';
 }
 
 // ── DETAIL ────────────────────────────────────────────────────────────────────
@@ -600,7 +755,7 @@ function openDetail(id){
     <div class="mhead"><i class="ti ti-tool" style="font-size:17px" aria-hidden="true"></i><h2>${esc(i.name)}</h2><button onclick="closeModal()" style="padding:4px 9px">✕</button></div>
     <div class="drow"><span class="dlbl">Lokalizacja</span>
       <div style="display:flex;gap:6px;align-items:center">
-        <span class="loc">${i.regal} / ${i.polka}</span>
+        <span class="loc">${esc(itemLocLabel(i))}</span>
         <button class="btn-move" onclick="openMove(${i.id})"><i class="ti ti-arrows-move" aria-hidden="true"></i> Przesuń</button>
       </div>
     </div>
@@ -616,7 +771,7 @@ function openDetail(id){
       </div></div>`:''}
     <div class="drow"><span class="dlbl">Kategoria</span><span>${esc(i.cat)}</span></div>
     <div class="drow"><span class="dlbl">Przechowywanie</span><span class="pill ${sPill(i.storage)}">${esc(sLabel(i.storage))}</span></div>
-    ${i.customColor?`<div class="drow"><span class="dlbl">Kolor</span><span style="display:inline-block;width:20px;height:20px;border-radius:4px;background:${i.customColor};border:0.5px solid var(--b1);vertical-align:middle"></span></div>`:''}
+    ${i.customColor?`<div class="drow"><span class="dlbl">Kolor</span><span style="display:inline-block;width:20px;height:20px;border-radius:4px;background:${i.customColor};border:0.5px solid var(--b1)"></span></div>`:''}
     ${i.note?`<div class="drow"><span class="dlbl">Notatka</span><span style="text-align:right;font-size:12px">${esc(i.note)}</span></div>`:''}
     ${q!=null?`<div class="drow"><span class="dlbl">Stan</span><span class="qty-badge${low?' qty-low':''}">${q}${i.qtyUnit?' '+esc(i.qtyUnit):''}</span></div>
     <div class="quick-stock">
@@ -647,6 +802,7 @@ function openDetail(id){
         <i class="ti ti-device-floppy" aria-hidden="true"></i> Zapisz zmiany ilości
       </button>
     </div>
+    <div style="margin-top:10px">
       <div style="font-size:11px;color:var(--t2);margin-bottom:5px;font-weight:500">${sub.length?'Dodaj do zawartości':'Zawartość — dodaj pierwszą pozycję'}</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
         <input id="qi-name" placeholder="nazwa (np. płyn do szyb)" style="flex:1;min-width:120px">
@@ -661,123 +817,65 @@ function openDetail(id){
     </div>`);
 }
 
-// ── SZYBKIE DODANIE PODPOZYCJI Z OKNA SZCZEGÓŁÓW ─────────────────────────────
 async function addSubitemQuick(id){
-  const name=document.getElementById('qi-name')?.value.trim();
-  if(!name) return;
+  const name=document.getElementById('qi-name')?.value.trim();if(!name)return;
   const qty=document.getElementById('qi-qty')?.value;
   const unit=document.getElementById('qi-unit')?.value.trim();
-  const i=items.find(x=>x.id===id); if(!i) return;
-  const subs=[...(i.subitems||[]),{
-    name,
-    qty: qty===''||qty==null ? null : parseInt(qty),
-    unit: unit||'',
-    qtyThreshold: null,
-  }];
+  const i=items.find(x=>x.id===id);if(!i)return;
+  const subs=[...(i.subitems||[]),{name,qty:qty===''||qty==null?null:parseInt(qty),unit:unit||'',qtyThreshold:null}];
   await doSaveApi({...i,subitems:subs},id);
-  openDetail(id); // odśwież okno szczegółów
+  openDetail(id);
 }
 
-// ── EDYCJA REGAŁU i PÓŁKI ─────────────────────────────────────────────────────
-function openEditRegal(r){
-  showModal(`
-    <div class="mhead"><i class="ti ti-stack-2" style="font-size:17px" aria-hidden="true"></i>
-      <h2>Edytuj regał ${r.slice(1)}</h2>
-      <button onclick="closeModal()" style="padding:4px 9px">✕</button>
-    </div>
-    <div class="frow">
-      <label>Nazwa regału</label>
-      <input id="rl-name" value="${esc(regalLabel(r))}" placeholder="np. Regał narzędziowy">
-    </div>
-    <div class="fsec">Półki w tym regale — kliknij żeby edytować</div>
-    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">
-      ${POLKI.map(p=>`
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--card2);border-radius:var(--radius);border:0.5px solid var(--b3)">
-          <span style="font-size:13px">${esc(polkaLabel(r,p))}${shelfPosTotal(r,p)?` <small style="color:var(--t2)">· ${shelfPosTotal(r,p)} miejsc</small>`:''}</span>
-          <button onclick="openEditPolka('${r}','${p}')" style="padding:4px 9px;font-size:12px"><i class="ti ti-pencil" aria-hidden="true"></i> Edytuj</button>
-        </div>`).join('')}
-    </div>
-    <div class="brow">
-      <button onclick="closeModal()">Anuluj</button>
-      <button class="btn-primary" onclick="saveRegalLabel('${r}')"><i class="ti ti-check" aria-hidden="true"></i> Zapisz nazwę</button>
-    </div>`);
-}
-
-async function saveRegalLabel(r){
-  shelfLabels[r]=document.getElementById('rl-name').value.trim()||`Regał ${r.slice(1)}`;
-  await saveLabels();
-  render();closeModal();
-}
-
-function openEditPolka(r,p){
-  const cfg=shelfConfig[`${r}_${p}`]||{};
-  showModal(`
-    <div class="mhead"><i class="ti ti-layout-rows" style="font-size:17px" aria-hidden="true"></i>
-      <h2>Edytuj półkę</h2>
-      <button onclick="closeModal()" style="padding:4px 9px">✕</button>
-    </div>
-    <div style="font-size:12px;color:var(--t2);margin-bottom:12px">Regał: <b>${esc(regalLabel(r))}</b></div>
-    <div class="frow">
-      <label>Nazwa półki</label>
-      <input id="pl-name" value="${esc(polkaLabel(r,p))}" placeholder="np. Górna, Środkowa, Narzędzia…">
-    </div>
-    <div class="frow">
-      <label>Liczba miejsc na półce (posTotal)</label>
-      <input id="pl-total" type="number" min="0" value="${esc(String(cfg.posTotal||''))}" placeholder="np. 6 — zostaw puste jeśli nie używasz pozycji">
-      <div class="pos-hint">Ustawienie tutaj nadpisuje wartość z poszczególnych przedmiotów. Pozwala zdefiniować siatkę miejsc na pustej półce.</div>
-    </div>
-    <div class="brow">
-      <button onclick="closeModal()">Anuluj</button>
-      <button onclick="openEditRegal('${r}')" style="font-size:12px"><i class="ti ti-arrow-left" aria-hidden="true"></i> Wróć do regału</button>
-      <button class="btn-primary" onclick="savePolkaConfig('${r}','${p}')"><i class="ti ti-check" aria-hidden="true"></i> Zapisz</button>
-    </div>`);
-}
-
-async function savePolkaConfig(r,p){
-  const name=document.getElementById('pl-name').value.trim();
-  const total=parseInt(document.getElementById('pl-total').value)||null;
-  shelfLabels[`${r}_${p}`]=name||p;
-  if(total){shelfConfig[`${r}_${p}`]={posTotal:total};}
-  else{delete shelfConfig[`${r}_${p}`];}
-  await saveLabels();
-  render();closeModal();
-}
-
-// ── PRZESUŃ (modal wyboru lokalizacji) ───────────────────────────────────────
+// ── PRZESUŃ ───────────────────────────────────────────────────────────────────
 function openMove(id){
   const i=items.find(x=>x.id===id);if(!i)return;
-  const selR=REGALY.map(r=>`<option${r===i.regal?' selected':''}>${r}</option>`).join('');
-  const selP=POLKI.map(p=>`<option${p===i.polka?' selected':''}>${p}</option>`).join('');
+  const selC=containers.map(c=>`<option value="${c.id}"${c.id===i.regal?' selected':''}>${esc(c.name)}</option>`).join('');
+  const curC=getContainer(i.regal);
+  const shelves=curC?.shelves||[];
+  const selS=shelves.length>0?`<div class="frow"><label>Nowa półka</label><select id="mv-p">${shelves.map(s=>`<option value="${s.id}"${s.id===i.polka?' selected':''}>${esc(s.name)}</option>`).join('')}</select></div>`:'';
   showModal(`
-    <div class="mhead"><i class="ti ti-arrows-move" style="font-size:16px" aria-hidden="true"></i><h2>Przesuń: ${esc(i.name)}</h2><button onclick="closeModal()" style="padding:4px 9px">✕</button></div>
-    <div style="font-size:12px;color:var(--t2);margin-bottom:12px">Obecna lokalizacja: <b>${i.regal} / ${i.polka}</b></div>
-    <div class="fgrid">
-      <div class="frow"><label>Nowy regał</label><select id="mv-r">${selR}</select></div>
-      <div class="frow"><label>Nowa półka</label><select id="mv-p">${selP}</select></div>
-    </div>
+    <div class="mhead"><i class="ti ti-arrows-move" aria-hidden="true"></i><h2>Przesuń: ${esc(i.name)}</h2><button onclick="closeModal()" style="padding:4px 9px">✕</button></div>
+    <div style="font-size:12px;color:var(--t2);margin-bottom:12px">Obecna lokalizacja: <b>${esc(itemLocLabel(i))}</b></div>
+    <div class="frow"><label>Nowy element</label><select id="mv-r" onchange="updateMoveShelfSelect('${id}')">${selC}</select></div>
+    <div id="mv-shelf-wrap">${selS}</div>
     <div class="brow">
       <button onclick="closeModal()">Anuluj</button>
       <button class="btn-primary" onclick="doMove(${id})"><i class="ti ti-check" aria-hidden="true"></i> Przesuń</button>
     </div>`);
 }
+function updateMoveShelfSelect(itemId){
+  const cid=document.getElementById('mv-r').value;
+  const c=getContainer(cid);
+  const wrap=document.getElementById('mv-shelf-wrap');if(!wrap)return;
+  if(c?.shelves?.length>0){
+    wrap.innerHTML=`<div class="frow"><label>Nowa półka</label><select id="mv-p">${c.shelves.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select></div>`;
+  } else {
+    wrap.innerHTML='';
+  }
+}
 async function doMove(id){
   const regal=document.getElementById('mv-r').value;
-  const polka=document.getElementById('mv-p').value;
+  const polkaEl=document.getElementById('mv-p');
+  const polka=polkaEl?polkaEl.value:'_';
   const i=items.find(x=>x.id===id);if(!i)return;
   try{await doSaveApi({...i,regal,polka},id);closeModal();}catch(e){alert('Błąd: '+e.message);}
 }
 
-// ── FORMULARZ ─────────────────────────────────────────────────────────────────
-function openAdd(regal,polka,posIndex,posTotal){fEditId=null;fSubs=[];fPhoto=null;showModal(buildForm(null,regal||'R1',polka||'P1',posIndex||null,posTotal||null));}
-function openEdit(id){closeModal();const i=items.find(x=>x.id===id);if(!i)return;fEditId=id;fSubs=(i.subitems||[]).map(s=>({...s}));fPhoto=i.photo||null;showModal(buildForm(i,i.regal,i.polka));}
+// ── FORMULARZ DODAJ/EDYTUJ ─────────────────────────────────────────────────────
+function openAdd(regal,polka,posIndex,posTotal){fEditId=null;fSubs=[];fPhoto=null;showModal(buildForm(null,regal||containers[0]?.id,polka||null,posIndex||null,posTotal||null));}
+function openEdit(id){closeModal();const i=items.find(x=>x.id===id);if(!i)return;fEditId=id;fSubs=(i.subitems||[]).map(s=>({...s}));fPhoto=i.photo||null;showModal(buildForm(i,i.regal,i.polka,i.posIndex,i.posTotal));}
 
-function buildForm(item,preR,preP,prePosIndex,prePosTotal){
+function buildForm(item,preC,preS,prePosIndex,prePosTotal){
   const v=k=>item?.[k]??'';
-  const regal=item?.regal||preR||'R1',polka=item?.polka||preP||'P1';
+  const curCid=item?.regal||preC||containers[0]?.id;
+  const curC=getContainer(curCid);
+  const curSid=item?.polka||preS||curC?.shelves?.[0]?.id||'_';
   const initPosIndex=item?.posIndex||prePosIndex||'';
   const initPosTotal=item?.posTotal||prePosTotal||'';
-  const selR=REGALY.map(r=>`<option${r===regal?' selected':''}>${r}</option>`).join('');
-  const selP=POLKI.map(p=>`<option${p===polka?' selected':''}>${p}</option>`).join('');
+  const selC=containers.map(c=>`<option value="${c.id}"${c.id===curCid?' selected':''}>${esc(c.name)}</option>`).join('');
+  const hasShelves=ctypeHasShelves(curC?.type||'shelf_unit')&&(curC?.shelves||[]).length>0;
+  const selS=hasShelves?(curC?.shelves||[]).map(s=>`<option value="${s.id}"${s.id===curSid?' selected':''}>${esc(s.name)}</option>`).join(''):'';
   const catOpts=CATS.map(c=>`<option>${c}</option>`).join('');
   const stOpts=STORAGES.map(s=>`<option>${s}</option>`).join('');
   return`<div class="mhead">
@@ -797,21 +895,20 @@ function buildForm(item,preR,preP,prePosIndex,prePosTotal){
     </div>
   </div>
   <div class="frow">
-    <label>Kolor na szkicu (opcjonalnie — nadpisuje kolor przechowywania)</label>
+    <label>Kolor na szkicu (opcjonalnie)</label>
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <input type="color" id="fcol" value="${item?.customColor||'#5DCAA5'}" style="width:40px;height:34px;padding:2px;cursor:pointer;flex:none">
+      <input type="color" id="fcol" value="${item?.customColor||'#5DCAA5'}" style="width:40px;height:34px;padding:2px;cursor:pointer;flex:none;${!item?.customColor?'opacity:.4':''}">
       <div style="display:flex;gap:5px;flex-wrap:wrap" id="color-presets">
         ${['','#5DCAA5','#85B7EB','#EF9F27','#F0997B','#AFA9EC','#f87171','#4ade80','#60a5fa','#e879f9','#facc15'].map(c=>
           `<button type="button" onclick="pickColor('${c}')" style="width:22px;height:22px;border-radius:4px;padding:0;flex:none;background:${c||'var(--card2)'};border:${(!item?.customColor&&!c||item?.customColor===c)?'2px solid #3C3489':'0.5px solid var(--b1)'}" title="${c||'domyślny'}">${!c?'✕':''}</button>`
         ).join('')}
       </div>
-      <span style="font-size:11px;color:var(--t2)">✕ = użyj koloru przechowywania</span>
     </div>
   </div>
   <div class="fsec">Lokalizacja</div>
   <div class="fgrid">
-    <div class="frow"><label>Regał</label><select id="fr" onchange="refreshPos()">${selR}</select></div>
-    <div class="frow"><label>Półka</label><select id="fp" onchange="refreshPos()">${selP}</select></div>
+    <div class="frow"><label>Element</label><select id="fr" onchange="updateFormShelves()">${selC}</select></div>
+    <div id="fs-wrap" class="frow" style="margin:0">${hasShelves?`<label>Półka</label><select id="fp">${selS}</select>`:''}</div>
   </div>
   <div class="frow">
     <label>Pozycja na półce (od lewej, opcjonalnie)</label>
@@ -828,7 +925,7 @@ function buildForm(item,preR,preP,prePosIndex,prePosTotal){
   </div>
   <div class="frow">
     <label>Poziom w stosie (opcjonalnie)</label>
-    <div class="fgrid" style="margin-bottom:5px">
+    <div class="fgrid">
       <div class="frow" style="margin:0"><label style="font-size:10px">Poziom (1=dół)</label>
         <input id="fsl" type="number" min="1" value="${esc(String(v('stackLevel')))}" placeholder="np. 1">
       </div>
@@ -836,7 +933,6 @@ function buildForm(item,preR,preP,prePosIndex,prePosTotal){
         <input id="fst" type="number" min="1" value="${esc(String(v('stackTotal')))}" placeholder="np. 2">
       </div>
     </div>
-    <div class="pos-hint">Przykład: dolna skrzynka = 1 z 2, górna = 2 z 2.</div>
   </div>
   <div class="fsec">Stan / ilość (opcjonalnie)</div>
   <div class="fgrid3">
@@ -850,7 +946,7 @@ function buildForm(item,preR,preP,prePosIndex,prePosTotal){
       <input id="fqthr" type="number" min="0" value="${esc(String(v('qtyThreshold')))}" placeholder="np. 2">
     </div>
   </div>
-  <div class="pos-hint" style="margin-bottom:8px">Zostaw puste jeśli nie śledzisz stanu tego przedmiotu.</div>
+  <div class="pos-hint" style="margin-bottom:8px">Zostaw puste jeśli nie śledzisz stanu.</div>
   <div class="frow"><label>Notatka</label><textarea id="fnote" rows="2" placeholder="np. z kompletem wierteł…">${esc(v('note'))}</textarea></div>
   <div class="fsec">Zawartość / podpozycje</div>
   <div id="subs" class="subs">${fSubs.map((s,i)=>subRow(s,i)).join('')}</div>
@@ -860,8 +956,21 @@ function buildForm(item,preR,preP,prePosIndex,prePosTotal){
   ${fPhoto?`<div style="position:relative"><img src="${fPhoto}" class="photo-prev"><button class="btn-danger" onclick="fPhoto=null;rePhoto()" style="position:absolute;top:4px;right:4px;padding:2px 7px;font-size:11px">✕</button></div>`:'<div id="phtw"></div>'}
   <div class="brow">
     <button onclick="closeModal()">Anuluj</button>
-    <button class="btn-primary" onclick="doSave()"><i class="ti ti-check" aria-hidden="true"></i> ${item?'Zapisz':'Dodaj'}</button>
+    <button class="btn-primary" onclick="doSave()"><i class="ti ti-check" aria-hidden="true"></i> ${item?'Zapisz zmiany':'Dodaj'}</button>
   </div>`;
+}
+
+function updateFormShelves(){
+  const cid=document.getElementById('fr').value;
+  const c=getContainer(cid);
+  const wrap=document.getElementById('fs-wrap');if(!wrap)return;
+  const hasShelves=ctypeHasShelves(c?.type||'shelf_unit')&&(c?.shelves||[]).length>0;
+  if(hasShelves){
+    wrap.innerHTML=`<label>Półka</label><select id="fp">${(c.shelves||[]).map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select>`;
+  } else {
+    wrap.innerHTML='';
+  }
+  refreshPos();
 }
 
 function subRow(s,idx){
@@ -869,7 +978,7 @@ function subRow(s,idx){
     <input placeholder="wałek, pędzel…" value="${esc(s.name||'')}" oninput="fSubs[${idx}].name=this.value">
     <input class="q" type="number" min="0" placeholder="ile" value="${s.qty??''}" oninput="fSubs[${idx}].qty=this.value===''?null:Number(this.value)">
     <input class="u" placeholder="szt/m" value="${esc(s.unit||'')}" oninput="fSubs[${idx}].unit=this.value">
-    <input class="thr" type="number" min="0" placeholder="próg" title="Próg alertu" value="${s.qtyThreshold??''}" oninput="fSubs[${idx}].qtyThreshold=this.value===''?null:Number(this.value)">
+    <input class="thr" type="number" min="0" placeholder="próg" value="${s.qtyThreshold??''}" oninput="fSubs[${idx}].qtyThreshold=this.value===''?null:Number(this.value)">
     <button onclick="removeSub(${idx})" class="btn-danger" style="padding:4px 7px;flex:none"><i class="ti ti-x" aria-hidden="true"></i></button>
   </div>`;
 }
@@ -877,28 +986,45 @@ function addSub(){fSubs.push({name:'',qty:null,unit:'',qtyThreshold:null});const
 function removeSub(idx){fSubs.splice(idx,1);const l=document.getElementById('subs');if(l)l.innerHTML=fSubs.map((s,i)=>subRow(s,i)).join('');}
 
 function pickColor(c){
-  const inp=document.getElementById('fcol');
-  if(inp)inp.value=c||'#5DCAA5';
+  const inp=document.getElementById('fcol');if(inp)inp.value=c||'#5DCAA5';
   document.querySelectorAll('#color-presets button').forEach((b,i)=>{
     const colors=['','#5DCAA5','#85B7EB','#EF9F27','#F0997B','#AFA9EC','#f87171','#4ade80','#60a5fa','#e879f9','#facc15'];
     b.style.border=colors[i]===c?'2px solid #3C3489':'0.5px solid var(--b1)';
   });
-  if(!c){inp.style.opacity='.4';}else{inp.style.opacity='1';}
-  inp.dataset.clear=c?'':'1';
+  if(inp){inp.style.opacity=c?'1':'.4';inp.dataset.clear=c?'':'1';}
 }
 
 function refreshPos(){
+  const t=parseInt(document.getElementById('fpt')?.value)||0;
   const m=parseInt(document.getElementById('fpi')?.value)||0;
-  const r=document.getElementById('fr')?.value,p=document.getElementById('fp')?.value;
+  const cid=document.getElementById('fr')?.value;
+  const sid=document.getElementById('fp')?.value;
   const w=document.getElementById('pospreview');if(!w)return;
   if(!t){w.innerHTML='';return;}
-  const occ=new Set(items.filter(x=>x.regal===r&&x.polka===p&&x.id!==fEditId&&x.posIndex).map(x=>parseInt(x.posIndex)));
-  let s='';for(let i=1;i<=Math.min(t,16);i++){const im=i===m,tk=!im&&occ.has(i);s+=`<div class="pslot${im?' mine':tk?' taken':''}">${i}</div>`;}
+  const occ=new Set(items.filter(x=>x.regal===cid&&x.polka===sid&&x.id!==fEditId&&x.posIndex).map(x=>parseInt(x.posIndex)));
+  let s='';
+  for(let i=1;i<=Math.min(t,16);i++){const im=i===m,tk=!im&&occ.has(i);s+=`<div class="pslot${im?' mine':tk?' taken':''}">${i}</div>`;}
   w.innerHTML=`<div class="pos-slots">${s}</div>`;
 }
 
 function handlePhoto(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{fPhoto=ev.target.result;rePhoto();};r.readAsDataURL(f);}
 function rePhoto(){const w=document.getElementById('phtw');if(!w)return;w.innerHTML=fPhoto?`<div style="position:relative"><img src="${fPhoto}" class="photo-prev"><button class="btn-danger" onclick="fPhoto=null;rePhoto()" style="position:absolute;top:4px;right:4px;padding:2px 7px;font-size:11px">✕</button></div>`:'';
+}
+
+function validatePosition(body){
+  const errors=[];
+  const {regal,polka,posIndex,posTotal,stackLevel}=body;
+  if(!posIndex&&!posTotal)return[];
+  const others=items.filter(x=>x.regal===regal&&x.polka===polka&&x.id!==fEditId&&x.posIndex);
+  if(posTotal){const conflict=others.find(x=>x.posTotal&&parseInt(x.posTotal)!==posTotal);if(conflict)errors.push(`Niezgodna liczba miejsc: ten=${posTotal}, "${conflict.name}"=${conflict.posTotal}. Wszystkie przedmioty na tej półce muszą mieć tę samą wartość.`);}
+  if(posIndex){const samePos=others.filter(x=>parseInt(x.posIndex)===posIndex);if(samePos.length>0){const realConflict=samePos.filter(x=>!stackLevel||!x.stackLevel);if(realConflict.length>0)errors.push(`Konflikt pozycji ${posIndex}: zajęta przez "${realConflict.map(x=>x.name).join(', ')}". Ustaw Poziom w stosie jeśli chcesz ułożyć jeden na drugim.`);}}
+  return errors;
+}
+function showFormError(msg){
+  let box=document.getElementById('form-error');
+  if(!box){box=document.createElement('div');box.id='form-error';box.style.cssText='background:#FCEBEB;border:0.5px solid #F09595;border-radius:8px;padding:10px 14px;font-size:12px;color:#A32D2D;white-space:pre-line;margin-bottom:10px';const brow=document.querySelector('.brow');if(brow)brow.parentNode.insertBefore(box,brow);}
+  box.innerHTML=`<b><i class="ti ti-alert-triangle" style="font-size:13px" aria-hidden="true"></i> Błąd walidacji</b>\n\n${esc(msg)}`;
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 async function doSave(){
@@ -910,12 +1036,12 @@ async function doSave(){
   const thrVal=document.getElementById('fqthr').value;
   const colInp=document.getElementById('fcol');
   const customColor=colInp?.dataset?.clear==='1'?null:(colInp?.value||null);
+  const polkaEl=document.getElementById('fp');
   const body={name,
     cat:document.getElementById('fc').value.trim()||'Inne',
     regal:document.getElementById('fr').value,
-    polka:document.getElementById('fp').value,
-    storage,
-    customColor,
+    polka:polkaEl?polkaEl.value:'_',
+    storage,customColor,
     posIndex:parseInt(document.getElementById('fpi').value)||null,
     posTotal:parseInt(document.getElementById('fpt').value)||null,
     stackLevel:parseInt(document.getElementById('fsl').value)||null,
@@ -926,85 +1052,20 @@ async function doSave(){
     note:document.getElementById('fnote').value.trim(),
     subitems:fSubs.filter(s=>s.name.trim()),
     photo:fPhoto};
-
-  // ── Walidacja pozycji na półce ─────────────────────────────────────────────
   const errors=validatePosition(body);
-  if(errors.length){
-    showFormError(errors.join('\n'));
-    return;
-  }
-
+  if(errors.length){showFormError(errors.join('\n'));return;}
   try{await doSaveApi(body,fEditId);closeModal();}catch(e){alert('Błąd: '+e.message);}
-}
-
-// Walidacja spójności pozycji na półce
-function validatePosition(body){
-  const errors=[];
-  const {regal,polka,posIndex,posTotal,stackLevel}=body;
-  if(!posIndex&&!posTotal) return []; // brak pozycji — nic nie walidujemy
-
-  // Inne przedmioty na tej samej półce (z wyjątkiem edytowanego)
-  const others=items.filter(x=>x.regal===regal&&x.polka===polka&&x.id!==fEditId&&x.posIndex);
-
-  // Reguła 1: spójność posTotal
-  if(posTotal){
-    const conflict=others.find(x=>x.posTotal&&parseInt(x.posTotal)!==posTotal);
-    if(conflict){
-      errors.push(
-        `Niezgodna liczba miejsc na półce ${regal}/${polka}:\n`+
-        `• Ten przedmiot: ${posTotal} miejsc\n`+
-        `• „${conflict.name}": ${conflict.posTotal} miejsc\n\n`+
-        `Wszystkie przedmioty na tej półce muszą mieć tę samą wartość „łącznie miejsc".`
-      );
-    }
-  }
-
-  // Reguła 2: konflikt pozycji (ta sama pozycja, ale nie stos)
-  if(posIndex){
-    const samePos=others.filter(x=>parseInt(x.posIndex)===posIndex);
-    if(samePos.length>0){
-      // Konflikt tylko jeśli ten przedmiot LUB tamten nie ma stackLevel
-      const realConflict=samePos.filter(x=>!stackLevel||!x.stackLevel);
-      if(realConflict.length>0){
-        const names=realConflict.map(x=>`„${x.name}"`).join(', ');
-        errors.push(
-          `Konflikt pozycji ${posIndex} na półce ${regal}/${polka}:\n`+
-          `• Zajęta przez: ${names}\n\n`+
-          `Jeśli chcesz ułożyć je jedną na drugiej, ustaw „Poziom w stosie" dla obu przedmiotów.`
-        );
-      }
-    }
-  }
-
-  return errors;
-}
-
-function showFormError(msg){
-  // Pokaż błąd w formularzu (nie alert)
-  let box=document.getElementById('form-error');
-  if(!box){
-    box=document.createElement('div');
-    box.id='form-error';
-    box.style.cssText='background:#FCEBEB;border:0.5px solid #F09595;border-radius:8px;padding:10px 14px;font-size:12px;color:#A32D2D;white-space:pre-line;margin-bottom:10px';
-    const brow=document.querySelector('.brow');
-    if(brow)brow.parentNode.insertBefore(box,brow);
-  }
-  box.innerHTML=`<b><i class="ti ti-alert-triangle" style="font-size:13px" aria-hidden="true"></i> Błąd walidacji</b>\n\n${esc(msg)}`;
-  box.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 async function doDelete(id){if(!confirm('Usunąć ten przedmiot?'))return;await doDeleteApi(id);closeModal();}
 
 function exportCSV(){
   const makeCSV=()=>{
-    const h='ID,Nazwa,Kategoria,Regał,Półka,Pozycja,Miejsc,Poziom,Poziomów,Ilość,Jednostka,Próg,Przechowywanie,Notatka,Podpozycje\n';
-    const rows=items.map(i=>{const sub=(i.subitems||[]).map(s=>`${s.name}${s.qty!=null?' x'+s.qty:''}${s.unit?' '+s.unit:''}`).join(' | ');return[i.id,`"${(i.name||'').replace(/"/g,'""')}"`,`"${(i.cat||'').replace(/"/g,'""')}"`,i.regal,i.polka,i.posIndex||'',i.posTotal||'',i.stackLevel||'',i.stackTotal||'',i.qty??'',i.qtyUnit||'',i.qtyThreshold??'',`"${(i.storage||'').replace(/"/g,'""')}"`,`"${(i.note||'').replace(/"/g,'""')}"`,`"${sub.replace(/"/g,'""')}"`].join(',');});
+    const h='ID,Nazwa,Kategoria,Lokalizacja,Element,Półka,Pozycja,Miejsc,Poziom,Poziomów,Ilość,Jednostka,Próg,Przechowywanie,Notatka,Podpozycje\n';
+    const rows=items.map(i=>{const sub=(i.subitems||[]).map(s=>`${s.name}${s.qty!=null?' x'+s.qty:''}${s.unit?' '+s.unit:''}`).join(' | ');return[i.id,`"${(i.name||'').replace(/"/g,'""')}"`,`"${(i.cat||'').replace(/"/g,'""')}"`,`"${itemLocLabel(i).replace(/"/g,'""')}"`,i.regal,i.polka,i.posIndex||'',i.posTotal||'',i.stackLevel||'',i.stackTotal||'',i.qty??'',i.qtyUnit||'',i.qtyThreshold??'',`"${(i.storage||'').replace(/"/g,'""')}"`,`"${(i.note||'').replace(/"/g,'""')}"`,`"${sub.replace(/"/g,'""')}"`].join(',');});
     return'\uFEFF'+h+rows.join('\n');
   };
-  if(serverMode){
-    fetch('/api/export/csv',{headers:{'Authorization':`Bearer ${authToken}`}}).then(r=>r.blob()).then(blob=>{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='garaz.csv';a.click();});
-    return;
-  }
+  if(serverMode){fetch('/api/export/csv',{headers:{'Authorization':`Bearer ${authToken}`}}).then(r=>r.blob()).then(blob=>{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='garaz.csv';a.click();});return;}
   const blob=new Blob([makeCSV()],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='garaz.csv';a.click();
 }
@@ -1015,36 +1076,22 @@ function overlayClick(e){if(e.target===document.getElementById('modal'))closeMod
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 (async function boot(){
-  // Najpierw pokaż aplikację w trybie lokalnym — zawsze działa
-  lsLoad();
+  lsLoad();lsLoadContainers();
   document.getElementById('login-screen').style.display='none';
   document.getElementById('main-app').style.display='block';
   render();
-
-  // W tle spróbuj połączyć się z serwerem Node.js
   const saved=loadToken();
   try{
-    const r=await fetch('/api/items',{
-      headers:saved?{'Authorization':`Bearer ${saved}`}:{},
-      signal:AbortSignal.timeout(2000) // 2 sekundy timeout
-    });
-    if(r.status===401){
-      // Serwer jest ale potrzeba logowania
-      document.getElementById('main-app').style.display='none';
-      document.getElementById('login-screen').style.display='flex';
-      return;
-    }
+    const r=await fetch('/api/items',{headers:saved?{'Authorization':`Bearer ${saved}`}:{},signal:AbortSignal.timeout(2000)});
+    if(r.status===401){document.getElementById('main-app').style.display='none';document.getElementById('login-screen').style.display='flex';return;}
     if(r.ok&&saved){
-      // Zalogowany i serwer odpowiada
       authToken=saved;
       items=await r.json();
       nextId=Math.max(0,...items.map(x=>x.id))+1;
-      render();
-      tryWS();
+      await loadContainersFromServer();
+      render();tryWS();
     }
-  }catch(e){
-    // Brak serwera Node.js — zostajemy w trybie lokalnym, nic nie robimy
-  }
+  }catch(e){}
 })();
 </script>
 </body>

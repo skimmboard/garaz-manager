@@ -134,17 +134,20 @@ app.get('/api/items', requireAuth, (req, res) => {
   res.json(db.items);
 });
 
-// Etykiety i konfiguracja regałów/półek
+// Konfiguracja kontenerów (regałów, szafek, biurek…)
 app.get('/api/labels', requireAuth, (req, res) => {
-  res.json({ shelfLabels: db.shelfLabels||{}, shelfConfig: db.shelfConfig||{} });
+  res.json({
+    containers: db.containers || null,
+    nextContainerId: db.nextContainerId || null,
+  });
 });
 app.put('/api/labels', requireAuth, async (req, res) => {
-  db.shelfLabels = req.body.shelfLabels || {};
-  db.shelfConfig = req.body.shelfConfig || {};
+  if (req.body.containers) db.containers = req.body.containers;
+  if (req.body.nextContainerId) db.nextContainerId = req.body.nextContainerId;
   try {
     await persist();
-    broadcast({ type: 'LABELS_UPDATED', shelfLabels: db.shelfLabels, shelfConfig: db.shelfConfig });
-    res.json({ shelfLabels: db.shelfLabels, shelfConfig: db.shelfConfig });
+    broadcast({ type: 'LABELS_UPDATED', containers: db.containers, nextContainerId: db.nextContainerId });
+    res.json({ containers: db.containers, nextContainerId: db.nextContainerId });
   } catch(e) {
     res.status(500).json({ error: 'Błąd zapisu' });
   }
