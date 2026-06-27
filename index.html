@@ -43,14 +43,42 @@ header h1{font-size:17px;font-weight:500;flex:1}
 .btn-move{background:#E1F5EE;color:#085041;border-color:#5DCAA5;font-size:12px;padding:4px 10px}
 .btn-move:hover{background:#9FE1CB}
 /* SZKIC */
-.garage{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
-.garage.vertical{grid-template-columns:1fr}
-.garage.vertical .shelf-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:7px;padding:10px}
+/* Poziomy: 2 rzędy po 2 regały — albo 4 w jednym rzędzie na szerokim ekranie */
+.garage{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+
+/* Pionowy: każdy kontener na pełną szerokość, półki obok siebie */
+.garage.vertical{grid-template-columns:1fr;gap:12px}
+.garage.vertical .shelf-unit{display:grid;grid-template-columns:200px 1fr;align-items:stretch}
+.garage.vertical .shelf-header{
+  border-right:0.5px solid var(--b3);
+  border-bottom:none;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:flex-start;
+  gap:4px;
+  padding:12px 14px;
+  border-radius:0;
+}
+.garage.vertical .shelf-body{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:6px;
+  padding:8px;
+  align-content:start;
+}
 .garage.vertical .shelf-row{min-height:52px}
+.garage.vertical .flat-body{
+  padding:8px;
+  display:flex;
+  flex-wrap:wrap;
+  align-content:start;
+}
 .layout-toggle{display:flex;border:0.5px solid var(--b3);border-radius:var(--radius);overflow:hidden;margin-left:auto}
 .layout-btn{padding:5px 9px;border:none;background:transparent;cursor:pointer;color:var(--t2);font-size:14px}
 .layout-btn.active{background:var(--card2);color:var(--t1)}
 .shelf-unit{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius-lg);overflow:hidden}
+.garage.vertical .shelf-unit{overflow:visible;border-radius:var(--radius-lg);display:grid;grid-template-columns:180px 1fr;border:0.5px solid var(--b3);background:var(--card)}
+.garage.vertical .shelf-header{border-radius:var(--radius-lg) 0 0 var(--radius-lg);min-height:100%}
 .shelf-header{background:var(--card2);padding:9px 14px;font-size:13px;font-weight:500;color:var(--t2);border-bottom:0.5px solid var(--b3);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
 .shelf-header:hover{background:#EEEDFE}
 .shelf-header b{color:var(--t1);font-weight:600;font-size:14px}
