@@ -455,7 +455,7 @@ function buildContainer(c,items){
   const hasShelves=ctypeHasShelves(c.type)&&c.shelves&&c.shelves.length>0;
   const icon=ctypeIcon(c.type);
   return`<div class="shelf-unit">
-    <div class="shelf-header" onclick="openEditContainer('${c.id}')" title="Kliknij żeby edytować">
+    <div class="shelf-header" onclick="openEditContainer('${c.id}')">
       <div style="display:flex;align-items:center;gap:7px">
         <i class="ti ${icon}" style="font-size:14px;flex:none" aria-hidden="true"></i>
         <b>${esc(c.name)}</b>
@@ -493,13 +493,13 @@ function buildShelfRow(cid,shelf,items){
     for(let pos=1;pos<=maxTotal;pos++){
       const g=byPos.get(pos);
       if(!g){
-        slots+=`<div class="slot-placeholder" title="poz. ${pos} — puste" onclick="openAdd('${cid}','${shelf.id}',${pos},${maxTotal})">+${pos}</div>`;
+        slots+=`<div class="slot-placeholder" onclick="openAdd('${cid}','${shelf.id}',${pos},${maxTotal})">+${pos}</div>`;
       } else if(g.length===1){
         slots+=renderSlot(g[0],pos,maxTotal);
       } else {
         const sorted=[...g].sort((a,b)=>(parseInt(b.stackLevel)||1)-(parseInt(a.stackLevel)||1));
         const layers=sorted.map(i=>renderStackLayer(i)).join('');
-        slots+=`<div class="slot-stack" title="poz. ${pos}"><div class="stack-lbl">↕${g.length} poz.${pos}</div>${layers}</div>`;
+        slots+=`<div class="slot-stack"><div class="stack-lbl">↕${g.length} poz.${pos}</div>${layers}</div>`;
       }
     }
     [...byPos.entries()].filter(([k])=>typeof k==='string'&&k.startsWith('_')).forEach(([,g])=>{
@@ -514,7 +514,7 @@ function buildShelfRow(cid,shelf,items){
     ondragover="onDragOver(event)" ondragleave="onDragLeave(event)"
     ondrop="onDrop(event,'${cid}','${shelf.id}')"
     data-regal="${cid}" data-polka="${shelf.id}">
-    <span class="shelf-row-lbl" onclick="event.stopPropagation();openEditContainer('${cid}')" title="Edytuj">${esc(shelf.name)}${cfgInfo}</span>
+    <span class="shelf-row-lbl" onclick="event.stopPropagation();openEditContainer('${cid}')">${esc(shelf.name)}${cfgInfo}</span>
     <div class="slots">${slots}<button class="slot-add" onclick="openAdd('${cid}','${shelf.id}')" title="Dodaj">+</button></div>
   </div>`;
 }
@@ -1326,7 +1326,7 @@ function startHoverPreview(e,id){
   hoverTimer=setTimeout(()=>{
     hoverTimer=null;
     showPreview({clientX:ex,clientY:ey},id,true);
-  },2000);
+  },800);
 }
 
 function cancelHoverTimer(){
