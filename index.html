@@ -44,6 +44,12 @@ header h1{font-size:17px;font-weight:500;flex:1}
 .btn-move:hover{background:#9FE1CB}
 /* SZKIC */
 .garage{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.garage.vertical{grid-template-columns:1fr}
+.garage.vertical .shelf-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:7px;padding:10px}
+.garage.vertical .shelf-row{min-height:52px}
+.layout-toggle{display:flex;border:0.5px solid var(--b3);border-radius:var(--radius);overflow:hidden;margin-left:auto}
+.layout-btn{padding:5px 9px;border:none;background:transparent;cursor:pointer;color:var(--t2);font-size:14px}
+.layout-btn.active{background:var(--card2);color:var(--t1)}
 .shelf-unit{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius-lg);overflow:hidden}
 .shelf-header{background:var(--card2);padding:9px 14px;font-size:13px;font-weight:500;color:var(--t2);border-bottom:0.5px solid var(--b3);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
 .shelf-header:hover{background:#EEEDFE}
@@ -200,14 +206,27 @@ const CONTAINER_TYPES=[
   {v:'flat',       l:'Inne — bez półek', icon:'ti-box'},
   {v:'other',      l:'Inne — z półkami', icon:'ti-archive'},
 ];
-function ctypeIcon(v){return CONTAINER_TYPES.find(t=>t.v===v)?.icon||'ti-box';}
-function ctypeLabel(v){return CONTAINER_TYPES.find(t=>t.v===v)?.l||v;}
-function ctypeHasShelves(v){return!['desk','flat'].includes(v);}
+function ctypeIcon(v){
+  // Szukaj po v (kluczu) lub po l (etykiecie)
+  return CONTAINER_TYPES.find(t=>t.v===v||t.l===v)?.icon||'ti-box';
+}
+function ctypeLabel(v){
+  return CONTAINER_TYPES.find(t=>t.v===v||t.l===v)?.l||v||'Inny';
+}
+function ctypeHasShelves(v){
+  // Bez półek tylko gdy typ to 'desk', 'flat' lub wpisany tekst zawiera 'biurko'/'bez półek'
+  const found=CONTAINER_TYPES.find(t=>t.v===v||t.l===v);
+  if(found) return!['desk','flat'].includes(found.v);
+  // Własny typ — domyślnie z półkami, chyba że nazwa sugeruje inaczej
+  const low=(v||'').toLowerCase();
+  return!low.includes('biurk')&&!low.includes('bez półek')&&!low.includes('blat');
+}
 
 // ── Stan ──────────────────────────────────────────────────────────────────────
 let items=[],nextId=1,view='garage',search='',fSubs=[],fPhoto=null,fEditId=null;
 let ws=null,serverMode=false,authToken=null,dragId=null;
 let pendingQty={};
+let garageLayout='horizontal'; // 'horizontal' | 'vertical'
 
 // Dynamiczne kontenery (regały, szafki, biurka…)
 // Domyślnie R1-R4 zachowane jako "Regał 1-4"
@@ -351,19 +370,31 @@ function render(){
   const fi=q?items.filter(i=>[i.name,i.cat,i.storage||'',i.note||'',itemLocLabel(i),(i.subitems||[]).map(s=>s.name).join(' ')].join(' ').toLowerCase().includes(q)):items;
   const root=document.getElementById('root');
   if(q){root.innerHTML=buildSearch(fi);return;}
-  root.innerHTML=`<div class="tabs">
-    <button class="tab${view==='garage'?' active':''}" onclick="setView('garage')"><i class="ti ti-layout-board" aria-hidden="true"></i> Szkic</button>
-    <button class="tab${view==='list'?' active':''}" onclick="setView('list')"><i class="ti ti-list" aria-hidden="true"></i> Lista</button>
-    <button class="tab${view==='stock'?' active':''}" onclick="setView('stock')"><i class="ti ti-package" aria-hidden="true"></i> Zapasy</button>
-    <button class="tab${view==='manage'?' active':''}" onclick="setView('manage')"><i class="ti ti-settings" aria-hidden="true"></i> Elementy</button>
-  </div>${view==='garage'?buildGarage(fi):view==='stock'?buildStock():view==='manage'?buildManage():buildList(fi)}`;
+  root.innerHTML=`<div style="display:flex;align-items:center;margin-bottom:1.25rem;gap:8px;flex-wrap:wrap">
+    <div class="tabs" style="margin:0">
+      <button class="tab${view==='garage'?' active':''}" onclick="setView('garage')"><i class="ti ti-layout-board" aria-hidden="true"></i> Szkic</button>
+      <button class="tab${view==='list'?' active':''}" onclick="setView('list')"><i class="ti ti-list" aria-hidden="true"></i> Lista</button>
+      <button class="tab${view==='stock'?' active':''}" onclick="setView('stock')"><i class="ti ti-package" aria-hidden="true"></i> Zapasy</button>
+      <button class="tab${view==='manage'?' active':''}" onclick="setView('manage')"><i class="ti ti-settings" aria-hidden="true"></i> Elementy</button>
+    </div>
+    ${view==='garage'?`<div class="layout-toggle" title="Zmień układ">
+      <button class="layout-btn${garageLayout==='horizontal'?' active':''}" onclick="setLayout('horizontal')" title="Poziomo"><i class="ti ti-layout-columns" aria-hidden="true"></i></button>
+      <button class="layout-btn${garageLayout==='vertical'?' active':''}" onclick="setLayout('vertical')" title="Pionowo"><i class="ti ti-layout-rows" aria-hidden="true"></i></button>
+    </div>`:''}
+  </div>
+  ${view==='garage'?buildGarage(fi):view==='stock'?buildStock():view==='manage'?buildManage():buildList(fi)}`;
 }
 function setView(v){view=v;render();}
+function setLayout(l){
+  garageLayout=l;
+  try{localStorage.setItem('garaz_layout',l);}catch(e){}
+  render();
+}
 function onSearch(v){search=v;render();}
 
 // ── SZKIC ─────────────────────────────────────────────────────────────────────
 function buildGarage(items){
-  return`<div class="garage">${containers.map(c=>buildContainer(c,items)).join('')}</div>`;
+  return`<div class="garage${garageLayout==='vertical'?' vertical':''}">${containers.map(c=>buildContainer(c,items)).join('')}</div>`;
 }
 
 function buildContainer(c,items){
@@ -491,10 +522,11 @@ function openAddContainer(){
   showModal(`
     <div class="mhead"><i class="ti ti-plus" style="font-size:17px" aria-hidden="true"></i><h2>Nowy element garażu</h2><button onclick="closeModal()" style="padding:4px 9px">✕</button></div>
     <div class="frow"><label>Nazwa *</label><input id="cn-name" placeholder="np. Szafka wisząca, Biurko, Domek narzędziowy"></div>
-    <div class="frow"><label>Typ</label>
-      <select id="cn-type" onchange="updateShelfFields()">
-        ${CONTAINER_TYPES.map(t=>`<option value="${t.v}">${t.l}</option>`).join('')}
-      </select>
+    <div class="frow"><label>Typ / opis (wybierz lub wpisz własny)</label>
+      <input id="cn-type" list="dl-ctypes" placeholder="np. Regał, Szafka, Wieszak na rowery…" oninput="updateShelfFields()">
+      <datalist id="dl-ctypes">
+        ${CONTAINER_TYPES.map(t=>`<option value="${t.l}">${t.l}</option>`).join('')}
+      </datalist>
     </div>
     <div id="cn-shelf-section">
       <div class="fsec">Półki</div>
@@ -519,7 +551,10 @@ function updateShelfFields(){
 async function doAddContainer(){
   const name=document.getElementById('cn-name').value.trim();
   if(!name){document.getElementById('cn-name').focus();return;}
-  const type=document.getElementById('cn-type').value;
+  const typeRaw=document.getElementById('cn-type').value.trim();
+  // Zmapuj etykietę na klucz jeśli pasuje, inaczej zachowaj jako własny
+  const found=CONTAINER_TYPES.find(t=>t.l===typeRaw||t.v===typeRaw);
+  const type=found?found.v:typeRaw||'other';
   const hasShelves=ctypeHasShelves(type);
   const shelfCount=hasShelves?Math.max(1,parseInt(document.getElementById('cn-shelves')?.value)||4):0;
   const id=`C${nextContainerId++}`;
@@ -539,10 +574,11 @@ function openEditContainer(cid){
       <button onclick="closeModal()" style="padding:4px 9px">✕</button>
     </div>
     <div class="frow"><label>Nazwa</label><input id="ce-name" value="${esc(c.name)}"></div>
-    <div class="frow"><label>Typ</label>
-      <select id="ce-type">
-        ${CONTAINER_TYPES.map(t=>`<option value="${t.v}"${t.v===c.type?' selected':''}>${t.l}</option>`).join('')}
-      </select>
+    <div class="frow"><label>Typ / opis (wybierz lub wpisz własny)</label>
+      <input id="ce-type" list="dl-ctypes-edit" value="${esc(ctypeLabel(c.type))}">
+      <datalist id="dl-ctypes-edit">
+        ${CONTAINER_TYPES.map(t=>`<option value="${t.l}">`).join('')}
+      </datalist>
     </div>
     ${hasShelves?`
     <div class="fsec">Półki <small style="font-weight:400;text-transform:none;letter-spacing:0">(kliknij żeby edytować)</small></div>
@@ -565,7 +601,9 @@ function openEditContainer(cid){
 async function doEditContainer(cid){
   const c=getContainer(cid);if(!c)return;
   c.name=document.getElementById('ce-name').value.trim()||c.name;
-  c.type=document.getElementById('ce-type').value;
+  const typeRaw=document.getElementById('ce-type').value.trim();
+  const found=CONTAINER_TYPES.find(t=>t.l===typeRaw||t.v===typeRaw);
+  c.type=found?found.v:typeRaw||c.type;
   if(!ctypeHasShelves(c.type))c.shelves=[];
   await saveContainersToServer();
   closeModal();render();
@@ -1072,11 +1110,16 @@ function exportCSV(){
 
 function showModal(html){document.getElementById('mbox').innerHTML=html;document.getElementById('modal').style.display='flex';setTimeout(refreshPos,30);}
 function closeModal(){document.getElementById('modal').style.display='none';}
-function overlayClick(e){if(e.target===document.getElementById('modal'))closeModal();}
+function overlayClick(e){
+  // Celowo wyłączone — kliknięcie poza oknem NIE zamyka formularza
+  // Zamknięcie tylko przez przycisk ✕ lub Escape
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('modal').style.display!=='none')closeModal();});
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 (async function boot(){
   lsLoad();lsLoadContainers();
+  try{const l=localStorage.getItem('garaz_layout');if(l)garageLayout=l;}catch(e){}
   document.getElementById('login-screen').style.display='none';
   document.getElementById('main-app').style.display='block';
   render();
