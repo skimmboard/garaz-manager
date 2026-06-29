@@ -1,9 +1,4 @@
-/**
- * Service Worker — Garaż Manager PWA
- * Strategia: Network First dla API, Cache First dla statycznych zasobów
- */
-
-const CACHE = 'garaz-v1';
+const CACHE = 'garaz-v2';
 const STATIC = [
   '/',
   '/index.html',
@@ -14,14 +9,12 @@ const STATIC = [
   'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js',
 ];
 
-// Instalacja — cache zasobów statycznych
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE).then(c => c.addAll(STATIC)).then(() => self.skipWaiting())
   );
 });
 
-// Aktywacja — usuń stare cache
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys =>
@@ -30,12 +23,19 @@ self.addEventListener('activate', e => {
   );
 });
 
-// Fetch — Network First dla API, Cache First dla reszty
 self.addEventListener('fetch', e => {
-  const url = new URL(e.request.url);
+  const url = e.request.url;
 
-  // API zawsze przez sieć (dane muszą być aktualne)
-  if (url.pathname.startsWith('/api/')) {
+  // Ignoruj chrome-extension i inne nieobsługiwane schematy
+  if (!url.startsWith('http://') && !url.startsWith('https://')) return;
+
+  // WebSocket — ignoruj
+  if (url.startsWith('ws://') || url.startsWith('wss://')) return;
+
+  const path = new URL(url).pathname;
+
+  // API zawsze przez sieć
+  if (path.startsWith('/api/')) {
     e.respondWith(
       fetch(e.request).catch(() =>
         new Response(JSON.stringify({ error: 'Brak połączenia' }), {
@@ -47,21 +47,17 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // WebSocket — ignoruj
-  if (e.request.url.startsWith('ws')) return;
-
   // Statyczne zasoby — Cache First, fallback do sieci
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;
       return fetch(e.request).then(resp => {
-        // Zapisz w cache tylko poprawne odpowiedzi
         if (resp && resp.status === 200 && resp.type === 'basic') {
           const clone = resp.clone();
           caches.open(CACHE).then(c => c.put(e.request, clone));
         }
         return resp;
-      }).catch(() => caches.match('/index.html')); // offline fallback
+      }).catch(() => caches.match('/index.html'));
     })
   );
 });
