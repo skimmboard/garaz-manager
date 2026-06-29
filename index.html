@@ -2,153 +2,164 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Garaż 🔧</title>
+<!-- PWA -->
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#3C3489">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Garaż">
 <link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
-/* ── Reset ── */
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#f8f7f5;--card:#fff;--card2:#f1efe8;
   --t1:#1a1a18;--t2:#6b6b67;--t3:#9e9e9a;
   --b1:#c8c6be;--b2:#d4d2ca;--b3:#e8e6de;
-  --accent:#3C3489;--accent-bg:#EEEDFE;--accent-border:#AFA9EC;
-  --green:#1D9E75;--red:#A32D2D;--red-bg:#FCEBEB;--red-border:#F09595;
   --radius:8px;--radius-lg:12px;
-  --safe-top:env(safe-area-inset-top,0px);
-  --safe-bottom:env(safe-area-inset-bottom,0px);
 }
 @media(prefers-color-scheme:dark){:root{
   --bg:#1c1c1a;--card:#252523;--card2:#2c2c2a;
   --t1:#f0ede8;--t2:#9e9e9a;--t3:#6b6b67;
   --b1:#4a4a47;--b2:#3a3a37;--b3:#313130;
 }}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--t1);font-size:14px;line-height:1.5}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--t1);font-size:14px;line-height:1.5;min-height:100vh}
 button{font-family:inherit;cursor:pointer;border:0.5px solid var(--b1);background:var(--card);color:var(--t1);border-radius:var(--radius);padding:6px 13px;font-size:13px}
 button:hover{background:var(--card2)}
-button:active{transform:scale(.97)}
+button:active{transform:scale(.98)}
 input,select,textarea{font-family:inherit;font-size:13px;color:var(--t1);background:var(--card);border:0.5px solid var(--b1);border-radius:var(--radius);padding:6px 10px;outline:none;width:100%;transition:border-color .15s}
 input:focus,select:focus,textarea:focus{border-color:#7f77dd}
 textarea{resize:vertical}
-
-/* ── Waking screen ── */
-#wake-screen{
-  position:fixed;inset:0;background:var(--bg);z-index:999;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
-  padding:20px;
-}
-.wake-icon{font-size:48px;animation:pulse 1.5s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.95)}}
-.wake-title{font-size:20px;font-weight:600;color:var(--t1)}
-.wake-sub{font-size:14px;color:var(--t2);text-align:center;max-width:280px;line-height:1.6}
-.wake-progress{width:200px;height:4px;background:var(--b3);border-radius:2px;overflow:hidden;margin-top:4px}
-.wake-progress-bar{height:100%;background:var(--accent);border-radius:2px;width:0%;transition:width .4s ease}
-.wake-retry{background:var(--accent-bg);color:var(--accent);border:0.5px solid var(--accent-border);padding:10px 24px;border-radius:var(--radius-lg);font-size:14px;font-weight:500;display:none;margin-top:8px}
-
-/* ── Layout ── */
 .app{max-width:1200px;margin:0 auto;padding:1rem}
-
-/* ── Desktop header ── */
 header{display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
 header h1{font-size:17px;font-weight:500;flex:1}
-.status{font-size:12px;color:var(--t2);display:flex;align-items:center;gap:5px;cursor:pointer}
-.dot{width:7px;height:7px;border-radius:50%;background:#22c55e;flex:none;transition:background .3s}
+.status{font-size:12px;color:var(--t2);display:flex;align-items:center;gap:5px}
+.dot{width:7px;height:7px;border-radius:50%;background:#22c55e;flex:none}
 .dot.off{background:#f59e0b}
-.dot.waking{background:#f59e0b;animation:blink .8s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 .topbar{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
 .topbar input{flex:1;min-width:180px}
-
-/* ── Tabs ── */
 .tabs{display:flex;border:0.5px solid var(--b3);border-radius:var(--radius);overflow:hidden;width:fit-content;margin-bottom:1.25rem;flex-wrap:wrap}
 .tab{padding:6px 14px;font-size:13px;cursor:pointer;border:none;background:transparent;color:var(--t2);border-radius:0;display:flex;align-items:center;gap:5px}
 .tab.active{background:var(--card2);color:var(--t1);font-weight:500}
-.btn-primary{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-border);font-weight:500}
+.btn-primary{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC;font-weight:500}
 .btn-primary:hover{background:#CECBF6}
-.btn-danger{color:var(--red);border-color:var(--red-border)}
-.btn-danger:hover{background:var(--red-bg)}
+.btn-danger{color:#A32D2D;border-color:#F09595}
+.btn-danger:hover{background:#FCEBEB}
 .btn-move{background:#E1F5EE;color:#085041;border-color:#5DCAA5;font-size:12px;padding:4px 10px}
 .btn-move:hover{background:#9FE1CB}
-
-/* ── Garage / shelf ── */
+/* SZKIC */
+/* Poziomy: 2 rzędy po 2 regały — albo 4 w jednym rzędzie na szerokim ekranie */
 .garage{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+
+/* Pionowy: każdy kontener na pełną szerokość, półki obok siebie */
+.garage.vertical{grid-template-columns:1fr;gap:12px}
+.garage.vertical .shelf-unit{display:grid;grid-template-columns:200px 1fr;align-items:stretch}
+.garage.vertical .shelf-header{
+  border-right:0.5px solid var(--b3);
+  border-bottom:none;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:flex-start;
+  gap:4px;
+  padding:12px 14px;
+  border-radius:0;
+}
+.garage.vertical .shelf-body{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:6px;
+  padding:8px;
+  align-content:start;
+}
+.garage.vertical .shelf-row{min-height:52px}
+.garage.vertical .flat-body{
+  padding:8px;
+  display:flex;
+  flex-wrap:wrap;
+  align-content:start;
+}
 .layout-toggle{display:flex;border:0.5px solid var(--b3);border-radius:var(--radius);overflow:hidden;margin-left:auto}
 .layout-btn{padding:5px 9px;border:none;background:transparent;cursor:pointer;color:var(--t2);font-size:14px}
 .layout-btn.active{background:var(--card2);color:var(--t1)}
 .shelf-unit{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius-lg);overflow:hidden}
+.garage.vertical .shelf-unit{overflow:visible;border-radius:var(--radius-lg);display:grid;grid-template-columns:180px 1fr;border:0.5px solid var(--b3);background:var(--card)}
+.garage.vertical .shelf-header{border-radius:var(--radius-lg) 0 0 var(--radius-lg);min-height:100%}
 .shelf-header{background:var(--card2);padding:9px 14px;font-size:13px;font-weight:500;color:var(--t2);border-bottom:0.5px solid var(--b3);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
-.shelf-header:hover{background:var(--accent-bg)}
+.shelf-header:hover{background:#EEEDFE}
 .shelf-header b{color:var(--t1);font-weight:600;font-size:14px}
 .shelf-header-icons{display:flex;align-items:center;gap:6px}
 .shelf-body{padding:8px 10px;display:flex;flex-direction:column;gap:7px}
 .shelf-row{background:var(--card2);border:0.5px solid var(--b3);border-radius:8px;padding:6px 8px;min-height:58px;position:relative;transition:border-color .15s,background .15s}
-.shelf-row.drag-over{border-color:#7f77dd;background:var(--accent-bg)}
+.shelf-row.drag-over{border-color:#7f77dd;background:#EEEDFE}
 .shelf-row-lbl{font-size:10px;color:var(--t3);position:absolute;top:4px;left:8px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;cursor:pointer}
 .shelf-row-lbl:hover{color:var(--t1)}
 .slots{display:flex;gap:5px;padding-top:20px;flex-wrap:wrap;align-items:flex-end}
-.slot{height:32px;min-width:38px;max-width:90px;border-radius:5px;border:0.5px solid;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:grab;padding:3px 7px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.2;position:relative;user-select:none;font-weight:500;transition:opacity .15s,transform .1s}
+.slot{height:32px;min-width:38px;max-width:90px;border-radius:5px;border:0.5px solid;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:grab;padding:3px 7px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.2;position:relative;user-select:none;font-weight:500}
 .slot:hover{opacity:.8}
 .slot.dragging{opacity:.35;cursor:grabbing}
-.slot-qty{position:absolute;top:-6px;right:-5px;background:var(--accent);color:#fff;font-size:9px;border-radius:10px;padding:0 5px;min-width:16px;text-align:center;line-height:16px;height:16px;font-weight:600}
-.slot-low{position:absolute;top:-6px;right:-5px;background:var(--red);color:#fff;font-size:9px;border-radius:10px;padding:0 5px;min-width:16px;text-align:center;line-height:16px;height:16px;font-weight:600}
+.slot-qty{position:absolute;top:-6px;right:-5px;background:#3C3489;color:#fff;font-size:9px;border-radius:10px;padding:0 5px;min-width:16px;text-align:center;line-height:16px;height:16px;font-weight:600}
+.slot-low{position:absolute;top:-6px;right:-5px;background:#A32D2D;color:#fff;font-size:9px;border-radius:10px;padding:0 5px;min-width:16px;text-align:center;line-height:16px;height:16px;font-weight:600}
 .s-loose{background:#F1EFE8;color:#444441;border-color:#B4B2A9}
 .s-box{background:#E1F5EE;color:#085041;border-color:#5DCAA5}
 .s-original{background:#E6F1FB;color:#0C447C;border-color:#85B7EB}
 .s-custom{background:#FAEEDA;color:#633806;border-color:#EF9F27}
 .slot-add{height:32px;width:32px;border-radius:5px;border:0.5px dashed var(--b1);background:transparent;color:var(--t3);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none;padding:0;line-height:1}
-.slot-add:hover{border-color:#AFA9EC;color:var(--accent);background:var(--accent-bg)}
+.slot-add:hover{border-color:#AFA9EC;color:#3C3489;background:#EEEDFE}
 .slot-placeholder{height:32px;min-width:28px;border-radius:5px;border:0.5px dashed var(--b2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--t3);padding:2px 5px;flex:none;cursor:pointer}
-.slot-placeholder:hover{border-color:#AFA9EC;color:var(--accent);background:var(--accent-bg)}
-.flat-body{padding:8px 10px;min-height:58px}
-
-/* ── Context preview (hover) ── */
-.ctx-preview{position:fixed;z-index:500;background:var(--card);border:0.5px solid var(--b2);border-radius:var(--radius-lg);box-shadow:0 8px 32px rgba(0,0,0,.18);padding:12px;min-width:200px;max-width:280px;pointer-events:none;display:none}
-.ctx-preview.visible{pointer-events:auto;display:block}
+.slot-placeholder:hover{border-color:#AFA9EC;color:#3C3489;background:#EEEDFE}
+.slot-stack{display:flex;flex-direction:column;gap:2px;cursor:pointer;min-width:38px;max-width:90px}
+.slot-stack:hover{opacity:.75}
+.stack-layer{height:26px;border-radius:4px;border:0.5px solid;display:flex;align-items:center;justify-content:center;font-size:10px;padding:2px 6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.2;font-weight:500}
+.stack-lbl{font-size:9px;color:var(--t3);text-align:center;line-height:1.4}
+/* PODGLĄD KONTEKSTOWY (prawy klik / długie przytrzymanie) */
+.ctx-preview{position:fixed;z-index:500;background:var(--card);border:0.5px solid var(--b2);border-radius:var(--radius-lg);box-shadow:0 8px 32px rgba(0,0,0,.18);padding:12px;min-width:200px;max-width:280px;pointer-events:none}
+.ctx-preview.visible{pointer-events:auto}
 .ctx-preview-name{font-size:14px;font-weight:600;margin-bottom:4px}
 .ctx-preview-loc{font-size:11px;color:var(--t2);margin-bottom:8px}
 .ctx-preview-img{width:100%;max-height:120px;object-fit:contain;border-radius:var(--radius);margin-bottom:8px;background:var(--card2)}
 .ctx-preview-subs{font-size:11px;color:var(--t2);line-height:1.6}
-.ctx-preview-qty{font-size:12px;font-weight:500;color:var(--accent);margin-top:4px}
+.ctx-preview-qty{font-size:12px;font-weight:500;color:#3C3489;margin-top:4px}
 .ctx-preview-actions{display:flex;gap:6px;margin-top:10px;pointer-events:auto}
 .ctx-preview-actions button{flex:1;font-size:11px;padding:5px 8px}
-
-/* ── List ── */
+/* QR */
+.qr-wrap{text-align:center;padding:8px 0}
+.qr-wrap canvas{border-radius:var(--radius);border:0.5px solid var(--b3)}
+.qr-label{font-size:12px;color:var(--t2);margin-top:8px;word-break:break-all}
+.flat-unit{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius-lg);overflow:hidden}
+.flat-body{padding:8px 10px;min-height:58px}
+/* LISTA */
 .list{display:flex;flex-direction:column;gap:5px}
 .list-row{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius);padding:9px 12px;display:flex;align-items:center;gap:9px;cursor:pointer}
 .list-row:hover{border-color:var(--b1)}
 .iname{font-size:13px;font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .imeta{font-size:11px;color:var(--t2)}
-.loc{font-size:11px;padding:2px 7px;border-radius:20px;background:var(--accent-bg);color:var(--accent);border:0.5px solid var(--accent-border);white-space:nowrap}
+.loc{font-size:11px;padding:2px 7px;border-radius:20px;background:#EEEDFE;color:#3C3489;border:0.5px solid #AFA9EC;white-space:nowrap}
 .pill{font-size:11px;padding:2px 7px;border-radius:20px;border:0.5px solid;white-space:nowrap}
 .p-loose{background:#F1EFE8;color:#444441;border-color:#B4B2A9}
 .p-box{background:#E1F5EE;color:#085041;border-color:#5DCAA5}
 .p-original{background:#E6F1FB;color:#0C447C;border-color:#85B7EB}
 .p-custom{background:#FAEEDA;color:#633806;border-color:#EF9F27}
 .cnt{background:var(--card2);border:0.5px solid var(--b3);border-radius:20px;padding:1px 7px;font-size:11px;color:var(--t2);margin-left:4px}
-.qty-badge{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--accent-bg);color:var(--accent);border:0.5px solid var(--accent-border);white-space:nowrap;font-weight:500}
-.qty-low{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
-
-/* ── Stock ── */
+.qty-badge{font-size:11px;padding:2px 8px;border-radius:20px;background:#EEEDFE;color:#3C3489;border:0.5px solid #AFA9EC;white-space:nowrap;font-weight:500}
+.qty-low{background:#FCEBEB;color:#A32D2D;border-color:#F09595}
+/* ZAPASY */
 .stock-grid{display:flex;flex-direction:column;gap:6px}
 .stock-row{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius);padding:10px 14px}
 .stock-row.low{border-left:3px solid #E24B4A}
-.stock-row.ok{border-left:3px solid var(--green)}
+.stock-row.ok{border-left:3px solid #1D9E75}
 .stock-name{font-size:13px;font-weight:500;margin-bottom:4px}
 .stock-meta{font-size:11px;color:var(--t2);margin-bottom:8px}
 .stock-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .stock-num{font-size:20px;font-weight:500;min-width:40px;text-align:center}
-.stock-num.low{color:var(--red)}
+.stock-num.low{color:#A32D2D}
 .qty-btn{width:30px;height:30px;border-radius:50%;padding:0;display:flex;align-items:center;justify-content:center;font-size:18px;flex:none}
-.alert-banner{background:var(--red-bg);border:0.5px solid var(--red-border);border-radius:var(--radius);padding:10px 14px;margin-bottom:12px;font-size:13px;color:var(--red);display:flex;align-items:center;gap:8px}
+.stock-input{width:60px;flex:none;text-align:center;font-size:13px}
+.alert-banner{background:#FCEBEB;border:0.5px solid #F09595;border-radius:var(--radius);padding:10px 14px;margin-bottom:12px;font-size:13px;color:#A32D2D;display:flex;align-items:center;gap:8px}
 .stock-section-title{font-size:11px;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin:12px 0 6px}
-
-/* ── Modal ── */
+/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-start;justify-content:center;padding:32px 12px;z-index:100;overflow-y:auto}
 .modal{background:var(--card);border-radius:var(--radius-lg);border:0.5px solid var(--b3);padding:1.25rem;width:100%;max-width:520px}
 .mhead{display:flex;align-items:center;gap:8px;margin-bottom:1rem}
@@ -171,7 +182,7 @@ header h1{font-size:17px;font-weight:500;flex:1}
 .subrow .u{width:62px;flex:none}
 .subrow .thr{width:54px;flex:none}
 .sub-chip{display:inline-flex;align-items:center;gap:3px;font-size:11px;padding:2px 8px;background:#FAEEDA;color:#633806;border:0.5px solid #EF9F27;border-radius:20px;margin:2px}
-.sub-chip.low{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
+.sub-chip.low{background:#FCEBEB;color:#A32D2D;border-color:#F09595}
 .photo-lbl{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:0.5px solid var(--b1);border-radius:var(--radius);cursor:pointer;font-size:12px;color:var(--t2)}
 .photo-lbl:hover{background:var(--card2)}
 .photo-lbl input{display:none}
@@ -182,362 +193,165 @@ header h1{font-size:17px;font-weight:500;flex:1}
 .dphotos{width:100%;border-radius:var(--radius);margin-bottom:8px;max-height:200px;object-fit:contain}
 .empty{padding:3rem;text-align:center;color:var(--t3);font-size:13px}
 .quick-stock{display:flex;align-items:center;gap:10px;background:var(--card2);border-radius:var(--radius);padding:10px 14px;margin-top:10px}
+/* Zarządzanie elementami garażu */
 .container-list{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
 .container-item{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius);padding:10px 14px;display:flex;align-items:center;gap:10px}
 .container-item-name{flex:1;font-size:13px;font-weight:500}
 .container-item-meta{font-size:11px;color:var(--t2)}
 .type-icon{font-size:18px;color:var(--t3);flex:none}
-.color-chips{display:flex;gap:6px;flex-wrap:wrap;padding:4px 0}
-.color-chip{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;display:flex;align-items:center;justify-content:center;font-size:11px;transition:transform .1s}
-.color-chip:hover{transform:scale(1.2)}
-.color-chip.selected{border-color:var(--t1)}
-.color-chip.clear{background:var(--card2);border:1.5px dashed var(--b1);color:var(--t3)}
-
-/* ── Login ── */
+/* LOGOWANIE */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
 .login-card{background:var(--card);border:0.5px solid var(--b3);border-radius:var(--radius-lg);padding:2rem;width:100%;max-width:340px}
 .login-card h1{font-size:20px;font-weight:500;margin-bottom:6px;display:flex;align-items:center;gap:8px}
 .login-card p{font-size:13px;color:var(--t2);margin-bottom:1.5rem}
 .login-label{display:block;font-size:11px;color:var(--t2);margin-bottom:4px}
-.login-err{font-size:12px;color:var(--red);margin-bottom:10px;min-height:18px}
-
-/* ── QR ── */
-.qr-wrap{text-align:center;padding:8px 0}
-.qr-wrap canvas{border-radius:var(--radius);border:0.5px solid var(--b3)}
-.qr-label{font-size:12px;color:var(--t2);margin-top:8px;word-break:break-all}
-
-/* ── iOS adjustments ── */
-@media(max-width:640px){
-  .app{padding:.75rem .75rem calc(.75rem + var(--safe-bottom))}
-  .app{padding-top:calc(.75rem + var(--safe-top))}
-}
-
-/* ── Vertical layout ── */
-.garage.vertical{grid-template-columns:1fr;gap:12px}
-.garage.vertical .shelf-unit{display:grid;grid-template-columns:200px 1fr;align-items:stretch}
-.garage.vertical .shelf-header{border-right:0.5px solid var(--b3);border-bottom:none;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:4px;padding:12px 14px;border-radius:0}
-.garage.vertical .shelf-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px;padding:8px;align-content:start}
-.garage.vertical .shelf-row{min-height:52px}
-.garage.vertical .flat-body{padding:8px;display:flex;flex-wrap:wrap;align-content:start}
-.garage.vertical .shelf-unit{overflow:visible;border-radius:var(--radius-lg);display:grid;grid-template-columns:180px 1fr;border:0.5px solid var(--b3);background:var(--card)}
-.garage.vertical .shelf-header{border-radius:var(--radius-lg) 0 0 var(--radius-lg);min-height:100%}
+.login-err{font-size:12px;color:#A32D2D;margin-bottom:10px;min-height:18px}
 </style>
 </head>
 <body>
-
-<!-- ═══ WAKE SCREEN ═══ -->
-<div id="wake-screen" style="display:none">
-  <div class="wake-icon">🔧</div>
-  <div class="wake-title">Garaż</div>
-  <div class="wake-sub" id="wake-sub">Łączenie z serwerem…<br>Może to chwilę potrwać jeśli serwer był uśpiony.</div>
-  <div class="wake-progress"><div class="wake-progress-bar" id="wake-bar"></div></div>
-  <button class="wake-retry" id="wake-retry" onclick="retryConnection()">Spróbuj ponownie</button>
-</div>
-
-<!-- ═══ LOGIN ═══ -->
 <div id="login-screen" class="login-wrap" style="display:none">
   <div class="login-card">
-    <h1><i class="ti ti-tool"></i> Garaż</h1>
+    <h1><i class="ti ti-tool" aria-hidden="true"></i> Garaż</h1>
     <p>Wpisz hasło, żeby wejść.</p>
     <label class="login-label">Hasło</label>
     <input id="lpwd" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
     <div class="login-err" id="lerr"></div>
-    <button class="btn-primary" style="width:100%;justify-content:center;display:flex;gap:6px;margin-top:6px" onclick="doLogin()">
-      <i class="ti ti-lock-open"></i> Zaloguj
+    <button class="btn-primary" style="width:100%;justify-content:center;display:flex;gap:6px" onclick="doLogin()">
+      <i class="ti ti-lock-open" aria-hidden="true"></i> Zaloguj
     </button>
   </div>
 </div>
-
-<!-- ═══ MAIN APP ═══ -->
 <div class="app" id="main-app" style="display:none">
   <header>
-    <i class="ti ti-tool" style="font-size:20px"></i>
+    <i class="ti ti-tool" style="font-size:20px" aria-hidden="true"></i>
     <h1>Garaż</h1>
-    <span class="status" onclick="manualReconnect()" title="Kliknij aby odświeżyć">
-      <span class="dot off" id="dot"></span>
-      <span id="stxt" style="font-size:11px">lokalnie</span>
-    </span>
-    <button onclick="exportCSV()" title="Eksportuj CSV" style="padding:6px 10px"><i class="ti ti-file-spreadsheet"></i></button>
-    <button onclick="openImportCSV()" title="Importuj CSV" style="padding:6px 10px"><i class="ti ti-file-upload"></i></button>
-    <button onclick="doLogout()" title="Wyloguj" style="padding:6px 10px"><i class="ti ti-logout"></i></button>
+    <span class="status"><span class="dot off" id="dot"></span><span id="stxt" style="font-size:11px">lokalnie</span></span>
+    <button onclick="exportCSV()" title="Eksportuj CSV" style="padding:6px 10px"><i class="ti ti-file-spreadsheet" aria-hidden="true"></i></button>
+    <button onclick="openImportCSV()" title="Importuj CSV" style="padding:6px 10px"><i class="ti ti-file-upload" aria-hidden="true"></i></button>
+    <button onclick="doLogout()" title="Wyloguj" style="padding:6px 10px"><i class="ti ti-logout" aria-hidden="true"></i></button>
   </header>
   <div class="topbar">
-    <input id="srch" placeholder="Szukaj: nazwa, kategoria, lokalizacja…" oninput="onSearch(this.value)">
-    <button class="btn-primary" onclick="openAdd(null,null)"><i class="ti ti-plus"></i> Dodaj przedmiot</button>
+    <input id="srch" placeholder="Szukaj: nazwa, kategoria, lokalizacja, zawartość…" oninput="onSearch(this.value)">
+    <button class="btn-primary" onclick="openAdd(null,null)"><i class="ti ti-plus" aria-hidden="true"></i> Dodaj przedmiot</button>
   </div>
   <div id="root"></div>
 </div>
-
-<!-- ═══ MODAL ═══ -->
 <div class="modal-overlay" id="modal" style="display:none" onclick="overlayClick(event)">
   <div class="modal" id="mbox"></div>
 </div>
-
-<!-- ═══ HOVER PREVIEW ═══ -->
-<div id="ctx-preview" class="ctx-preview"></div>
-
+<div id="ctx-preview" class="ctx-preview" style="display:none"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-// ══════════════════════════════════════════════ CONSTANTS
+// ── Stałe ─────────────────────────────────────────────────────────────────────
 const NORM={loose:'Luzem',box:'Pudełko',original:'Oryg. opak.'};
 const NORM_BACK={'Luzem':'loose','Pudełko':'box','Oryginalne opakowanie':'original','Oryg. opak.':'original'};
 const CATS=['Narzędzia ręczne','Narzędzia elektryczne','Elektronika','Akcesoria','Materiały','Części','Chemia','Malarstwo','Ogród','Inne'];
 const STORAGES=['Luzem','Pudełko','Oryginalne opakowanie','Skrzynka','Worek','Torba','Szuflada'];
-const CONTAINER_TYPES=[
-  {v:'shelf_unit',l:'Regał (z półkami)',icon:'ti-stack-2'},
-  {v:'cabinet',l:'Szafka wisząca (z półkami)',icon:'ti-door'},
-  {v:'desk',l:'Biurko (bez półek)',icon:'ti-layout-board'},
-  {v:'toolbox',l:'Domek narzędziowy (z półkami)',icon:'ti-home'},
-  {v:'drawer',l:'Komoda/szuflady (z półkami)',icon:'ti-layout-rows'},
-  {v:'flat',l:'Inne — bez półek',icon:'ti-box'},
-  {v:'other',l:'Inne — z półkami',icon:'ti-archive'},
-];
-const COLORS=['','#5DCAA5','#85B7EB','#EF9F27','#F0997B','#AFA9EC','#f87171','#4ade80','#60a5fa','#e879f9','#facc15'];
 
-// ══════════════════════════════════════════════ STATE
-let items=[],nextId=1,view='garage',search='',fSubs=[],fPhoto=null,fEditId=null,fColorPick=null;
-let ws=null,serverMode=false,authToken=null,dragId=null,pendingQty={};
-let garageLayout='horizontal';
+// Typy kontenerów z ikonami
+const CONTAINER_TYPES=[
+  {v:'shelf_unit', l:'Regał (z półkami)', icon:'ti-stack-2'},
+  {v:'cabinet',    l:'Szafka wisząca (z półkami)', icon:'ti-door'},
+  {v:'desk',       l:'Biurko (bez półek)', icon:'ti-layout-board'},
+  {v:'toolbox',    l:'Domek narzędziowy (z półkami)', icon:'ti-home'},
+  {v:'drawer',     l:'Komoda/szuflady (z półkami)', icon:'ti-layout-rows'},
+  {v:'flat',       l:'Inne — bez półek', icon:'ti-box'},
+  {v:'other',      l:'Inne — z półkami', icon:'ti-archive'},
+];
+function ctypeIcon(v){
+  // Szukaj po v (kluczu) lub po l (etykiecie)
+  return CONTAINER_TYPES.find(t=>t.v===v||t.l===v)?.icon||'ti-box';
+}
+function ctypeLabel(v){
+  return CONTAINER_TYPES.find(t=>t.v===v||t.l===v)?.l||v||'Inny';
+}
+function ctypeHasShelves(v){
+  // Bez półek tylko gdy typ to 'desk', 'flat' lub wpisany tekst zawiera 'biurko'/'bez półek'
+  const found=CONTAINER_TYPES.find(t=>t.v===v||t.l===v);
+  if(found) return!['desk','flat'].includes(found.v);
+  // Własny typ — domyślnie z półkami, chyba że nazwa sugeruje inaczej
+  const low=(v||'').toLowerCase();
+  return!low.includes('biurk')&&!low.includes('bez półek')&&!low.includes('blat');
+}
+
+// ── Stan ──────────────────────────────────────────────────────────────────────
+let items=[],nextId=1,view='garage',search='',fSubs=[],fPhoto=null,fEditId=null;
+let ws=null,serverMode=false,authToken=null,dragId=null;
+let pendingQty={};
+let garageLayout='horizontal'; // 'horizontal' | 'vertical'
+
+// Dynamiczne kontenery (regały, szafki, biurka…)
+// Domyślnie R1-R4 zachowane jako "Regał 1-4"
 let containers=[
-  {id:'R1',name:'Regał 1',type:'shelf_unit',shelves:[{id:'P1',name:'P1',posTotal:null},{id:'P2',name:'P2',posTotal:null},{id:'P3',name:'P3',posTotal:null},{id:'P4',name:'P4',posTotal:null}]},
-  {id:'R2',name:'Regał 2',type:'shelf_unit',shelves:[{id:'P1',name:'P1',posTotal:null},{id:'P2',name:'P2',posTotal:null},{id:'P3',name:'P3',posTotal:null},{id:'P4',name:'P4',posTotal:null}]},
-  {id:'R3',name:'Regał 3',type:'shelf_unit',shelves:[{id:'P1',name:'P1',posTotal:null},{id:'P2',name:'P2',posTotal:null},{id:'P3',name:'P3',posTotal:null},{id:'P4',name:'P4',posTotal:null}]},
-  {id:'R4',name:'Regał 4',type:'shelf_unit',shelves:[{id:'P1',name:'P1',posTotal:null},{id:'P2',name:'P2',posTotal:null},{id:'P3',name:'P3',posTotal:null},{id:'P4',name:'P4',posTotal:null}]},
+  {id:'R1',name:'Regał 1',type:'shelf_unit',shelves:[
+    {id:'P1',name:'P1',posTotal:null},{id:'P2',name:'P2',posTotal:null},
+    {id:'P3',name:'P3',posTotal:null},{id:'P4',name:'P4',posTotal:null}
+  ]},
+  {id:'R2',name:'Regał 2',type:'shelf_unit',shelves:[
+    {id:'P1',name:'P1',posTotal:null},{id:'P2',name:'P2',posTotal:null},
+    {id:'P3',name:'P3',posTotal:null},{id:'P4',name:'P4',posTotal:null}
+  ]},
+  {id:'R3',name:'Regał 3',type:'shelf_unit',shelves:[
+    {id:'P1',name:'P1',posTotal:null},{id:'P2',name:'P2',posTotal:null},
+    {id:'P3',name:'P3',posTotal:null},{id:'P4',name:'P4',posTotal:null}
+  ]},
+  {id:'R4',name:'Regał 4',type:'shelf_unit',shelves:[
+    {id:'P1',name:'P1',posTotal:null},{id:'P2',name:'P2',posTotal:null},
+    {id:'P3',name:'P3',posTotal:null},{id:'P4',name:'P4',posTotal:null}
+  ]},
 ];
 let nextContainerId=5;
 
-// ══════════════════════════════════════════════ HELPERS
-function ctypeIcon(v){return CONTAINER_TYPES.find(t=>t.v===v||t.l===v)?.icon||'ti-box';}
-function ctypeLabel(v){return CONTAINER_TYPES.find(t=>t.v===v||t.l===v)?.l||v||'Inny';}
-function ctypeHasShelves(v){const f=CONTAINER_TYPES.find(t=>t.v===v||t.l===v);if(f)return!['desk','flat'].includes(f.v);const low=(v||'').toLowerCase();return!low.includes('biurk')&&!low.includes('bez półek')&&!low.includes('blat');}
-function getContainer(cid){return containers.find(c=>c.id===cid);}
-function getShelf(cid,sid){return getContainer(cid)?.shelves?.find(s=>s.id===sid);}
-function itemLocLabel(i){const c=getContainer(i.regal);const cn=c?c.name:i.regal;if(!i.polka||i.polka==='_')return cn;const s=getShelf(i.regal,i.polka);return`${cn} / ${s?s.name:i.polka}`;}
-function sLabel(v){return NORM[v]||v||''}
-function sSlot(v){return{loose:'s-loose',box:'s-box',original:'s-original'}[v]||'s-custom'}
-function sPill(v){return{loose:'p-loose',box:'p-box',original:'p-original'}[v]||'p-custom'}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function itemQty(i){return(i.qty!=null&&i.qty!=='')?parseInt(i.qty):null;}
-function isLow(i){const q=itemQty(i);if(q!=null&&i.qtyThreshold!=null&&q<=parseInt(i.qtyThreshold))return true;return(i.subitems||[]).some(s=>s.qty!=null&&s.qtyThreshold!=null&&parseInt(s.qty)<=parseInt(s.qtyThreshold));}
-function pendingKey(id,si){return si!=null?`${id}_${si}`:`${id}`;}
-function stackText(i){if(!i.stackLevel)return'';const lvl=parseInt(i.stackLevel),tot=parseInt(i.stackTotal)||'?';return tot<=3&&lvl<=3?(['dół','środek','góra'][lvl-1]||`poziom ${lvl}`)+` z ${tot}`:`poziom ${lvl} z ${tot}`;}
-
-// ══════════════════════════════════════════════ STORAGE
+// ── Auth & storage ────────────────────────────────────────────────────────────
 function saveToken(t){try{localStorage.setItem('garaz_token',t);}catch(e){}}
 function loadToken(){try{return localStorage.getItem('garaz_token');}catch(e){return null;}}
 function clearToken(){try{localStorage.removeItem('garaz_token');}catch(e){}}
 function lsSave(){try{localStorage.setItem('garaz',JSON.stringify({items,nextId}));}catch(e){}}
 function lsLoad(){try{const d=JSON.parse(localStorage.getItem('garaz')||'null');if(d){items=d.items||[];nextId=d.nextId||1;}}catch(e){}}
-function lsSaveC(){try{localStorage.setItem('garaz_containers',JSON.stringify({containers,nextContainerId}));}catch(e){}}
-function lsLoadC(){try{const d=JSON.parse(localStorage.getItem('garaz_containers')||'null');if(d){containers=d.containers||containers;nextContainerId=d.nextContainerId||nextContainerId;}}catch(e){}}
+function lsSaveContainers(){try{localStorage.setItem('garaz_containers',JSON.stringify({containers,nextContainerId}));}catch(e){}}
+function lsLoadContainers(){try{const d=JSON.parse(localStorage.getItem('garaz_containers')||'null');if(d){containers=d.containers||containers;nextContainerId=d.nextContainerId||nextContainerId;}}catch(e){}}
 
 async function saveContainersToServer(){
-  if(serverMode){try{await apiCall('PUT','/api/labels',{containers,nextContainerId});}catch(e){lsSaveC();}}else lsSaveC();
+  if(serverMode){try{await apiCall('PUT','/api/labels',{containers,nextContainerId});}catch(e){lsSaveContainers();}}
+  else{lsSaveContainers();}
 }
 async function loadContainersFromServer(){
-  if(serverMode){try{const d=await apiCall('GET','/api/labels');if(d?.containers){containers=d.containers;nextContainerId=d.nextContainerId||nextContainerId;}}catch(e){lsLoadC();}}else lsLoadC();
+  if(serverMode){try{const d=await apiCall('GET','/api/labels');if(d&&d.containers){containers=d.containers;nextContainerId=d.nextContainerId||nextContainerId;}}catch(e){lsLoadContainers();}}
+  else{lsLoadContainers();}
 }
 
-// ══════════════════════════════════════════════ WAKE / CONNECTION
-let wakeAttempts=0;
-const MAX_WAKE_ATTEMPTS=12; // ~60s total
-
-function showWakeScreen(msg){
-  document.getElementById('wake-screen').style.display='flex';
-  document.getElementById('login-screen').style.display='none';
-  document.getElementById('main-app').style.display='none';
-  if(msg)document.getElementById('wake-sub').innerHTML=msg;
-}
-function hideWakeScreen(){
-  document.getElementById('wake-screen').style.display='none';
-}
-function setWakeProgress(pct){
-  const bar=document.getElementById('wake-bar');
-  if(bar)bar.style.width=pct+'%';
-}
-
-async function waitForServer(){
-  // Najpierw pokaż lokalnie zapisane dane
-  lsLoad();lsLoadC();
-  const hasLocal=items.length>0;
-  const saved=loadToken();
-  if(!saved){
-    // Brak tokena — idź do logowania
-    hideWakeScreen();
-    document.getElementById('login-screen').style.display='flex';
-    return;
-  }
-
-  // Mamy token — pokaż dane lokalne od razu
-  document.getElementById('wake-screen').style.display='flex';
-  if(hasLocal){
-    document.getElementById('main-app').style.display='flex';
-    document.getElementById('wake-screen').style.display='none';
-    // Pokaż baner "odświeżanie"
-    showSyncBanner();
-  }
-
-  // Ping serwera z retry
-  wakeAttempts=0;
-  await tryConnectWithRetry(saved);
-}
-
-function showSyncBanner(){
-  let b=document.getElementById('sync-banner');
-  if(!b){
-    b=document.createElement('div');
-    b.id='sync-banner';
-    b.style.cssText='position:fixed;top:0;left:0;right:0;background:#f59e0b;color:#fff;text-align:center;font-size:12px;padding:6px;z-index:90;font-family:inherit';
-    b.innerHTML='<i class="ti ti-refresh" style="font-size:12px"></i> Łączenie z serwerem… (może budzić się po uśpieniu)';
-    document.body.appendChild(b);
-  }
-}
-function hideSyncBanner(){
-  const b=document.getElementById('sync-banner');
-  if(b)b.remove();
-}
-
-async function tryConnectWithRetry(token){
-  while(wakeAttempts<MAX_WAKE_ATTEMPTS){
-    wakeAttempts++;
-    const pct=Math.min(95,(wakeAttempts/MAX_WAKE_ATTEMPTS)*100);
-    setWakeProgress(pct);
-
-    const sub=wakeAttempts<=2
-      ?'Łączenie z serwerem…'
-      :`Budzenie serwera… (${wakeAttempts}/${MAX_WAKE_ATTEMPTS})<br><small>Render.com usypia serwery po 15 min bezczynności.<br>Pierwsze połączenie może trwać do 60 sekund.</small>`;
-    document.getElementById('wake-sub').innerHTML=sub;
-
-    try{
-      const r=await fetch('/api/items',{
-        headers:token?{'Authorization':`Bearer ${token}`}:{},
-        signal:AbortSignal.timeout(6000)
-      });
-      if(r.status===401){
-        // Token wygasł
-        clearToken();
-        hideWakeScreen();hideSyncBanner();
-        document.getElementById('login-screen').style.display='flex';
-        return;
-      }
-      if(r.ok){
-        authToken=token;
-        items=await r.json();
-        nextId=Math.max(0,...items.map(x=>x.id))+1;
-        await loadContainersFromServer();
-        serverMode=true;
-        setDot(true);
-        render();
-        hideWakeScreen();hideSyncBanner();
-        setWakeProgress(100);
-        tryWS();
-        handleItemLink();
-        return;
-      }
-    }catch(e){
-      // timeout lub błąd sieci — czekaj i próbuj ponownie
-    }
-
-    // Poczekaj przed kolejną próbą (rosnący czas)
-    const wait=Math.min(5000,1000*wakeAttempts);
-    await new Promise(res=>setTimeout(res,wait));
-  }
-
-  // Wszystkie próby wyczerpane
-  setWakeProgress(100);
-  document.getElementById('wake-sub').innerHTML=
-    'Nie udało się połączyć z serwerem.<br><small>Sprawdź czy serwer działa na Render.com</small>';
-  document.getElementById('wake-retry').style.display='block';
-
-  // Jeśli mamy dane lokalne — pokaż je
-  if(items.length>0){
-    hideWakeScreen();
-    document.getElementById('main-app').style.display='flex';
-    setDot(false);
-    render();
-    hideSyncBanner();
-    // Pokaż info o trybie offline
-    const b=document.getElementById('sync-banner')||document.createElement('div');
-    b.id='sync-banner';
-    b.style.cssText='position:fixed;top:0;left:0;right:0;background:#dc2626;color:#fff;text-align:center;font-size:12px;padding:6px;z-index:90;font-family:inherit;cursor:pointer';
-    b.innerHTML='⚡ Tryb offline — wyświetlane dane lokalne. <u>Kliknij aby spróbować ponownie</u>';
-    b.onclick=()=>{b.remove();showWakeScreen();tryConnectWithRetry(authToken||loadToken());};
-    document.body.appendChild(b);
-  }
-}
-
-async function retryConnection(){
-  document.getElementById('wake-retry').style.display='none';
-  wakeAttempts=0;
-  setWakeProgress(0);
-  await tryConnectWithRetry(loadToken());
-}
-
-async function manualReconnect(){
-  if(serverMode)return;
-  const token=loadToken();
-  if(!token)return;
-  showWakeScreen('Ponowne łączenie…');
-  wakeAttempts=0;
-  await tryConnectWithRetry(token);
-}
-
-// ══════════════════════════════════════════════ AUTH
+// ── Auth ──────────────────────────────────────────────────────────────────────
 async function doLogin(){
   const pwd=document.getElementById('lpwd').value;
   const err=document.getElementById('lerr');err.textContent='';
   if(!pwd){err.textContent='Wpisz hasło.';return;}
-  const btn=document.querySelector('.login-card .btn-primary');
-  if(btn){btn.textContent='Łączenie…';btn.disabled=true;}
   try{
-    const r=await fetch('/api/login',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({password:pwd}),
-      signal:AbortSignal.timeout(10000)
-    });
-    if(!r.ok){
-      if(btn){btn.innerHTML='<i class="ti ti-lock-open"></i> Zaloguj';btn.disabled=false;}
-      err.textContent='Złe hasło.';return;
-    }
-    authToken=(await r.json()).token;
-    saveToken(authToken);
-    document.getElementById('login-screen').style.display='none';
-    showWakeScreen('Ładowanie danych…');
-    wakeAttempts=0;
-    await tryConnectWithRetry(authToken);
-  }catch(e){
-    if(btn){btn.innerHTML='<i class="ti ti-lock-open"></i> Zaloguj';btn.disabled=false;}
-    err.textContent='Błąd połączenia. Sprawdź internet.';
-  }
+    const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pwd})});
+    if(!r.ok){err.textContent='Złe hasło.';return;}
+    authToken=(await r.json()).token;saveToken(authToken);showApp();
+  }catch(e){authToken=null;showApp();}
 }
-
+function showApp(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('main-app').style.display='block';
+  lsLoad();lsLoadContainers();render();tryWS();
+  loadContainersFromServer().then(render);
+}
 function doLogout(){
   clearToken();authToken=null;serverMode=false;
   if(ws){ws.close();ws=null;}
-  items=[];
-  hideSyncBanner();
   document.getElementById('main-app').style.display='none';
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('lpwd').value='';
-  document.getElementById('lerr').textContent='';
 }
 
-// ══════════════════════════════════════════════ DOT / STATUS
-function setDot(online){
-  const d=document.getElementById('dot');
-  const t=document.getElementById('stxt');
-  if(!d)return;
-  d.className='dot'+(online?'':' off');
-  if(t)t.textContent=online?'na żywo':'lokalnie';
-}
-
-// ══════════════════════════════════════════════ WEBSOCKET
+// ── WebSocket ─────────────────────────────────────────────────────────────────
 function tryWS(){
   if(!authToken)return;
   try{
     ws=new WebSocket(`${location.protocol==='https:'?'wss':'ws'}://${location.host}/?token=${authToken}`);
-    ws.onopen=()=>{serverMode=true;setDot(true);};
-    ws.onclose=()=>{serverMode=false;setDot(false);ws=null;setTimeout(tryWS,8000);};
+    ws.onopen=()=>{serverMode=true;document.getElementById('dot').className='dot';document.getElementById('stxt').textContent='na żywo';};
+    ws.onclose=()=>{serverMode=false;document.getElementById('dot').className='dot off';document.getElementById('stxt').textContent='lokalnie';ws=null;setTimeout(tryWS,8000);};
     ws.onerror=()=>{ws=null;};
     ws.onmessage=e=>{
       const m=JSON.parse(e.data);
@@ -551,7 +365,7 @@ function tryWS(){
   }catch(e){ws=null;}
 }
 
-// ══════════════════════════════════════════════ API
+// ── API ───────────────────────────────────────────────────────────────────────
 async function apiCall(method,path,body){
   const h={'Content-Type':'application/json'};
   if(authToken)h['Authorization']=`Bearer ${authToken}`;
@@ -572,100 +386,166 @@ async function doDeleteApi(id){
   items=items.filter(x=>x.id!==id);lsSave();render();
 }
 
-// ══════════════════════════════════════════════ MODAL
-function showModal(html){document.getElementById('mbox').innerHTML=html;document.getElementById('modal').style.display='flex';setTimeout(refreshPos,30);}
-function closeModal(){document.getElementById('modal').style.display='none';}
-function overlayClick(e){if(e.target===document.getElementById('modal'))closeModal();}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('modal').style.display!=='none')closeModal();});
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function sLabel(v){return NORM[v]||v||''}
+function sSlot(v){return{loose:'s-loose',box:'s-box',original:'s-original'}[v]||'s-custom'}
+function sPill(v){return{loose:'p-loose',box:'p-box',original:'p-original'}[v]||'p-custom'}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function stackText(i){
+  if(!i.stackLevel)return'';
+  const lvl=parseInt(i.stackLevel),tot=parseInt(i.stackTotal)||'?';
+  return tot<=3&&lvl<=3?(['dół','środek','góra'][lvl-1]||`poziom ${lvl}`)+` z ${tot}`:`poziom ${lvl} z ${tot}`;
+}
+function itemQty(i){return(i.qty!=null&&i.qty!=='')?parseInt(i.qty):null;}
+function isLow(i){
+  const q=itemQty(i);
+  if(q!=null&&i.qtyThreshold!=null&&q<=parseInt(i.qtyThreshold))return true;
+  return(i.subitems||[]).some(s=>s.qty!=null&&s.qtyThreshold!=null&&parseInt(s.qty)<=parseInt(s.qtyThreshold));
+}
+function pendingKey(id,subIdx){return subIdx!=null?`${id}_${subIdx}`:`${id}`;}
+// Pobierz kontener i półkę po id
+function getContainer(cid){return containers.find(c=>c.id===cid);}
+function getShelf(cid,sid){return getContainer(cid)?.shelves?.find(s=>s.id===sid);}
+// Czytelna lokalizacja przedmiotu
+function itemLocLabel(i){
+  const c=getContainer(i.regal);
+  const cname=c?c.name:i.regal;
+  if(!i.polka||i.polka==='_')return cname;
+  const s=getShelf(i.regal,i.polka);
+  const sname=s?s.name:i.polka;
+  return`${cname} / ${sname}`;
+}
 
-// ══════════════════════════════════════════════ RENDER
+// ── Render ────────────────────────────────────────────────────────────────────
 function render(){
   const q=search.trim().toLowerCase();
   const fi=q?items.filter(i=>[i.name,i.cat,i.storage||'',i.note||'',itemLocLabel(i),(i.subitems||[]).map(s=>s.name).join(' ')].join(' ').toLowerCase().includes(q)):items;
-  const root=document.getElementById('root');if(!root)return;
+  const root=document.getElementById('root');
   if(q){root.innerHTML=buildSearch(fi);return;}
   root.innerHTML=`<div style="display:flex;align-items:center;margin-bottom:1.25rem;gap:8px;flex-wrap:wrap">
     <div class="tabs" style="margin:0">
-      <button class="tab${view==='garage'?' active':''}" onclick="setView('garage')"><i class="ti ti-layout-board"></i> Szkic</button>
-      <button class="tab${view==='list'?' active':''}" onclick="setView('list')"><i class="ti ti-list"></i> Lista</button>
-      <button class="tab${view==='stock'?' active':''}" onclick="setView('stock')"><i class="ti ti-package"></i> Zapasy</button>
-      <button class="tab${view==='manage'?' active':''}" onclick="setView('manage')"><i class="ti ti-settings"></i> Elementy</button>
+      <button class="tab${view==='garage'?' active':''}" onclick="setView('garage')"><i class="ti ti-layout-board" aria-hidden="true"></i> Szkic</button>
+      <button class="tab${view==='list'?' active':''}" onclick="setView('list')"><i class="ti ti-list" aria-hidden="true"></i> Lista</button>
+      <button class="tab${view==='stock'?' active':''}" onclick="setView('stock')"><i class="ti ti-package" aria-hidden="true"></i> Zapasy</button>
+      <button class="tab${view==='manage'?' active':''}" onclick="setView('manage')"><i class="ti ti-settings" aria-hidden="true"></i> Elementy</button>
+      <button class="tab${view==='3d'?' active':''}" onclick="setView('3d')"><i class="ti ti-box" aria-hidden="true"></i> 3D</button>
     </div>
     ${view==='garage'?`<div class="layout-toggle" title="Zmień układ">
-      <button class="layout-btn${garageLayout==='horizontal'?' active':''}" onclick="setLayout('horizontal')" title="Poziomo"><i class="ti ti-layout-columns"></i></button>
-      <button class="layout-btn${garageLayout==='vertical'?' active':''}" onclick="setLayout('vertical')" title="Pionowo"><i class="ti ti-layout-rows"></i></button>
+      <button class="layout-btn${garageLayout==='horizontal'?' active':''}" onclick="setLayout('horizontal')" title="Poziomo"><i class="ti ti-layout-columns" aria-hidden="true"></i></button>
+      <button class="layout-btn${garageLayout==='vertical'?' active':''}" onclick="setLayout('vertical')" title="Pionowo"><i class="ti ti-layout-rows" aria-hidden="true"></i></button>
     </div>`:''}
   </div>
-  ${view==='garage'?buildGarage(fi):view==='stock'?buildStock():view==='manage'?buildManage():buildList(fi)}`;
+  ${view==='garage'?buildGarage(fi):view==='stock'?buildStock():view==='manage'?buildManage():view==='3d'?build3DView():buildList(fi)}`;
 }
 function setView(v){view=v;render();}
-function setLayout(l){garageLayout=l;try{localStorage.setItem('garaz_layout',l);}catch(e){}render();}
+function setLayout(l){
+  garageLayout=l;
+  try{localStorage.setItem('garaz_layout',l);}catch(e){}
+  render();
+}
 function onSearch(v){search=v;render();}
 
-// ══════════════════════════════════════════════ GARAGE
+// ── SZKIC ─────────────────────────────────────────────────────────────────────
 function buildGarage(items){
   return`<div class="garage${garageLayout==='vertical'?' vertical':''}">${containers.map(c=>buildContainer(c,items)).join('')}</div>`;
 }
+
 function buildContainer(c,items){
   const ci=items.filter(x=>x.regal===c.id);
   const hasShelves=ctypeHasShelves(c.type)&&c.shelves&&c.shelves.length>0;
+  const icon=ctypeIcon(c.type);
   return`<div class="shelf-unit">
     <div class="shelf-header" onclick="openEditContainer('${c.id}')">
       <div style="display:flex;align-items:center;gap:7px">
-        <i class="ti ${ctypeIcon(c.type)}" style="font-size:14px;flex:none"></i>
+        <i class="ti ${icon}" style="font-size:14px;flex:none" aria-hidden="true"></i>
         <b>${esc(c.name)}</b>
       </div>
       <div class="shelf-header-icons">
         <span class="cnt">${ci.length} szt.</span>
-        <i class="ti ti-pencil" style="font-size:11px;opacity:.5"></i>
+        <i class="ti ti-pencil" style="font-size:11px;opacity:.5" aria-hidden="true"></i>
       </div>
     </div>
     ${hasShelves
-      ?`<div class="shelf-body">${c.shelves.map(s=>buildShelfRow(c.id,s,items)).join('')}</div>`
-      :`<div class="flat-body"><div class="slots" style="padding-top:8px">${ci.map(i=>renderSlot(i)).join('')}<button class="slot-add" onclick="openAdd('${c.id}','_')">+</button></div></div>`}
+      ? `<div class="shelf-body">${c.shelves.map(s=>buildShelfRow(c.id,s,items)).join('')}</div>`
+      : `<div class="flat-body">${buildFlatSlots(c,items)}</div>`}
   </div>`;
 }
+
+function buildFlatSlots(c,items){
+  // Element bez półek — pokazuje sloty bezpośrednio
+  const ci=items.filter(x=>x.regal===c.id);
+  const slots=ci.map(i=>renderSlot(i,null,null)).join('');
+  return`<div class="slots" style="padding-top:8px">${slots}<button class="slot-add" onclick="openAdd('${c.id}','_')" title="Dodaj">+</button></div>`;
+}
+
 function buildShelfRow(cid,shelf,items){
   const pi=[...items.filter(x=>x.regal===cid&&x.polka===shelf.id)].sort((a,b)=>(parseInt(a.posIndex)||999)-(parseInt(b.posIndex)||999));
   const maxTotal=shelf.posTotal||pi.reduce((m,i)=>Math.max(m,parseInt(i.posTotal)||0),0);
   const byPos=new Map();
-  pi.forEach(i=>{const k=i.posIndex?parseInt(i.posIndex):null;const key=k!=null?k:`_${i.id}`;if(!byPos.has(key))byPos.set(key,[]);byPos.get(key).push(i);});
+  pi.forEach(i=>{
+    const k=i.posIndex?parseInt(i.posIndex):null;
+    const key=k!=null?k:`_${i.id}`;
+    if(!byPos.has(key))byPos.set(key,[]);
+    byPos.get(key).push(i);
+  });
   let slots='';
   if(maxTotal>0){
     for(let pos=1;pos<=maxTotal;pos++){
       const g=byPos.get(pos);
-      if(!g)slots+=`<div class="slot-placeholder" onclick="openAdd('${cid}','${shelf.id}',${pos},${maxTotal})">+${pos}</div>`;
-      else slots+=renderSlot(g[0]);
+      if(!g){
+        slots+=`<div class="slot-placeholder" onclick="openAdd('${cid}','${shelf.id}',${pos},${maxTotal})">+${pos}</div>`;
+      } else if(g.length===1){
+        slots+=renderSlot(g[0],pos,maxTotal);
+      } else {
+        const sorted=[...g].sort((a,b)=>(parseInt(b.stackLevel)||1)-(parseInt(a.stackLevel)||1));
+        const layers=sorted.map(i=>renderStackLayer(i)).join('');
+        slots+=`<div class="slot-stack"><div class="stack-lbl">↕${g.length} poz.${pos}</div>${layers}</div>`;
+      }
     }
-    [...byPos.entries()].filter(([k])=>typeof k==='string'&&k.startsWith('_')).forEach(([,g])=>{g.forEach(i=>slots+=renderSlot(i));});
-  }else{pi.forEach(i=>{slots+=renderSlot(i);});}
+    [...byPos.entries()].filter(([k])=>typeof k==='string'&&k.startsWith('_')).forEach(([,g])=>{
+      if(g.length===1)slots+=renderSlot(g[0],null,null);
+      else{const sorted=[...g].sort((a,b)=>(parseInt(b.stackLevel)||1)-(parseInt(a.stackLevel)||1));slots+=`<div class="slot-stack"><div class="stack-lbl">↕${g.length}</div>${sorted.map(i=>renderStackLayer(i)).join('')}</div>`;}
+    });
+  } else {
+    pi.forEach(i=>{slots+=renderSlot(i,null,null);});
+  }
+  const cfgInfo=shelf.posTotal?` · ${shelf.posTotal} miejsc`:'';
   return`<div class="shelf-row"
     ondragover="onDragOver(event)" ondragleave="onDragLeave(event)"
     ondrop="onDrop(event,'${cid}','${shelf.id}')"
     data-regal="${cid}" data-polka="${shelf.id}">
-    <span class="shelf-row-lbl" onclick="event.stopPropagation();openEditContainer('${cid}')">${esc(shelf.name)}${shelf.posTotal?` · ${shelf.posTotal} miejsc`:''}</span>
-    <div class="slots">${slots}<button class="slot-add" onclick="openAdd('${cid}','${shelf.id}')">+</button></div>
+    <span class="shelf-row-lbl" onclick="event.stopPropagation();openEditContainer('${cid}')">${esc(shelf.name)}${cfgInfo}</span>
+    <div class="slots">${slots}<button class="slot-add" onclick="openAdd('${cid}','${shelf.id}')" title="Dodaj">+</button></div>
   </div>`;
 }
+
 function slotColorStyle(i){return i.customColor?`style="background:${i.customColor};border-color:${i.customColor};color:#fff"`:''}
-function renderSlot(i){
-  const lbl=i.name.length>14?i.name.slice(0,13)+'…':i.name;
-  const q=itemQty(i);const low=isLow(i);
-  const badge=q!=null?`<span class="${low?'slot-low':'slot-qty'}">${q}</span>`:'';
-  const cls=i.customColor?'slot':`slot ${sSlot(i.storage)}`;
-  return`<div class="${cls}" ${slotColorStyle(i)}
-    draggable="true"
+function slotAttrs(i){
+  return`draggable="true"
     ondragstart="onDragStart(event,${i.id})"
     onclick="openDetail(${i.id})"
     onmouseenter="startHoverPreview(event,${i.id})"
     onmouseleave="cancelHoverTimer()"
     ontouchstart="startLongPress(event,${i.id})"
     ontouchend="cancelLongPress()"
-    ontouchmove="cancelLongPress()"
-    >${badge}${esc(lbl)}</div>`;
+    ontouchmove="cancelLongPress()"`;
 }
 
-// ══════════════════════════════════════════════ DRAG & DROP
+function renderStackLayer(i){
+  const lbl=i.name.length>14?i.name.slice(0,13)+'…':i.name;
+  const cls=i.customColor?'stack-layer':`stack-layer ${sSlot(i.storage)}`;
+  return`<div class="${cls}" ${slotColorStyle(i)} ${slotAttrs(i)}>${esc(lbl)}</div>`;
+}
+function renderSlot(i,pos,total){
+  const lbl=i.name.length>14?i.name.slice(0,13)+'…':i.name;
+  const q=itemQty(i);const low=isLow(i);
+  const badge=q!=null?`<span class="${low?'slot-low':'slot-qty'}">${q}</span>`:'';
+  const posTitle=pos!=null&&total?` poz.${pos}/${total}`:'';
+  const cls=i.customColor?'slot':`slot ${sSlot(i.storage)}`;
+  return`<div class="${cls}" ${slotColorStyle(i)} ${slotAttrs(i)}>${badge}${esc(lbl)}</div>`;
+}
+
+// ── Drag & Drop ───────────────────────────────────────────────────────────────
 function onDragStart(e,id){dragId=id;e.dataTransfer.effectAllowed='move';setTimeout(()=>{const el=e.target;if(el)el.classList.add('dragging');},0);}
 function onDragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';e.currentTarget.classList.add('drag-over');}
 function onDragLeave(e){e.currentTarget.classList.remove('drag-over');}
@@ -678,61 +558,198 @@ async function onDrop(e,regal,polka){
   dragId=null;
 }
 
-// ══════════════════════════════════════════════ HOVER PREVIEW
-let hoverTimer=null,hideTimer=null,longPressTimer=null;
+// ── ZARZĄDZAJ ELEMENTAMI ──────────────────────────────────────────────────────
+function buildManage(){
+  return`<div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-size:13px;color:var(--t2)">Kliknij element żeby edytować</div>
+      <button class="btn-primary" onclick="openAddContainer()"><i class="ti ti-plus" aria-hidden="true"></i> Nowy element</button>
+    </div>
+    <div class="container-list">
+      ${containers.map((c,idx)=>`
+        <div class="container-item">
+          <i class="ti ${ctypeIcon(c.type)} type-icon" aria-hidden="true"></i>
+          <div style="flex:1">
+            <div class="container-item-name">${esc(c.name)}</div>
+            <div class="container-item-meta">${ctypeLabel(c.type)}${c.shelves?` · ${c.shelves.length} półek`:' · bez półek'} · ${items.filter(x=>x.regal===c.id).length} przedmiotów</div>
+          </div>
+          <button onclick="openEditContainer('${c.id}')" style="padding:5px 9px;font-size:12px"><i class="ti ti-pencil" aria-hidden="true"></i></button>
+          <button onclick="moveContainer('${c.id}',-1)" title="W górę" style="padding:5px 8px" ${idx===0?'disabled':''}><i class="ti ti-arrow-up" aria-hidden="true"></i></button>
+          <button onclick="moveContainer('${c.id}',1)" title="W dół" style="padding:5px 8px" ${idx===containers.length-1?'disabled':''}><i class="ti ti-arrow-down" aria-hidden="true"></i></button>
+          <button onclick="confirmDeleteContainer('${c.id}')" class="btn-danger" style="padding:5px 8px"><i class="ti ti-trash" aria-hidden="true"></i></button>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
 
-function startHoverPreview(e,id){
-  if(hideTimer){clearTimeout(hideTimer);hideTimer=null;}
-  if(hoverTimer){clearTimeout(hoverTimer);hoverTimer=null;}
-  const ex=e.clientX,ey=e.clientY;
-  hoverTimer=setTimeout(()=>{hoverTimer=null;showPreview({clientX:ex,clientY:ey},id);},650);
+function openAddContainer(){
+  showModal(`
+    <div class="mhead"><i class="ti ti-plus" style="font-size:17px" aria-hidden="true"></i><h2>Nowy element garażu</h2><button onclick="closeModal()" style="padding:4px 9px">✕</button></div>
+    <div class="frow"><label>Nazwa *</label><input id="cn-name" placeholder="np. Szafka wisząca, Biurko, Domek narzędziowy"></div>
+    <div class="frow"><label>Typ / opis (wybierz lub wpisz własny)</label>
+      <input id="cn-type" list="dl-ctypes" placeholder="np. Regał, Szafka, Wieszak na rowery…" oninput="updateShelfFields()">
+      <datalist id="dl-ctypes">
+        ${CONTAINER_TYPES.map(t=>`<option value="${t.l}">${t.l}</option>`).join('')}
+      </datalist>
+    </div>
+    <div id="cn-shelf-section">
+      <div class="fsec">Półki</div>
+      <div class="frow">
+        <label>Liczba półek</label>
+        <input id="cn-shelves" type="number" min="1" max="20" value="4" placeholder="np. 4">
+        <div class="pos-hint">Możesz dodać/zmienić półki po utworzeniu elementu.</div>
+      </div>
+    </div>
+    <div class="brow">
+      <button onclick="closeModal()">Anuluj</button>
+      <button class="btn-primary" onclick="doAddContainer()"><i class="ti ti-check" aria-hidden="true"></i> Utwórz</button>
+    </div>`);
 }
-function cancelHoverTimer(){
-  if(hoverTimer){clearTimeout(hoverTimer);hoverTimer=null;}
-  hideTimer=setTimeout(()=>{
-    const wrap=document.getElementById('ctx-preview');
-    if(!wrap?.matches(':hover'))hidePreview();
-    hideTimer=null;
-  },400);
-}
-function showPreview(e,id){
-  const i=items.find(x=>x.id===id);if(!i)return;
-  const sub=(i.subitems||[]).filter(s=>s.name);
-  const q=itemQty(i);const low=isLow(i);
-  const wrap=document.getElementById('ctx-preview');
-  wrap.innerHTML=`
-    ${i.photo?`<img src="${i.photo}" class="ctx-preview-img" alt="">`:''}
-    <div class="ctx-preview-name">${esc(i.name)}</div>
-    <div class="ctx-preview-loc"><i class="ti ti-map-pin" style="font-size:10px"></i> ${esc(itemLocLabel(i))}${i.posIndex&&i.posTotal?' · poz.'+i.posIndex+'/'+i.posTotal:''}</div>
-    ${q!=null?`<div class="ctx-preview-qty${low?' qty-low':''}">${q}${i.qtyUnit?' '+esc(i.qtyUnit):''}${low?' ⚠':''}</div>`:``}
-    ${sub.length?`<div class="ctx-preview-subs">${sub.slice(0,5).map(s=>`<span>• ${esc(s.name)}${s.qty!=null?' ×'+s.qty:''}</span>`).join('<br>')}${sub.length>5?`<br><span style="color:var(--t3)">…i ${sub.length-5} więcej</span>`:''}</div>`:``}
-    <div class="ctx-preview-actions">
-      <button onclick="openDetail(${id});hidePreview()" style="background:var(--card2)"><i class="ti ti-eye"></i> Szczegóły</button>
-      <button onclick="showQR(${id});hidePreview()" style="background:var(--accent-bg);color:var(--accent);border-color:var(--accent-border)"><i class="ti ti-qrcode"></i> QR</button>
-    </div>`;
-  wrap.onmouseenter=()=>{if(hideTimer){clearTimeout(hideTimer);hideTimer=null;}};
-  wrap.onmouseleave=()=>hidePreview();
-  const x=e.clientX||0,y=e.clientY||0;
-  wrap.classList.add('visible');
-  const pw=wrap.offsetWidth||260,ph=wrap.offsetHeight||200;
-  wrap.style.left=Math.min(x+14,window.innerWidth-pw-12)+'px';
-  wrap.style.top=Math.min(y+8,window.innerHeight-ph-12)+'px';
-}
-function hidePreview(){
-  const wrap=document.getElementById('ctx-preview');
-  if(wrap){wrap.classList.remove('visible');wrap.style.display='none';setTimeout(()=>{wrap.style.display='';},10);}
-}
-function startLongPress(e,id){cancelLongPress();longPressTimer=setTimeout(()=>{longPressTimer=null;showPreview(e,id);},600);}
-function cancelLongPress(){if(longPressTimer){clearTimeout(longPressTimer);longPressTimer=null;}}
 
-// ══════════════════════════════════════════════ LIST
+function updateShelfFields(){
+  const type=document.getElementById('cn-type')?.value;
+  const sec=document.getElementById('cn-shelf-section');
+  if(sec)sec.style.display=ctypeHasShelves(type)?'block':'none';
+}
+
+async function doAddContainer(){
+  const name=document.getElementById('cn-name').value.trim();
+  if(!name){document.getElementById('cn-name').focus();return;}
+  const typeRaw=document.getElementById('cn-type').value.trim();
+  // Zmapuj etykietę na klucz jeśli pasuje, inaczej zachowaj jako własny
+  const found=CONTAINER_TYPES.find(t=>t.l===typeRaw||t.v===typeRaw);
+  const type=found?found.v:typeRaw||'other';
+  const hasShelves=ctypeHasShelves(type);
+  const shelfCount=hasShelves?Math.max(1,parseInt(document.getElementById('cn-shelves')?.value)||4):0;
+  const id=`C${nextContainerId++}`;
+  const shelves=hasShelves?Array.from({length:shelfCount},(_,i)=>({id:`P${i+1}`,name:`P${i+1}`,posTotal:null})):[];
+  containers.push({id,name,type,shelves});
+  await saveContainersToServer();
+  closeModal();
+  setView('garage');
+}
+
+function openEditContainer(cid){
+  const c=getContainer(cid);if(!c)return;
+  const hasShelves=ctypeHasShelves(c.type);
+  showModal(`
+    <div class="mhead"><i class="ti ${ctypeIcon(c.type)}" style="font-size:17px" aria-hidden="true"></i>
+      <h2>Edytuj: ${esc(c.name)}</h2>
+      <button onclick="closeModal()" style="padding:4px 9px">✕</button>
+    </div>
+    <div class="frow"><label>Nazwa</label><input id="ce-name" value="${esc(c.name)}"></div>
+    <div class="frow"><label>Typ / opis (wybierz lub wpisz własny)</label>
+      <input id="ce-type" list="dl-ctypes-edit" value="${esc(ctypeLabel(c.type))}">
+      <datalist id="dl-ctypes-edit">
+        ${CONTAINER_TYPES.map(t=>`<option value="${t.l}">`).join('')}
+      </datalist>
+    </div>
+    ${hasShelves?`
+    <div class="fsec">Półki <small style="font-weight:400;text-transform:none;letter-spacing:0">(kliknij żeby edytować)</small></div>
+    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">
+      ${(c.shelves||[]).map((s,si)=>`
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--card2);border-radius:var(--radius);border:0.5px solid var(--b3)">
+          <span style="flex:1;font-size:13px">${esc(s.name)}${s.posTotal?` <small style="color:var(--t2)">· ${s.posTotal} miejsc</small>`:''}</span>
+          <button onclick="openEditShelf('${cid}',${si})" style="padding:4px 8px;font-size:12px"><i class="ti ti-pencil" aria-hidden="true"></i></button>
+          <button onclick="deleteShelf('${cid}',${si})" class="btn-danger" style="padding:4px 8px;font-size:12px"><i class="ti ti-x" aria-hidden="true"></i></button>
+        </div>`).join('')}
+    </div>
+    <button onclick="addShelf('${cid}')" style="font-size:12px;padding:5px 10px;margin-bottom:10px"><i class="ti ti-plus" aria-hidden="true"></i> Dodaj półkę</button>`:''}
+    <div class="brow">
+      <button class="btn-danger" onclick="confirmDeleteContainer('${cid}')"><i class="ti ti-trash" aria-hidden="true"></i> Usuń element</button>
+      <button onclick="closeModal()">Anuluj</button>
+      <button class="btn-primary" onclick="doEditContainer('${cid}')"><i class="ti ti-check" aria-hidden="true"></i> Zapisz</button>
+    </div>`);
+}
+
+async function doEditContainer(cid){
+  const c=getContainer(cid);if(!c)return;
+  c.name=document.getElementById('ce-name').value.trim()||c.name;
+  const typeRaw=document.getElementById('ce-type').value.trim();
+  const found=CONTAINER_TYPES.find(t=>t.l===typeRaw||t.v===typeRaw);
+  c.type=found?found.v:typeRaw||c.type;
+  if(!ctypeHasShelves(c.type))c.shelves=[];
+  await saveContainersToServer();
+  closeModal();render();
+}
+
+function openEditShelf(cid,si){
+  const c=getContainer(cid);if(!c)return;
+  const s=c.shelves[si];if(!s)return;
+  showModal(`
+    <div class="mhead"><i class="ti ti-layout-rows" aria-hidden="true"></i>
+      <h2>Edytuj półkę</h2>
+      <button onclick="closeModal()" style="padding:4px 9px">✕</button>
+    </div>
+    <div style="font-size:12px;color:var(--t2);margin-bottom:12px">Kontener: <b>${esc(c.name)}</b></div>
+    <div class="frow"><label>Nazwa półki</label><input id="se-name" value="${esc(s.name)}" placeholder="np. Górna, Środkowa…"></div>
+    <div class="frow"><label>Liczba miejsc (posTotal)</label>
+      <input id="se-total" type="number" min="0" value="${s.posTotal||''}" placeholder="zostaw puste jeśli nie używasz pozycji">
+      <div class="pos-hint">Ustawia siatkę placeholderów na półce.</div>
+    </div>
+    <div class="brow">
+      <button onclick="openEditContainer('${cid}')"><i class="ti ti-arrow-left" aria-hidden="true"></i> Wróć</button>
+      <button class="btn-primary" onclick="doEditShelf('${cid}',${si})"><i class="ti ti-check" aria-hidden="true"></i> Zapisz</button>
+    </div>`);
+}
+
+async function doEditShelf(cid,si){
+  const c=getContainer(cid);if(!c)return;
+  c.shelves[si].name=document.getElementById('se-name').value.trim()||c.shelves[si].name;
+  c.shelves[si].posTotal=parseInt(document.getElementById('se-total').value)||null;
+  await saveContainersToServer();
+  openEditContainer(cid);
+}
+
+async function addShelf(cid){
+  const c=getContainer(cid);if(!c)return;
+  const n=c.shelves.length+1;
+  c.shelves.push({id:`P${n}`,name:`P${n}`,posTotal:null});
+  await saveContainersToServer();
+  openEditContainer(cid);
+}
+
+async function deleteShelf(cid,si){
+  const c=getContainer(cid);if(!c)return;
+  const s=c.shelves[si];
+  const count=items.filter(x=>x.regal===cid&&x.polka===s.id).length;
+  if(count>0&&!confirm(`Na tej półce jest ${count} przedmiotów. Usunięcie półki nie usuwa przedmiotów, ale stracą przypisanie do półki. Kontynuować?`))return;
+  c.shelves.splice(si,1);
+  await saveContainersToServer();
+  openEditContainer(cid);
+}
+
+function confirmDeleteContainer(cid){
+  const c=getContainer(cid);if(!c)return;
+  const count=items.filter(x=>x.regal===cid).length;
+  if(count>0){
+    if(!confirm(`Element "${c.name}" zawiera ${count} przedmiotów. Usunięcie elementu NIE usunie przedmiotów — stracą tylko przypisanie lokalizacji. Kontynuować?`))return;
+  } else {
+    if(!confirm(`Usunąć "${c.name}"?`))return;
+  }
+  containers=containers.filter(x=>x.id!==cid);
+  saveContainersToServer();
+  closeModal();render();
+}
+
+async function moveContainer(cid,dir){
+  const idx=containers.findIndex(c=>c.id===cid);
+  if(idx<0)return;
+  const ni=idx+dir;
+  if(ni<0||ni>=containers.length)return;
+  [containers[idx],containers[ni]]=[containers[ni],containers[idx]];
+  await saveContainersToServer();
+  render();
+}
+
+// ── LISTA ─────────────────────────────────────────────────────────────────────
 function buildList(items){
   const sorted=[...items].sort((a,b)=>a.name.localeCompare(b.name,'pl'));
-  if(!sorted.length)return`<div class="empty"><i class="ti ti-tool" style="font-size:28px;display:block;margin-bottom:8px"></i>Brak przedmiotów.</div>`;
+  if(!sorted.length)return`<div class="empty"><i class="ti ti-tool" style="font-size:28px;display:block;margin-bottom:8px" aria-hidden="true"></i>Brak przedmiotów.</div>`;
   return`<div class="list">${sorted.map(listRow).join('')}</div>`;
 }
 function buildSearch(fi){
-  if(!fi.length)return`<div class="empty"><i class="ti ti-search" style="font-size:28px;display:block;margin-bottom:8px"></i>Brak wyników dla „${esc(search)}"</div>`;
+  if(!fi.length)return`<div class="empty"><i class="ti ti-search" style="font-size:28px;display:block;margin-bottom:8px" aria-hidden="true"></i>Brak wyników dla „${esc(search)}"</div>`;
   return`<div style="font-size:12px;color:var(--t2);margin-bottom:8px">Znaleziono: ${fi.length}</div><div class="list">${fi.map(listRow).join('')}</div>`;
 }
 function listRow(i){
@@ -746,21 +763,26 @@ function listRow(i){
     <div class="imeta">${esc(i.cat)}${i.note?' · '+esc(i.note):''}${sub?' · '+sub+' poz.':''}${pos}${st}</div></div>
     ${qbadge}
     <span class="loc">${esc(itemLocLabel(i))}</span>
-    <button onclick="event.stopPropagation();openEdit(${i.id})" style="padding:5px 8px;flex:none"><i class="ti ti-edit"></i></button>
+    <button onclick="event.stopPropagation();openEdit(${i.id})" style="padding:5px 8px;flex:none"><i class="ti ti-edit" aria-hidden="true"></i></button>
   </div>`;
 }
 
-// ══════════════════════════════════════════════ STOCK
+// ── ZAPASY ────────────────────────────────────────────────────────────────────
 function buildStock(){
   const tracked=[];
   items.forEach(i=>{
     if(itemQty(i)!=null)tracked.push({type:'item',item:i,name:i.name,qty:parseInt(i.qty),unit:i.qtyUnit||'',threshold:i.qtyThreshold!=null?parseInt(i.qtyThreshold):null,low:isLow(i),id:i.id,subIdx:null});
-    (i.subitems||[]).forEach((s,si)=>{if(s.qty!=null&&s.qty!==''){const low=s.qtyThreshold!=null&&parseInt(s.qty)<=parseInt(s.qtyThreshold);tracked.push({type:'sub',item:i,name:`${i.name} → ${s.name}`,qty:parseInt(s.qty),unit:s.unit||'',threshold:s.qtyThreshold!=null?parseInt(s.qtyThreshold):null,low,id:i.id,subIdx:si});}});
+    (i.subitems||[]).forEach((s,si)=>{
+      if(s.qty!=null&&s.qty!==''){
+        const low=s.qtyThreshold!=null&&parseInt(s.qty)<=parseInt(s.qtyThreshold);
+        tracked.push({type:'sub',item:i,name:`${i.name} → ${s.name}`,qty:parseInt(s.qty),unit:s.unit||'',threshold:s.qtyThreshold!=null?parseInt(s.qtyThreshold):null,low,id:i.id,subIdx:si});
+      }
+    });
   });
-  if(!tracked.length)return`<div class="empty"><i class="ti ti-package" style="font-size:28px;display:block;margin-bottom:8px"></i>Brak pozycji z ustawionym stanem.<br><br>Dodaj przedmiot i wypełnij pole <b>Stan / ilość</b>.</div>`;
+  if(!tracked.length)return`<div class="empty"><i class="ti ti-package" style="font-size:28px;display:block;margin-bottom:8px" aria-hidden="true"></i>Brak pozycji z ustawionym stanem.<br><br>Dodaj przedmiot i wypełnij pole <b>Stan / ilość</b>.</div>`;
   const low=tracked.filter(x=>x.low),ok=tracked.filter(x=>!x.low);
   let html='';
-  if(low.length)html+=`<div class="alert-banner"><i class="ti ti-alert-triangle"></i> ${low.length} pozycj${low.length===1?'a':'e'} poniżej progu!</div>`;
+  if(low.length)html+=`<div class="alert-banner"><i class="ti ti-alert-triangle" aria-hidden="true"></i> ${low.length} pozycj${low.length===1?'a':'e'} poniżej progu!</div>`;
   if(low.length)html+=`<div class="stock-section-title">⚠ Niski stan</div><div class="stock-grid">${low.map(t=>stockRow(t)).join('')}</div>`;
   if(ok.length)html+=`<div class="stock-section-title">Pozostałe zapasy</div><div class="stock-grid">${ok.map(t=>stockRow(t)).join('')}</div>`;
   return html;
@@ -768,24 +790,26 @@ function buildStock(){
 function stockRow(t){
   const pct=t.threshold?Math.min(100,Math.round(t.qty/t.threshold*100)):null;
   const key=pendingKey(t.id,t.subIdx);
-  const si=t.subIdx!=null?t.subIdx:'null';
   return`<div class="stock-row ${t.low?'low':'ok'}">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
       <div><div class="stock-name">${esc(t.name)}</div>
         <div class="stock-meta">${esc(itemLocLabel(t.item))}${t.threshold!=null?' · próg: '+t.threshold+' '+(t.unit||''):''}</div>
       </div>
       <div class="stock-controls">
-        <button class="qty-btn btn-danger" onclick="adjustQtyLocal(${t.id},${si},-1)">−</button>
-        <span id="qty-display-${key}" class="stock-num${t.low?' low':''}">${t.qty}${t.unit?`<small style="font-size:12px"> ${esc(t.unit)}</small>`:''}</span>
-        <button class="qty-btn" onclick="adjustQtyLocal(${t.id},${si},1)">+</button>
-        <button id="save-qty-${key}" class="btn-primary" style="display:none;padding:5px 10px;font-size:12px" onclick="saveQtyChanges(${t.id})">
-          <i class="ti ti-device-floppy"></i> Zapisz
+        <button class="qty-btn btn-danger" onclick="adjustQtyLocal(${t.id},${t.subIdx!=null?t.subIdx:'null'},-1)">−</button>
+        <span id="qty-display-${key}" class="stock-num${t.low?' low':''}">${t.qty}${t.unit?' <small style="font-size:12px">'+esc(t.unit)+'</small>':''}</span>
+        <button class="qty-btn" onclick="adjustQtyLocal(${t.id},${t.subIdx!=null?t.subIdx:'null'},1)">+</button>
+        <input type="number" class="stock-input" value="${t.qty}" min="0" onchange="setQty(${t.id},${t.subIdx!=null?t.subIdx:'null'},this.value)">
+        <button id="save-qty-${t.id}" class="btn-primary" style="display:none;padding:5px 10px;font-size:12px" onclick="saveQtyChanges(${t.id})">
+          <i class="ti ti-device-floppy" aria-hidden="true"></i> Zapisz
         </button>
       </div>
     </div>
     ${pct!=null?`<div style="margin-top:6px;height:4px;background:var(--b3);border-radius:2px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${t.low?'#E24B4A':'#1D9E75'};border-radius:2px"></div></div>`:''}
   </div>`;
 }
+
+// ── Qty management ────────────────────────────────────────────────────────────
 function adjustQtyLocal(id,subIdx,delta){
   const i=items.find(x=>x.id===id);if(!i)return;
   const key=pendingKey(id,subIdx);
@@ -794,8 +818,8 @@ function adjustQtyLocal(id,subIdx,delta){
   else{cur=pendingQty[key]!=null?pendingQty[key]:(parseInt(i.qty)||0);}
   pendingQty[key]=Math.max(0,cur+delta);
   const el=document.getElementById(`qty-display-${key}`);
-  if(el){el.style.color='#854f0b';}
-  const saveBtn=document.getElementById(`save-qty-${key}`);
+  if(el){el.textContent=pendingQty[key];el.style.color='#854f0b';}
+  const saveBtn=document.getElementById(`save-qty-${id}`);
   if(saveBtn)saveBtn.style.display='flex';
 }
 async function saveQtyChanges(id){
@@ -809,310 +833,658 @@ async function saveQtyChanges(id){
   try{
     await doSaveApi(body,id);
     Object.keys(pendingQty).filter(k=>k===String(id)||k.startsWith(`${id}_`)).forEach(k=>delete pendingQty[k]);
-    render();
+    openDetail(id);
   }catch(e){alert('Błąd zapisu: '+e.message);}
 }
+async function setQty(id,subIdx,val){
+  const key=pendingKey(id,subIdx);
+  pendingQty[key]=Math.max(0,parseInt(val)||0);
+  const el=document.getElementById(`qty-display-${key}`);
+  if(el){el.textContent=pendingQty[key];el.style.color='#854f0b';}
+  const saveBtn=document.getElementById(`save-qty-${id}`);
+  if(saveBtn)saveBtn.style.display='flex';
+}
 
-// ══════════════════════════════════════════════ MANAGE CONTAINERS
-function buildManage(){
-  return`<div>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <div style="font-size:13px;color:var(--t2)">Kliknij element żeby edytować</div>
-      <button class="btn-primary" onclick="openAddContainer()"><i class="ti ti-plus"></i> Nowy element</button>
+// ── DETAIL ────────────────────────────────────────────────────────────────────
+function openDetail(id){
+  const i=items.find(x=>x.id===id);if(!i)return;
+  const sub=(i.subitems||[]);
+  const hp=i.posIndex&&i.posTotal&&i.posTotal>1;
+  const hs=i.stackLevel&&i.stackTotal&&i.stackTotal>1;
+  const q=itemQty(i);const low=isLow(i);
+  showModal(`
+    ${i.photo?`<img src="${i.photo}" class="dphotos" alt="">`:''}
+    <div class="mhead"><i class="ti ti-tool" style="font-size:17px" aria-hidden="true"></i><h2>${esc(i.name)}</h2><button onclick="closeModal()" style="padding:4px 9px">✕</button></div>
+    <div class="drow"><span class="dlbl">Lokalizacja</span>
+      <div style="display:flex;gap:6px;align-items:center">
+        <span class="loc">${esc(itemLocLabel(i))}</span>
+        <button class="btn-move" onclick="openMove(${i.id})"><i class="ti ti-arrows-move" aria-hidden="true"></i> Przesuń</button>
+      </div>
     </div>
-    <div class="container-list">
-      ${containers.map((c,idx)=>`
-        <div class="container-item">
-          <i class="ti ${ctypeIcon(c.type)} type-icon"></i>
-          <div style="flex:1">
-            <div class="container-item-name">${esc(c.name)}</div>
-            <div class="container-item-meta">${ctypeLabel(c.type)}${c.shelves?` · ${c.shelves.length} półek`:' · bez półek'} · ${items.filter(x=>x.regal===c.id).length} przedmiotów</div>
-          </div>
-          <button onclick="openEditContainer('${c.id}')" style="padding:5px 9px;font-size:12px"><i class="ti ti-pencil"></i></button>
-          <button onclick="moveContainer('${c.id}',-1)" ${idx===0?'disabled':''} style="padding:5px 8px"><i class="ti ti-arrow-up"></i></button>
-          <button onclick="moveContainer('${c.id}',1)" ${idx===containers.length-1?'disabled':''} style="padding:5px 8px"><i class="ti ti-arrow-down"></i></button>
-          <button onclick="confirmDeleteContainer('${c.id}')" class="btn-danger" style="padding:5px 8px"><i class="ti ti-trash"></i></button>
-        </div>`).join('')}
+    ${hp?`<div class="drow"><span class="dlbl">Pozycja</span>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+        <span style="font-size:12px">${i.posIndex} z ${i.posTotal}</span>
+        <div style="display:flex;gap:2px">${Array.from({length:Math.min(i.posTotal,16)},(_,k)=>`<div style="width:16px;height:16px;border-radius:3px;border:0.5px solid;background:${k+1===parseInt(i.posIndex)?'#FAECE7':'var(--card2)'};border-color:${k+1===parseInt(i.posIndex)?'#F0997B':'var(--b3)'}"></div>`).join('')}</div>
+      </div></div>`:''}
+    ${hs?`<div class="drow"><span class="dlbl">Poziom w stosie</span>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+        <span style="font-size:12px">${stackText(i)}</span>
+        <div style="display:flex;flex-direction:column;gap:2px">${Array.from({length:Math.min(i.stackTotal,8)},(_,k)=>{const lvl=i.stackTotal-k;const a=lvl===parseInt(i.stackLevel);return`<div style="width:60px;height:13px;border-radius:3px;border:0.5px solid;background:${a?'#E1F5EE':'var(--card2)'};border-color:${a?'#5DCAA5':'var(--b3)'};display:flex;align-items:center;justify-content:center;font-size:9px;color:${a?'#085041':'var(--t3)'}"> ${a?'← tutaj':''}</div>`;}).join('')}</div>
+      </div></div>`:''}
+    <div class="drow"><span class="dlbl">Kategoria</span><span>${esc(i.cat)}</span></div>
+    <div class="drow"><span class="dlbl">Przechowywanie</span><span class="pill ${sPill(i.storage)}">${esc(sLabel(i.storage))}</span></div>
+    ${i.customColor?`<div class="drow"><span class="dlbl">Kolor</span><span style="display:inline-block;width:20px;height:20px;border-radius:4px;background:${i.customColor};border:0.5px solid var(--b1)"></span></div>`:''}
+    ${i.note?`<div class="drow"><span class="dlbl">Notatka</span><span style="text-align:right;font-size:12px">${esc(i.note)}</span></div>`:''}
+    ${q!=null?`<div class="drow"><span class="dlbl">Stan</span><span class="qty-badge${low?' qty-low':''}">${q}${i.qtyUnit?' '+esc(i.qtyUnit):''}</span></div>
+    <div class="quick-stock">
+      <button class="qty-btn btn-danger" onclick="adjustQtyLocal(${i.id},null,-1)">−</button>
+      <span id="qty-display-${i.id}" style="font-size:22px;font-weight:500;min-width:36px;text-align:center${low?';color:#A32D2D':''}">${q}</span>
+      <button class="qty-btn" onclick="adjustQtyLocal(${i.id},null,1)">+</button>
+      <input type="number" style="width:64px;text-align:center" value="${q}" min="0" onchange="setQty(${i.id},null,this.value)">
+      ${i.qtyThreshold!=null?`<span style="font-size:11px;color:var(--t2)">próg: ${i.qtyThreshold}</span>`:''}
+    </div>`:''}
+    ${sub.length?`<div style="margin-top:10px"><div style="font-size:11px;color:var(--t2);margin-bottom:5px;font-weight:500">Zawartość (${sub.length})</div>
+      ${sub.map((s,si)=>{
+        const sq=(s.qty!=null&&s.qty!=='')?parseInt(s.qty):null;
+        const slow=s.qtyThreshold!=null&&sq!=null&&sq<=parseInt(s.qtyThreshold);
+        const hasQty=sq!=null&&!isNaN(sq);
+        const key=pendingKey(i.id,si);
+        return`<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap">
+          <span class="sub-chip${slow?' low':''}">${esc(s.name)}</span>
+          ${hasQty?`
+          <button class="qty-btn btn-danger" style="width:26px;height:26px;font-size:16px;padding:0;flex:none" onclick="adjustQtyLocal(${i.id},${si},-1)">−</button>
+          <span id="qty-display-${key}" style="font-size:14px;font-weight:500;min-width:28px;text-align:center${slow?';color:#A32D2D':''}">${sq}</span>
+          ${s.unit?`<small style="font-size:11px;color:var(--t2)">${esc(s.unit)}</small>`:''}
+          <button class="qty-btn" style="width:26px;height:26px;font-size:16px;padding:0;flex:none" onclick="adjustQtyLocal(${i.id},${si},1)">+</button>`
+          :`<span style="font-size:12px;color:var(--t2)">${s.unit?esc(s.unit):''}</span>`}
+        </div>`;
+      }).join('')}</div>`:''}
+    <div id="save-qty-${i.id}" style="display:none;margin-top:10px">
+      <button class="btn-primary" style="width:100%;justify-content:center;display:flex;gap:6px;padding:9px" onclick="saveQtyChanges(${i.id})">
+        <i class="ti ti-device-floppy" aria-hidden="true"></i> Zapisz zmiany ilości
+      </button>
     </div>
-  </div>`;
-}
-function openAddContainer(){
-  showModal(`<div class="mhead"><i class="ti ti-plus" style="font-size:17px"></i><h2>Nowy element garażu</h2><button onclick="closeModal()" style="padding:4px 9px">✕</button></div>
-    <div class="frow"><label>Nazwa *</label><input id="cn-name" placeholder="np. Szafka wisząca, Biurko…"></div>
-    <div class="frow"><label>Typ</label>
-      <input id="cn-type" list="dl-ctypes" placeholder="wybierz lub wpisz" oninput="updateShelfFields()">
-      <datalist id="dl-ctypes">${CONTAINER_TYPES.map(t=>`<option value="${t.l}">`).join('')}</datalist>
+    <div style="margin-top:10px">
+      <div style="font-size:11px;color:var(--t2);margin-bottom:5px;font-weight:500">${sub.length?'Dodaj do zawartości':'Zawartość — dodaj pierwszą pozycję'}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+        <input id="qi-name" placeholder="nazwa (np. płyn do szyb)" style="flex:1;min-width:120px">
+        <input id="qi-qty" type="number" min="0" placeholder="ile" style="width:60px;flex:none">
+        <input id="qi-unit" placeholder="szt/l/kg" style="width:60px;flex:none">
+        <button class="btn-primary" onclick="addSubitemQuick(${i.id})" style="flex:none;padding:6px 10px"><i class="ti ti-plus" aria-hidden="true"></i> Dodaj</button>
+      </div>
     </div>
-    <div id="cn-shelf-section">
-      <div class="frow"><label>Liczba półek</label><input id="cn-shelves" type="number" min="1" max="20" value="4"></div>
-    </div>
-    <div class="brow"><button onclick="closeModal()">Anuluj</button><button class="btn-primary" onclick="doAddContainer()"><i class="ti ti-check"></i> Utwórz</button></div>`);
-}
-function updateShelfFields(){const type=document.getElementById('cn-type')?.value;const sec=document.getElementById('cn-shelf-section');if(sec)sec.style.display=ctypeHasShelves(type)?'block':'none';}
-async function doAddContainer(){
-  const name=document.getElementById('cn-name').value.trim();if(!name){document.getElementById('cn-name').focus();return;}
-  const typeRaw=document.getElementById('cn-type').value.trim();
-  const found=CONTAINER_TYPES.find(t=>t.l===typeRaw||t.v===typeRaw);
-  const type=found?found.v:typeRaw||'other';
-  const hasShelves=ctypeHasShelves(type);
-  const shelfCount=hasShelves?Math.max(1,parseInt(document.getElementById('cn-shelves')?.value)||4):0;
-  const id=`C${nextContainerId++}`;
-  const shelves=hasShelves?Array.from({length:shelfCount},(_,i)=>({id:`P${i+1}`,name:`P${i+1}`,posTotal:null})):[];
-  containers.push({id,name,type,shelves});
-  await saveContainersToServer();closeModal();setView('garage');
-}
-function openEditContainer(cid){
-  const c=getContainer(cid);if(!c)return;
-  const hasShelves=ctypeHasShelves(c.type);
-  showModal(`<div class="mhead"><i class="ti ${ctypeIcon(c.type)}" style="font-size:17px"></i><h2>Edytuj: ${esc(c.name)}</h2><button onclick="closeModal()" style="padding:4px 9px">✕</button></div>
-    <div class="frow"><label>Nazwa</label><input id="ce-name" value="${esc(c.name)}"></div>
-    <div class="frow"><label>Typ</label>
-      <input id="ce-type" list="dl-ctypes-e" value="${esc(ctypeLabel(c.type))}">
-      <datalist id="dl-ctypes-e">${CONTAINER_TYPES.map(t=>`<option value="${t.l}">`).join('')}</datalist>
-    </div>
-    ${hasShelves?`<div class="fsec">Półki</div>
-    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">
-      ${(c.shelves||[]).map((s,si)=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--card2);border-radius:var(--radius);border:0.5px solid var(--b3)">
-        <span style="flex:1;font-size:13px">${esc(s.name)}${s.posTotal?` <small style="color:var(--t2)">· ${s.posTotal} miejsc</small>`:''}</span>
-        <button onclick="openEditShelf('${cid}',${si})" style="padding:4px 8px;font-size:12px"><i class="ti ti-pencil"></i></button>
-        <button onclick="deleteShelf('${cid}',${si})" class="btn-danger" style="padding:4px 8px;font-size:12px"><i class="ti ti-x"></i></button>
-      </div>`).join('')}
-    </div>
-    <button onclick="addShelf('${cid}')" style="font-size:12px;padding:5px 10px;margin-bottom:10px"><i class="ti ti-plus"></i> Dodaj półkę</button>`:''}
     <div class="brow">
-      <button class="btn-danger" onclick="confirmDeleteContainer('${cid}')"><i class="ti ti-trash"></i> Usuń element</button>
-      <button onclick="closeModal()">Anuluj</button>
-      <button class="btn-primary" onclick="doEditContainer('${cid}')"><i class="ti ti-check"></i> Zapisz</button>
+      <button class="btn-danger" onclick="doDelete(${i.id})"><i class="ti ti-trash" aria-hidden="true"></i> Usuń</button>
+      <button onclick="openEdit(${i.id})"><i class="ti ti-edit" aria-hidden="true"></i> Edytuj</button>
     </div>`);
 }
-async function doEditContainer(cid){const c=getContainer(cid);if(!c)return;c.name=document.getElementById('ce-name').value.trim()||c.name;const typeRaw=document.getElementById('ce-type').value.trim();const found=CONTAINER_TYPES.find(t=>t.l===typeRaw||t.v===typeRaw);c.type=found?found.v:typeRaw||c.type;if(!ctypeHasShelves(c.type))c.shelves=[];await saveContainersToServer();closeModal();render();}
-function openEditShelf(cid,si){const c=getContainer(cid);if(!c)return;const s=c.shelves[si];if(!s)return;showModal(`<div class="mhead"><i class="ti ti-layout-rows"></i><h2>Edytuj półkę</h2><button onclick="closeModal()" style="padding:4px 9px">✕</button></div>
-  <div style="font-size:12px;color:var(--t2);margin-bottom:12px">Kontener: <b>${esc(c.name)}</b></div>
-  <div class="frow"><label>Nazwa półki</label><input id="se-name" value="${esc(s.name)}" placeholder="np. Górna, P1…"></div>
-  <div class="frow"><label>Liczba miejsc (siatka pozycji)</label><input id="se-total" type="number" min="0" value="${s.posTotal||''}" placeholder="zostaw puste jeśli nie używasz"></div>
-  <div class="brow"><button onclick="openEditContainer('${cid}')"><i class="ti ti-arrow-left"></i> Wróć</button><button class="btn-primary" onclick="doEditShelf('${cid}',${si})"><i class="ti ti-check"></i> Zapisz</button></div>`);}
-async function doEditShelf(cid,si){const c=getContainer(cid);if(!c)return;c.shelves[si].name=document.getElementById('se-name').value.trim()||c.shelves[si].name;c.shelves[si].posTotal=parseInt(document.getElementById('se-total').value)||null;await saveContainersToServer();openEditContainer(cid);}
-async function addShelf(cid){const c=getContainer(cid);if(!c)return;const n=c.shelves.length+1;c.shelves.push({id:`P${n}`,name:`P${n}`,posTotal:null});await saveContainersToServer();openEditContainer(cid);}
-async function deleteShelf(cid,si){const c=getContainer(cid);if(!c)return;const s=c.shelves[si];const count=items.filter(x=>x.regal===cid&&x.polka===s.id).length;if(count>0&&!confirm(`Na tej półce jest ${count} przedmiotów. Kontynuować?`))return;c.shelves.splice(si,1);await saveContainersToServer();openEditContainer(cid);}
-function confirmDeleteContainer(cid){const c=getContainer(cid);if(!c)return;const count=items.filter(x=>x.regal===cid).length;if(!confirm(`Usunąć „${c.name}"?${count?` Zawiera ${count} przedmiotów.`:''}`))return;containers=containers.filter(x=>x.id!==cid);saveContainersToServer();closeModal();render();}
-async function moveContainer(cid,dir){const idx=containers.findIndex(c=>c.id===cid);if(idx<0)return;const ni=idx+dir;if(ni<0||ni>=containers.length)return;[containers[idx],containers[ni]]=[containers[ni],containers[idx]];await saveContainersToServer();render();}
 
-// ══════════════════════════════════════════════ ADD / EDIT ITEM
-function openAdd(regal,polka,posIndex,posTotal){fEditId=null;fSubs=[];fPhoto=null;fColorPick=null;showModal(buildForm(null,regal||containers[0]?.id,polka||null,posIndex||null,posTotal||null));}
-function openEdit(id){closeModal();const i=items.find(x=>x.id===id);if(!i)return;fEditId=id;fSubs=(i.subitems||[]).map(s=>({...s}));fPhoto=i.photo||null;fColorPick=i.customColor||null;showModal(buildForm(i,i.regal,i.polka,i.posIndex,i.posTotal));}
+async function addSubitemQuick(id){
+  const name=document.getElementById('qi-name')?.value.trim();if(!name)return;
+  const qty=document.getElementById('qi-qty')?.value;
+  const unit=document.getElementById('qi-unit')?.value.trim();
+  const i=items.find(x=>x.id===id);if(!i)return;
+  const subs=[...(i.subitems||[]),{name,qty:qty===''||qty==null?null:parseInt(qty),unit:unit||'',qtyThreshold:null}];
+  await doSaveApi({...i,subitems:subs},id);
+  openDetail(id);
+}
+
+// ── PRZESUŃ ───────────────────────────────────────────────────────────────────
+function openMove(id){
+  const i=items.find(x=>x.id===id);if(!i)return;
+  const selC=containers.map(c=>`<option value="${c.id}"${c.id===i.regal?' selected':''}>${esc(c.name)}</option>`).join('');
+  const curC=getContainer(i.regal);
+  const shelves=curC?.shelves||[];
+  const selS=shelves.length>0?`<div class="frow"><label>Nowa półka</label><select id="mv-p">${shelves.map(s=>`<option value="${s.id}"${s.id===i.polka?' selected':''}>${esc(s.name)}</option>`).join('')}</select></div>`:'';
+  showModal(`
+    <div class="mhead"><i class="ti ti-arrows-move" aria-hidden="true"></i><h2>Przesuń: ${esc(i.name)}</h2><button onclick="closeModal()" style="padding:4px 9px">✕</button></div>
+    <div style="font-size:12px;color:var(--t2);margin-bottom:12px">Obecna lokalizacja: <b>${esc(itemLocLabel(i))}</b></div>
+    <div class="frow"><label>Nowy element</label><select id="mv-r" onchange="updateMoveShelfSelect('${id}')">${selC}</select></div>
+    <div id="mv-shelf-wrap">${selS}</div>
+    <div class="brow">
+      <button onclick="closeModal()">Anuluj</button>
+      <button class="btn-primary" onclick="doMove(${id})"><i class="ti ti-check" aria-hidden="true"></i> Przesuń</button>
+    </div>`);
+}
+function updateMoveShelfSelect(itemId){
+  const cid=document.getElementById('mv-r').value;
+  const c=getContainer(cid);
+  const wrap=document.getElementById('mv-shelf-wrap');if(!wrap)return;
+  if(c?.shelves?.length>0){
+    wrap.innerHTML=`<div class="frow"><label>Nowa półka</label><select id="mv-p">${c.shelves.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select></div>`;
+  } else {
+    wrap.innerHTML='';
+  }
+}
+async function doMove(id){
+  const regal=document.getElementById('mv-r').value;
+  const polkaEl=document.getElementById('mv-p');
+  const polka=polkaEl?polkaEl.value:'_';
+  const i=items.find(x=>x.id===id);if(!i)return;
+  try{await doSaveApi({...i,regal,polka},id);closeModal();}catch(e){alert('Błąd: '+e.message);}
+}
+
+// ── FORMULARZ DODAJ/EDYTUJ ─────────────────────────────────────────────────────
+function openAdd(regal,polka,posIndex,posTotal){fEditId=null;fSubs=[];fPhoto=null;showModal(buildForm(null,regal||containers[0]?.id,polka||null,posIndex||null,posTotal||null));}
+function openEdit(id){closeModal();const i=items.find(x=>x.id===id);if(!i)return;fEditId=id;fSubs=(i.subitems||[]).map(s=>({...s}));fPhoto=i.photo||null;showModal(buildForm(i,i.regal,i.polka,i.posIndex,i.posTotal));}
 
 function buildForm(item,preC,preS,prePosIndex,prePosTotal){
   const v=k=>item?.[k]??'';
   const curCid=item?.regal||preC||containers[0]?.id;
   const curC=getContainer(curCid);
   const curSid=item?.polka||preS||curC?.shelves?.[0]?.id||'_';
+  const initPosIndex=item?.posIndex||prePosIndex||'';
+  const initPosTotal=item?.posTotal||prePosTotal||'';
   const selC=containers.map(c=>`<option value="${c.id}"${c.id===curCid?' selected':''}>${esc(c.name)}</option>`).join('');
   const hasShelves=ctypeHasShelves(curC?.type||'shelf_unit')&&(curC?.shelves||[]).length>0;
-  const selS=hasShelves?(curC?.shelves||[]).map(s=>`<option value="${s.id}"${s.id===curSid?' selected':''}>${esc(s.name)}</option>`).join(''):null;
+  const selS=hasShelves?(curC?.shelves||[]).map(s=>`<option value="${s.id}"${s.id===curSid?' selected':''}>${esc(s.name)}</option>`).join(''):'';
   const catOpts=CATS.map(c=>`<option>${c}</option>`).join('');
   const stOpts=STORAGES.map(s=>`<option>${s}</option>`).join('');
-  const colorChips=COLORS.map(c=>`<div class="color-chip${(!c&&!fColorPick||fColorPick===c)?' selected':''}${!c?' clear':''}" onclick="fColorPick='${c}';updateColorChips('${c}')" style="${c?`background:${c}`:''}${!c?'':''}">${!c?'✕':''}</div>`).join('');
-  return`<div class="mhead"><i class="ti ti-${item?'edit':'plus'}" style="font-size:16px"></i><h2>${item?'Edytuj':'Dodaj przedmiot'}</h2><button onclick="closeModal()" style="padding:4px 9px">✕</button></div>
-  <div class="frow"><label>Nazwa *</label><input id="fn" value="${esc(v('name'))}" placeholder="np. Wiertarka Bosch" autocomplete="off"></div>
-  <div class="fgrid">
-    <div class="frow"><label>Kategoria</label><input id="fc" list="dl-cats" value="${esc(v('cat'))}" placeholder="wybierz lub wpisz"><datalist id="dl-cats">${catOpts}</datalist></div>
-    <div class="frow"><label>Przechowywanie</label><input id="fs" list="dl-st" value="${esc(sLabel(v('storage')))}" placeholder="Luzem"><datalist id="dl-st">${stOpts}</datalist></div>
+  return`<div class="mhead">
+    <i class="ti ti-${item?'edit':'plus'}" style="font-size:16px" aria-hidden="true"></i>
+    <h2>${item?'Edytuj':'Dodaj przedmiot'}</h2>
+    <button onclick="closeModal()" style="padding:4px 9px">✕</button>
   </div>
-  <div class="frow"><label>Kolor na szkicu</label><div class="color-chips" id="color-chips">${colorChips}</div></div>
+  <div class="frow"><label>Nazwa *</label><input id="fn" value="${esc(v('name'))}" placeholder="np. Wiertarka Bosch"></div>
+  <div class="fgrid">
+    <div class="frow"><label>Kategoria</label>
+      <input id="fc" list="dl-cats" value="${esc(v('cat'))}" placeholder="wybierz lub wpisz">
+      <datalist id="dl-cats">${catOpts}</datalist>
+    </div>
+    <div class="frow"><label>Przechowywanie</label>
+      <input id="fs" list="dl-st" value="${esc(sLabel(v('storage')))}" placeholder="wybierz lub wpisz">
+      <datalist id="dl-st">${stOpts}</datalist>
+    </div>
+  </div>
+  <div class="frow">
+    <label>Kolor na szkicu (opcjonalnie)</label>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <input type="color" id="fcol" value="${item?.customColor||'#5DCAA5'}" style="width:40px;height:34px;padding:2px;cursor:pointer;flex:none;${!item?.customColor?'opacity:.4':''}">
+      <div style="display:flex;gap:5px;flex-wrap:wrap" id="color-presets">
+        ${['','#5DCAA5','#85B7EB','#EF9F27','#F0997B','#AFA9EC','#f87171','#4ade80','#60a5fa','#e879f9','#facc15'].map(c=>
+          `<button type="button" onclick="pickColor('${c}')" style="width:22px;height:22px;border-radius:4px;padding:0;flex:none;background:${c||'var(--card2)'};border:${(!item?.customColor&&!c||item?.customColor===c)?'2px solid #3C3489':'0.5px solid var(--b1)'}" title="${c||'domyślny'}">${!c?'✕':''}</button>`
+        ).join('')}
+      </div>
+    </div>
+  </div>
   <div class="fsec">Lokalizacja</div>
   <div class="fgrid">
     <div class="frow"><label>Element</label><select id="fr" onchange="updateFormShelves()">${selC}</select></div>
-    <div id="fs-wrap" class="frow" style="margin:0">${selS?`<label>Półka</label><select id="fp">${selS}</select>`:''}</div>
+    <div id="fs-wrap" class="frow" style="margin:0">${hasShelves?`<label>Półka</label><select id="fp">${selS}</select>`:''}</div>
   </div>
   <div class="frow">
-    <label>Pozycja na półce (opcjonalnie)</label>
+    <label>Pozycja na półce (od lewej, opcjonalnie)</label>
     <div class="fgrid" style="margin-bottom:5px">
-      <div class="frow" style="margin:0"><label style="font-size:10px">Numer</label><input id="fpi" type="number" min="1" value="${esc(String(prePosIndex||v('posIndex')||''))}" placeholder="np. 2" oninput="refreshPos()"></div>
-      <div class="frow" style="margin:0"><label style="font-size:10px">Łącznie miejsc</label><input id="fpt" type="number" min="1" value="${esc(String(prePosTotal||v('posTotal')||''))}" placeholder="np. 5" oninput="refreshPos()"></div>
+      <div class="frow" style="margin:0"><label style="font-size:10px">Numer</label>
+        <input id="fpi" type="number" min="1" value="${esc(String(initPosIndex))}" placeholder="np. 2" oninput="refreshPos()">
+      </div>
+      <div class="frow" style="margin:0"><label style="font-size:10px">Łącznie miejsc</label>
+        <input id="fpt" type="number" min="1" value="${esc(String(initPosTotal))}" placeholder="np. 5" oninput="refreshPos()">
+      </div>
     </div>
     <div id="pospreview"></div>
     <div class="pos-hint">Liczymy od lewej. Zostaw puste jeśli nie potrzebujesz.</div>
   </div>
+  <div class="frow">
+    <label>Poziom w stosie (opcjonalnie)</label>
+    <div class="fgrid">
+      <div class="frow" style="margin:0"><label style="font-size:10px">Poziom (1=dół)</label>
+        <input id="fsl" type="number" min="1" value="${esc(String(v('stackLevel')))}" placeholder="np. 1">
+      </div>
+      <div class="frow" style="margin:0"><label style="font-size:10px">Łącznie poziomów</label>
+        <input id="fst" type="number" min="1" value="${esc(String(v('stackTotal')))}" placeholder="np. 2">
+      </div>
+    </div>
+  </div>
   <div class="fsec">Stan / ilość (opcjonalnie)</div>
   <div class="fgrid3">
-    <div class="frow" style="margin:0"><label style="font-size:10px">Ilość</label><input id="fqty" type="number" min="0" value="${esc(String(v('qty')))}" placeholder="np. 10"></div>
-    <div class="frow" style="margin:0"><label style="font-size:10px">Jednostka</label><input id="fqunit" value="${esc(v('qtyUnit'))}" placeholder="szt/kg/l…"></div>
-    <div class="frow" style="margin:0"><label style="font-size:10px">Próg alertu</label><input id="fqthr" type="number" min="0" value="${esc(String(v('qtyThreshold')))}" placeholder="np. 2"></div>
+    <div class="frow" style="margin:0"><label style="font-size:10px">Ilość</label>
+      <input id="fqty" type="number" min="0" value="${esc(String(v('qty')))}" placeholder="np. 10">
+    </div>
+    <div class="frow" style="margin:0"><label style="font-size:10px">Jednostka</label>
+      <input id="fqunit" value="${esc(v('qtyUnit'))}" placeholder="szt/kg/l…">
+    </div>
+    <div class="frow" style="margin:0"><label style="font-size:10px">Próg alertu</label>
+      <input id="fqthr" type="number" min="0" value="${esc(String(v('qtyThreshold')))}" placeholder="np. 2">
+    </div>
   </div>
   <div class="pos-hint" style="margin-bottom:8px">Zostaw puste jeśli nie śledzisz stanu.</div>
   <div class="frow"><label>Notatka</label><textarea id="fnote" rows="2" placeholder="np. z kompletem wierteł…">${esc(v('note'))}</textarea></div>
   <div class="fsec">Zawartość / podpozycje</div>
   <div id="subs" class="subs">${fSubs.map((s,i)=>subRow(s,i)).join('')}</div>
-  <button onclick="addSub()" style="font-size:12px;padding:4px 10px"><i class="ti ti-plus"></i> Dodaj pozycję</button>
+  <button onclick="addSub()" style="font-size:12px;padding:4px 10px"><i class="ti ti-plus" aria-hidden="true"></i> Dodaj pozycję</button>
   <div class="fsec">Zdjęcie</div>
-  <label class="photo-lbl"><i class="ti ti-camera"></i> Zdjęcie / aparat<input type="file" accept="image/*" capture="environment" onchange="handlePhoto(event)"></label>
+  <label class="photo-lbl"><i class="ti ti-camera" aria-hidden="true"></i> Zdjęcie / aparat<input type="file" accept="image/*" capture="environment" onchange="handlePhoto(event)"></label>
   ${fPhoto?`<div style="position:relative"><img src="${fPhoto}" class="photo-prev"><button class="btn-danger" onclick="fPhoto=null;rePhoto()" style="position:absolute;top:4px;right:4px;padding:2px 7px;font-size:11px">✕</button></div>`:'<div id="phtw"></div>'}
   <div class="brow">
     <button onclick="closeModal()">Anuluj</button>
-    <button class="btn-primary" onclick="doSave()"><i class="ti ti-check"></i> ${item?'Zapisz zmiany':'Dodaj'}</button>
+    <button class="btn-primary" onclick="doSave()"><i class="ti ti-check" aria-hidden="true"></i> ${item?'Zapisz zmiany':'Dodaj'}</button>
   </div>`;
 }
 
-function updateColorChips(selected){document.querySelectorAll('.color-chip').forEach((el,i)=>{el.classList.toggle('selected',COLORS[i]===selected);});}
-function updateFormShelves(){const cid=document.getElementById('fr').value;const c=getContainer(cid);const wrap=document.getElementById('fs-wrap');if(!wrap)return;const hasShelves=ctypeHasShelves(c?.type||'shelf_unit')&&(c?.shelves||[]).length>0;wrap.innerHTML=hasShelves?`<label>Półka</label><select id="fp">${(c.shelves||[]).map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select>`:'';refreshPos();}
+function updateFormShelves(){
+  const cid=document.getElementById('fr').value;
+  const c=getContainer(cid);
+  const wrap=document.getElementById('fs-wrap');if(!wrap)return;
+  const hasShelves=ctypeHasShelves(c?.type||'shelf_unit')&&(c?.shelves||[]).length>0;
+  if(hasShelves){
+    wrap.innerHTML=`<label>Półka</label><select id="fp">${(c.shelves||[]).map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select>`;
+  } else {
+    wrap.innerHTML='';
+  }
+  refreshPos();
+}
+
+function subRow(s,idx){
+  return`<div class="subrow">
+    <input placeholder="wałek, pędzel…" value="${esc(s.name||'')}" oninput="fSubs[${idx}].name=this.value">
+    <input class="q" type="number" min="0" placeholder="ile" value="${s.qty??''}" oninput="fSubs[${idx}].qty=this.value===''?null:Number(this.value)">
+    <input class="u" placeholder="szt/m" value="${esc(s.unit||'')}" oninput="fSubs[${idx}].unit=this.value">
+    <input class="thr" type="number" min="0" placeholder="próg" value="${s.qtyThreshold??''}" oninput="fSubs[${idx}].qtyThreshold=this.value===''?null:Number(this.value)">
+    <button onclick="removeSub(${idx})" class="btn-danger" style="padding:4px 7px;flex:none"><i class="ti ti-x" aria-hidden="true"></i></button>
+  </div>`;
+}
+function addSub(){fSubs.push({name:'',qty:null,unit:'',qtyThreshold:null});const l=document.getElementById('subs');if(l){const d=document.createElement('div');d.innerHTML=subRow(fSubs[fSubs.length-1],fSubs.length-1);l.appendChild(d.firstElementChild);}}
+function removeSub(idx){fSubs.splice(idx,1);const l=document.getElementById('subs');if(l)l.innerHTML=fSubs.map((s,i)=>subRow(s,i)).join('');}
+
+function pickColor(c){
+  const inp=document.getElementById('fcol');if(inp)inp.value=c||'#5DCAA5';
+  document.querySelectorAll('#color-presets button').forEach((b,i)=>{
+    const colors=['','#5DCAA5','#85B7EB','#EF9F27','#F0997B','#AFA9EC','#f87171','#4ade80','#60a5fa','#e879f9','#facc15'];
+    b.style.border=colors[i]===c?'2px solid #3C3489':'0.5px solid var(--b1)';
+  });
+  if(inp){inp.style.opacity=c?'1':'.4';inp.dataset.clear=c?'':'1';}
+}
+
 function refreshPos(){
-  const t=parseInt(document.getElementById('fpt')?.value)||0;const m=parseInt(document.getElementById('fpi')?.value)||0;
-  const cid=document.getElementById('fr')?.value;const sid=document.getElementById('fp')?.value;
-  const w=document.getElementById('pospreview');if(!w)return;if(!t){w.innerHTML='';return;}
+  const t=parseInt(document.getElementById('fpt')?.value)||0;
+  const m=parseInt(document.getElementById('fpi')?.value)||0;
+  const cid=document.getElementById('fr')?.value;
+  const sid=document.getElementById('fp')?.value;
+  const w=document.getElementById('pospreview');if(!w)return;
+  if(!t){w.innerHTML='';return;}
   const occ=new Set(items.filter(x=>x.regal===cid&&x.polka===sid&&x.id!==fEditId&&x.posIndex).map(x=>parseInt(x.posIndex)));
-  let s='';for(let i=1;i<=Math.min(t,16);i++){const im=i===m,tk=!im&&occ.has(i);s+=`<div class="pslot${im?' mine':tk?' taken':''}">${i}</div>`;}
+  let s='';
+  for(let i=1;i<=Math.min(t,16);i++){const im=i===m,tk=!im&&occ.has(i);s+=`<div class="pslot${im?' mine':tk?' taken':''}">${i}</div>`;}
   w.innerHTML=`<div class="pos-slots">${s}</div>`;
 }
-function subRow(s,idx){return`<div class="subrow"><input placeholder="wałek, pędzel…" value="${esc(s.name||'')}" oninput="fSubs[${idx}].name=this.value"><input class="q" type="number" min="0" placeholder="ile" value="${s.qty??''}" oninput="fSubs[${idx}].qty=this.value===''?null:Number(this.value)"><input class="u" placeholder="szt/m" value="${esc(s.unit||'')}" oninput="fSubs[${idx}].unit=this.value"><input class="thr" type="number" min="0" placeholder="próg" value="${s.qtyThreshold??''}" oninput="fSubs[${idx}].qtyThreshold=this.value===''?null:Number(this.value)"><button onclick="removeSub(${idx})" class="btn-danger" style="padding:4px 7px;flex:none"><i class="ti ti-x"></i></button></div>`;}
-function addSub(){fSubs.push({name:'',qty:null,unit:'',qtyThreshold:null});const l=document.getElementById('subs');if(!l)return;const d=document.createElement('div');d.innerHTML=subRow(fSubs[fSubs.length-1],fSubs.length-1);l.appendChild(d.firstElementChild);}
-function removeSub(idx){fSubs.splice(idx,1);const l=document.getElementById('subs');if(l)l.innerHTML=fSubs.map((s,i)=>subRow(s,i)).join('');}
+
 function handlePhoto(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{fPhoto=ev.target.result;rePhoto();};r.readAsDataURL(f);}
-function rePhoto(){const w=document.getElementById('phtw');if(!w)return;w.innerHTML=fPhoto?`<div style="position:relative"><img src="${fPhoto}" class="photo-prev"><button class="btn-danger" onclick="fPhoto=null;rePhoto()" style="position:absolute;top:4px;right:4px;padding:2px 7px;font-size:11px">✕</button></div>`:`<label class="photo-lbl"><i class="ti ti-camera"></i> Zdjęcie / aparat<input type="file" accept="image/*" capture="environment" onchange="handlePhoto(event)"></label>`;}
+function rePhoto(){const w=document.getElementById('phtw');if(!w)return;w.innerHTML=fPhoto?`<div style="position:relative"><img src="${fPhoto}" class="photo-prev"><button class="btn-danger" onclick="fPhoto=null;rePhoto()" style="position:absolute;top:4px;right:4px;padding:2px 7px;font-size:11px">✕</button></div>`:'';
+}
+
+function validatePosition(body){
+  const errors=[];
+  const {regal,polka,posIndex,posTotal,stackLevel}=body;
+  if(!posIndex&&!posTotal)return[];
+  const others=items.filter(x=>x.regal===regal&&x.polka===polka&&x.id!==fEditId&&x.posIndex);
+  if(posTotal){const conflict=others.find(x=>x.posTotal&&parseInt(x.posTotal)!==posTotal);if(conflict)errors.push(`Niezgodna liczba miejsc: ten=${posTotal}, "${conflict.name}"=${conflict.posTotal}. Wszystkie przedmioty na tej półce muszą mieć tę samą wartość.`);}
+  if(posIndex){const samePos=others.filter(x=>parseInt(x.posIndex)===posIndex);if(samePos.length>0){const realConflict=samePos.filter(x=>!stackLevel||!x.stackLevel);if(realConflict.length>0)errors.push(`Konflikt pozycji ${posIndex}: zajęta przez "${realConflict.map(x=>x.name).join(', ')}". Ustaw Poziom w stosie jeśli chcesz ułożyć jeden na drugim.`);}}
+  return errors;
+}
+function showFormError(msg){
+  let box=document.getElementById('form-error');
+  if(!box){box=document.createElement('div');box.id='form-error';box.style.cssText='background:#FCEBEB;border:0.5px solid #F09595;border-radius:8px;padding:10px 14px;font-size:12px;color:#A32D2D;white-space:pre-line;margin-bottom:10px';const brow=document.querySelector('.brow');if(brow)brow.parentNode.insertBefore(box,brow);}
+  box.innerHTML=`<b><i class="ti ti-alert-triangle" style="font-size:13px" aria-hidden="true"></i> Błąd walidacji</b>\n\n${esc(msg)}`;
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
 async function doSave(){
-  const name=document.getElementById('fn').value.trim();if(!name){document.getElementById('fn').focus();return;}
-  const rawS=document.getElementById('fs').value.trim();const storage=NORM_BACK[rawS]||rawS||'loose';
-  const qtyVal=document.getElementById('fqty').value;const thrVal=document.getElementById('fqthr').value;
+  const name=document.getElementById('fn').value.trim();
+  if(!name){document.getElementById('fn').focus();return;}
+  const rawS=document.getElementById('fs').value.trim();
+  const storage=NORM_BACK[rawS]||rawS||'loose';
+  const qtyVal=document.getElementById('fqty').value;
+  const thrVal=document.getElementById('fqthr').value;
+  const colInp=document.getElementById('fcol');
+  const customColor=colInp?.dataset?.clear==='1'?null:(colInp?.value||null);
   const polkaEl=document.getElementById('fp');
-  const body={name,cat:document.getElementById('fc').value.trim()||'Inne',regal:document.getElementById('fr').value,polka:polkaEl?polkaEl.value:'_',storage,customColor:fColorPick||null,
-    posIndex:parseInt(document.getElementById('fpi').value)||null,posTotal:parseInt(document.getElementById('fpt').value)||null,
-    stackLevel:parseInt(document.getElementById('fsl')?.value)||null,stackTotal:parseInt(document.getElementById('fst')?.value)||null,
-    qty:qtyVal===''?null:parseInt(qtyVal),qtyUnit:document.getElementById('fqunit').value.trim()||null,
-    qtyThreshold:thrVal===''?null:parseInt(thrVal),note:document.getElementById('fnote').value.trim(),
-    subitems:fSubs.filter(s=>s.name.trim()),photo:fPhoto};
+  const body={name,
+    cat:document.getElementById('fc').value.trim()||'Inne',
+    regal:document.getElementById('fr').value,
+    polka:polkaEl?polkaEl.value:'_',
+    storage,customColor,
+    posIndex:parseInt(document.getElementById('fpi').value)||null,
+    posTotal:parseInt(document.getElementById('fpt').value)||null,
+    stackLevel:parseInt(document.getElementById('fsl').value)||null,
+    stackTotal:parseInt(document.getElementById('fst').value)||null,
+    qty:qtyVal===''?null:parseInt(qtyVal),
+    qtyUnit:document.getElementById('fqunit').value.trim()||null,
+    qtyThreshold:thrVal===''?null:parseInt(thrVal),
+    note:document.getElementById('fnote').value.trim(),
+    subitems:fSubs.filter(s=>s.name.trim()),
+    photo:fPhoto};
+  const errors=validatePosition(body);
+  if(errors.length){showFormError(errors.join('\n'));return;}
   try{await doSaveApi(body,fEditId);closeModal();}catch(e){alert('Błąd: '+e.message);}
 }
+
 async function doDelete(id){if(!confirm('Usunąć ten przedmiot?'))return;await doDeleteApi(id);closeModal();}
 
-// ══════════════════════════════════════════════ DETAIL
-function openDetail(id){
-  const i=items.find(x=>x.id===id);if(!i)return;
-  const sub=i.subitems||[];const q=itemQty(i);const low=isLow(i);
-  showModal(`
-    ${i.photo?`<img src="${i.photo}" class="dphotos" alt="">`:``}
-    <div class="mhead"><i class="ti ti-tool" style="font-size:17px"></i><h2>${esc(i.name)}</h2><button onclick="closeModal()" style="padding:4px 9px">✕</button></div>
-    <div class="drow"><span class="dlbl">Lokalizacja</span>
-      <div style="display:flex;gap:6px;align-items:center">
-        <span class="loc">${esc(itemLocLabel(i))}</span>
-        <button class="btn-move" onclick="openMove(${i.id})"><i class="ti ti-arrows-move"></i> Przesuń</button>
-      </div>
-    </div>
-    <div class="drow"><span class="dlbl">Kategoria</span><span>${esc(i.cat)}</span></div>
-    <div class="drow"><span class="dlbl">Przechowywanie</span><span class="pill ${sPill(i.storage)}">${esc(sLabel(i.storage))}</span></div>
-    ${i.note?`<div class="drow"><span class="dlbl">Notatka</span><span style="text-align:right;font-size:12px">${esc(i.note)}</span></div>`:``}
-    ${i.posIndex&&i.posTotal?`<div class="drow"><span class="dlbl">Pozycja</span><span>${i.posIndex} z ${i.posTotal}</span></div>`:``}
-    ${q!=null?`<div class="drow"><span class="dlbl">Stan</span><span class="qty-badge${low?' qty-low':''}">${q}${i.qtyUnit?' '+esc(i.qtyUnit):''}</span></div>
-    <div class="quick-stock">
-      <button class="qty-btn btn-danger" onclick="adjustQtyLocal(${i.id},null,-1)">−</button>
-      <span id="qty-display-${i.id}" style="font-size:22px;font-weight:500;min-width:36px;text-align:center${low?';color:var(--red)':''}">${q}</span>
-      <button class="qty-btn" onclick="adjustQtyLocal(${i.id},null,1)">+</button>
-      ${i.qtyThreshold!=null?`<span style="font-size:11px;color:var(--t2)">próg: ${i.qtyThreshold}</span>`:''}
-      <button id="save-qty-${i.id}" class="btn-primary" style="display:none;padding:5px 10px;font-size:12px" onclick="saveQtyChanges(${i.id})"><i class="ti ti-device-floppy"></i> Zapisz</button>
-    </div>`:``}
-    ${sub.length?`<div style="margin-top:10px"><div style="font-size:11px;color:var(--t2);margin-bottom:5px;font-weight:500">Zawartość (${sub.length})</div>
-      ${sub.map((s,si)=>{const sq=s.qty!=null&&s.qty!==''?parseInt(s.qty):null;const slow=s.qtyThreshold!=null&&sq!=null&&sq<=parseInt(s.qtyThreshold);const key=pendingKey(i.id,si);
-        return`<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap">
-          <span class="sub-chip${slow?' low':''}">${esc(s.name)}</span>
-          ${sq!=null?`<button class="qty-btn btn-danger" style="width:26px;height:26px;font-size:16px;padding:0;flex:none" onclick="adjustQtyLocal(${i.id},${si},-1)">−</button>
-          <span id="qty-display-${key}" style="font-size:14px;font-weight:500;min-width:28px;text-align:center${slow?';color:var(--red)':''}">${sq}</span>
-          ${s.unit?`<small style="font-size:11px;color:var(--t2)">${esc(s.unit)}</small>`:''}
-          <button class="qty-btn" style="width:26px;height:26px;font-size:16px;padding:0;flex:none" onclick="adjustQtyLocal(${i.id},${si},1)">+</button>
-          <button id="save-qty-${key}" class="btn-primary" style="display:none;padding:3px 8px;font-size:11px" onclick="saveQtyChanges(${i.id})"><i class="ti ti-device-floppy"></i></button>`
-          :`<span style="font-size:12px;color:var(--t2)">${s.unit?esc(s.unit):''}</span>`}
-        </div>`;}).join('')}
-    </div>`:``}
-    <div class="brow">
-      <button onclick="showQR(${i.id})"><i class="ti ti-qrcode"></i> QR</button>
-      <button class="btn-danger" onclick="doDelete(${i.id})"><i class="ti ti-trash"></i> Usuń</button>
-      <button onclick="openEdit(${i.id})"><i class="ti ti-edit"></i> Edytuj</button>
-    </div>`);
-}
-
-// ══════════════════════════════════════════════ MOVE
-function openMove(id){
-  const i=items.find(x=>x.id===id);if(!i)return;
-  const selC=containers.map(c=>`<option value="${c.id}"${c.id===i.regal?' selected':''}>${esc(c.name)}</option>`).join('');
-  const curC=getContainer(i.regal);const shelves=curC?.shelves||[];
-  showModal(`<div class="mhead"><i class="ti ti-arrows-move"></i><h2>Przesuń: ${esc(i.name)}</h2><button onclick="closeModal()" style="padding:4px 9px">✕</button></div>
-    <div style="font-size:12px;color:var(--t2);margin-bottom:12px">Teraz: <b>${esc(itemLocLabel(i))}</b></div>
-    <div class="frow"><label>Nowy element</label><select id="mv-r" onchange="updateMoveShelfSelect(${id})">${selC}</select></div>
-    <div id="mv-shelf-wrap">${shelves.length?`<div class="frow"><label>Nowa półka</label><select id="mv-p">${shelves.map(s=>`<option value="${s.id}"${s.id===i.polka?' selected':''}>${esc(s.name)}</option>`).join('')}</select></div>`:''}</div>
-    <div class="brow"><button onclick="closeModal()">Anuluj</button><button class="btn-primary" onclick="doMove(${id})"><i class="ti ti-check"></i> Przesuń</button></div>`);
-}
-function updateMoveShelfSelect(itemId){const cid=document.getElementById('mv-r').value;const c=getContainer(cid);const wrap=document.getElementById('mv-shelf-wrap');if(!wrap)return;wrap.innerHTML=c?.shelves?.length?`<div class="frow"><label>Nowa półka</label><select id="mv-p">${c.shelves.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select></div>`:'';}
-async function doMove(id){const regal=document.getElementById('mv-r').value;const polka=document.getElementById('mv-p')?.value||'_';const i=items.find(x=>x.id===id);if(!i)return;try{await doSaveApi({...i,regal,polka},id);closeModal();}catch(e){alert('Błąd: '+e.message);}}
-
-// ══════════════════════════════════════════════ QR
-function showQR(id){
-  const i=items.find(x=>x.id===id);if(!i)return;
-  const url=`${location.origin}${location.pathname}?item=${id}`;
-  showModal(`<div class="mhead"><i class="ti ti-qrcode" style="font-size:17px"></i><h2>QR: ${esc(i.name)}</h2><button onclick="closeModal()" style="padding:4px 9px">✕</button></div>
-    <div class="qr-wrap"><div id="qr-canvas"></div><div class="qr-label">${esc(url)}</div><div style="font-size:11px;color:var(--t2);margin-top:6px">Zeskanuj → otwiera szczegóły</div></div>
-    <div style="font-size:12px;color:var(--t2);margin:8px 0 4px">Lokalizacja: <b>${esc(itemLocLabel(i))}</b></div>
-    <div class="brow"><button onclick="printQR(${id})"><i class="ti ti-printer"></i> Drukuj</button><button onclick="closeModal()">Zamknij</button></div>`);
-  setTimeout(()=>{const el=document.getElementById('qr-canvas');if(el&&typeof QRCode!=='undefined'){new QRCode(el,{text:url,width:200,height:200,colorDark:'#1a1a18',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}},50);
-}
-function printQR(id){
-  const i=items.find(x=>x.id===id);if(!i)return;
-  const url=`${location.origin}${location.pathname}?item=${id}`;
-  const canvas=document.querySelector('#qr-canvas canvas');const qrDataUrl=canvas?canvas.toDataURL():'';
-  const w=window.open('','_blank');
-  w.document.write(`<!DOCTYPE html><html><head><title>Etykieta QR — ${i.name}</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,sans-serif;padding:20px}.label{border:1.5px solid #ccc;border-radius:8px;padding:16px;max-width:260px;text-align:center}.name{font-size:16px;font-weight:600;margin:10px 0 4px}.loc{font-size:12px;color:#666;margin-bottom:4px}.url{font-size:9px;color:#999;word-break:break-all;margin-top:8px}@media print{body{padding:0}}</style></head><body><div class="label">${qrDataUrl?`<img src="${qrDataUrl}" width="180" height="180">`:''}<div class="name">${i.name}</div><div class="loc">${itemLocLabel(i)}</div><div class="url">${url}</div></div><script>window.onload=()=>window.print()<\/script></body></html>`);
-  w.document.close();
-}
-
-// ══════════════════════════════════════════════ CSV
 function exportCSV(){
+  const makeCSV=()=>{
+    const h='ID,Nazwa,Kategoria,Lokalizacja,Element,Półka,Pozycja,Miejsc,Poziom,Poziomów,Ilość,Jednostka,Próg,Przechowywanie,Notatka,Podpozycje\n';
+    const rows=items.map(i=>{const sub=(i.subitems||[]).map(s=>`${s.name}${s.qty!=null?' x'+s.qty:''}${s.unit?' '+s.unit:''}`).join(' | ');return[i.id,`"${(i.name||'').replace(/"/g,'""')}"`,`"${(i.cat||'').replace(/"/g,'""')}"`,`"${itemLocLabel(i).replace(/"/g,'""')}"`,i.regal,i.polka,i.posIndex||'',i.posTotal||'',i.stackLevel||'',i.stackTotal||'',i.qty??'',i.qtyUnit||'',i.qtyThreshold??'',`"${(i.storage||'').replace(/"/g,'""')}"`,`"${(i.note||'').replace(/"/g,'""')}"`,`"${sub.replace(/"/g,'""')}"`].join(',');});
+    return'\uFEFF'+h+rows.join('\n');
+  };
   if(serverMode){fetch('/api/export/csv',{headers:{'Authorization':`Bearer ${authToken}`}}).then(r=>r.blob()).then(blob=>{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='garaz.csv';a.click();});return;}
-  const h='ID,Nazwa,Kategoria,Lokalizacja,Element,Półka,Pozycja,Miejsc,Ilość,Jednostka,Próg,Przechowywanie,Notatka,Podpozycje\n';
-  const rows=items.map(i=>{const sub=(i.subitems||[]).map(s=>`${s.name}${s.qty!=null?' x'+s.qty:''}${s.unit?' '+s.unit:''}`).join(' | ');return[i.id,`"${(i.name||'').replace(/"/g,'""')}"`,`"${(i.cat||'').replace(/"/g,'""')}"`,`"${itemLocLabel(i).replace(/"/g,'""')}"`,i.regal,i.polka,i.posIndex||'',i.posTotal||'',i.qty??'',i.qtyUnit||'',i.qtyThreshold??'',`"${(i.storage||'').replace(/"/g,'""')}"`,`"${(i.note||'').replace(/"/g,'""')}"`,`"${sub.replace(/"/g,'""')}"`].join(',');});
-  const blob=new Blob(['\uFEFF'+h+rows.join('\n')],{type:'text/csv;charset=utf-8'});
+  const blob=new Blob([makeCSV()],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='garaz.csv';a.click();
 }
+
+// ── IMPORT CSV ────────────────────────────────────────────────────────────────
 function openImportCSV(){
-  showModal(`<div class="mhead"><i class="ti ti-file-upload" style="font-size:17px"></i><h2>Importuj CSV</h2><button onclick="closeModal()" style="padding:4px 9px">✕</button></div>
-    <div style="font-size:13px;margin-bottom:12px">Wgraj plik CSV wyeksportowany z tej aplikacji.<br><span style="color:var(--t2);font-size:12px">Wymagana kolumna: <b>Nazwa</b>.</span></div>
-    <div class="frow"><label>Plik CSV</label><input type="file" id="csv-file" accept=".csv,text/csv" style="padding:8px"></div>
-    <div class="frow"><label>Tryb</label><select id="csv-mode"><option value="add">Dodaj do istniejących</option><option value="replace">Zastąp wszystkie dane</option></select></div>
+  showModal(`
+    <div class="mhead"><i class="ti ti-file-upload" style="font-size:17px" aria-hidden="true"></i>
+      <h2>Importuj CSV</h2>
+      <button onclick="closeModal()" style="padding:4px 9px">✕</button>
+    </div>
+    <div style="font-size:13px;margin-bottom:12px">
+      Wgraj plik CSV wyeksportowany z tej aplikacji lub przygotowany ręcznie.<br>
+      <span style="color:var(--t2);font-size:12px">Wymagane kolumny: <b>Nazwa</b>. Opcjonalne: Kategoria, Element (ID regału), Półka, Pozycja, Miejsc, Przechowywanie, Notatka, Ilość, Jednostka, Próg.</span>
+    </div>
+    <div class="frow">
+      <label>Plik CSV</label>
+      <input type="file" id="csv-file" accept=".csv,text/csv" style="padding:8px">
+    </div>
+    <div class="frow">
+      <label>Co zrobić z istniejącymi danymi?</label>
+      <select id="csv-mode">
+        <option value="add">Dodaj do istniejących (nie usuwaj)</option>
+        <option value="replace">Zastąp wszystkie dane (usuń obecne)</option>
+      </select>
+    </div>
     <div id="csv-preview" style="margin-top:10px;font-size:12px;color:var(--t2)"></div>
-    <div class="brow"><button onclick="closeModal()">Anuluj</button><button class="btn-primary" onclick="doImportCSV()"><i class="ti ti-check"></i> Importuj</button></div>`);
-  document.getElementById('csv-file').addEventListener('change',()=>{
-    const f=document.getElementById('csv-file').files[0];if(!f)return;
-    const r=new FileReader();r.onload=e=>{const lines=e.target.result.replace(/^\uFEFF/,'').split(/\r?\n/).filter(l=>l.trim());const prev=document.getElementById('csv-preview');if(prev)prev.textContent=`Znaleziono ${lines.length-1} wierszy.`;};r.readAsText(f,'UTF-8');
-  });
+    <div class="brow">
+      <button onclick="closeModal()">Anuluj</button>
+      <button class="btn-primary" onclick="doImportCSV()"><i class="ti ti-check" aria-hidden="true"></i> Importuj</button>
+    </div>`);
+  document.getElementById('csv-file').addEventListener('change',previewCSV);
 }
-function parseCSVLine(line){const result=[];let cur='',inQ=false;for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}else if(ch===','&&!inQ){result.push(cur);cur='';}else cur+=ch;}result.push(cur);return result;}
-async function doImportCSV(){
-  const file=document.getElementById('csv-file').files[0];if(!file){alert('Wybierz plik CSV.');return;}
-  const mode=document.getElementById('csv-mode').value;
+
+function parseCSVLine(line){
+  const result=[];let cur='',inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}
+    else if(ch===','&&!inQ){result.push(cur);cur='';}
+    else cur+=ch;
+  }
+  result.push(cur);
+  return result;
+}
+
+function previewCSV(){
+  const file=document.getElementById('csv-file').files[0];
+  if(!file)return;
   const reader=new FileReader();
-  reader.onload=async e=>{
-    const text=e.target.result.replace(/^\uFEFF/,'');const lines=text.split(/\r?\n/).filter(l=>l.trim());if(lines.length<2){alert('Plik jest pusty.');return;}
-    const headers=parseCSVLine(lines[0]).map(h=>h.trim().toLowerCase());
-    const col=name=>{const aliases={nazwa:['nazwa','name'],kategoria:['kategoria','cat'],element:['element','regał','regal'],półka:['półka','polka','shelf'],pozycja:['pozycja','posindex'],miejsc:['miejsc','postotal'],ilość:['ilość','qty','ilosc'],jednostka:['jednostka','qtyunit'],'próg':['próg','qtythreshold','prog'],przechowywanie:['przechowywanie','storage'],notatka:['notatka','note'],podpozycje:['podpozycje','subitems']};const variants=aliases[name]||[name];for(const v of variants){const idx=headers.findIndex(h=>h===v||h.includes(v));if(idx>-1)return idx;}return -1;};
-    const imported=[];
-    for(let li=1;li<lines.length;li++){const row=parseCSVLine(lines[li]);if(row.every(c=>!c.trim()))continue;const name=(row[col('nazwa')]||'').trim();if(!name)continue;const rawStorage=(row[col('przechowywanie')]||'').trim();const storage=NORM_BACK[rawStorage]||rawStorage||'loose';const subRaw=(row[col('podpozycje')]||'').trim();const subitems=subRaw?subRaw.split('|').map(s=>{const m=s.trim().match(/^(.+?)\s*x(\d+)\s*(.*)$/i);if(m)return{name:m[1].trim(),qty:parseInt(m[2]),unit:m[3].trim()||'',qtyThreshold:null};return{name:s.trim(),qty:null,unit:'',qtyThreshold:null};}).filter(s=>s.name):[];const qtyVal=col('ilość')>-1?(row[col('ilość')]||'').trim():'';const thrVal=col('próg')>-1?(row[col('próg')]||'').trim():'';imported.push({name,cat:(row[col('kategoria')]||'Inne').trim()||'Inne',regal:(row[col('element')]||containers[0]?.id||'R1').trim(),polka:(row[col('półka')]||'P1').trim(),posIndex:parseInt(row[col('pozycja')])||null,posTotal:parseInt(row[col('miejsc')])||null,stackLevel:null,stackTotal:null,storage,note:(row[col('notatka')]||'').trim(),qty:qtyVal===''?null:parseInt(qtyVal),qtyUnit:(row[col('jednostka')]||'').trim()||null,qtyThreshold:thrVal===''?null:parseInt(thrVal),subitems,photo:null,customColor:null});}
-    if(!imported.length){alert('Nie znaleziono wierszy do importu.');return;}
-    if(mode==='replace'){if(!confirm(`Zastąpić ${items.length} istniejących?`))return;items=[];nextId=1;}
-    let added=0;for(const body of imported){try{await doSaveApi(body,null);added++;}catch(e){console.error(e);}}
-    closeModal();alert(`Zaimportowano ${added} z ${imported.length} przedmiotów.`);
+  reader.onload=e=>{
+    const lines=e.target.result.replace(/^\uFEFF/,'').split(/\r?\n/).filter(l=>l.trim());
+    const prev=document.getElementById('csv-preview');
+    if(prev)prev.textContent=`Znaleziono ${lines.length-1} wierszy do importu.`;
   };
   reader.readAsText(file,'UTF-8');
 }
 
-// ══════════════════════════════════════════════ ITEM LINK
-function handleItemLink(){const params=new URLSearchParams(location.search);const id=parseInt(params.get('item'));if(id&&items.find(x=>x.id===id)){setTimeout(()=>openDetail(id),300);history.replaceState(null,'',location.pathname);}}
+async function doImportCSV(){
+  const file=document.getElementById('csv-file').files[0];
+  if(!file){alert('Wybierz plik CSV.');return;}
+  const mode=document.getElementById('csv-mode').value;
+  const reader=new FileReader();
+  reader.onload=async e=>{
+    const text=e.target.result.replace(/^\uFEFF/,'');
+    const lines=text.split(/\r?\n/).filter(l=>l.trim());
+    if(lines.length<2){alert('Plik jest pusty lub nie zawiera danych.');return;}
+    // Nagłówki
+    const headers=parseCSVLine(lines[0]).map(h=>h.trim().toLowerCase());
+    const col=name=>{
+      const aliases={
+        'id':['id'],
+        'nazwa':['nazwa','name'],
+        'kategoria':['kategoria','cat','kategoria'],
+        'element':['element','regał','regal'],
+        'półka':['półka','polka','shelf'],
+        'pozycja':['pozycja','posindex'],
+        'miejsc':['miejsc','postotal'],
+        'poziom':['poziom','stacklevel'],
+        'poziomów':['poziomów','stacktotal'],
+        'ilość':['ilość','qty','ilosc'],
+        'jednostka':['jednostka','qtyunit'],
+        'próg':['próg','qtythreshold','prog'],
+        'przechowywanie':['przechowywanie','storage'],
+        'notatka':['notatka','note'],
+        'podpozycje':['podpozycje','subitems'],
+      };
+      const variants=aliases[name]||[name];
+      for(const v of variants){const idx=headers.findIndex(h=>h===v||h.includes(v));if(idx>-1)return idx;}
+      return -1;
+    };
+    const imported=[];
+    for(let li=1;li<lines.length;li++){
+      const row=parseCSVLine(lines[li]);
+      if(row.every(c=>!c.trim()))continue;
+      const name=(row[col('nazwa')]||'').trim();
+      if(!name)continue;
+      // Mapuj przechowywanie
+      const rawStorage=(row[col('przechowywanie')]||'').trim();
+      const storage=NORM_BACK[rawStorage]||rawStorage||'loose';
+      // Podpozycje — format: "wałek x3 szt | pędzel x1"
+      const subRaw=(row[col('podpozycje')]||'').trim();
+      const subitems=subRaw?subRaw.split('|').map(s=>{
+        const m=s.trim().match(/^(.+?)\s*x(\d+)\s*(.*)$/i);
+        if(m)return{name:m[1].trim(),qty:parseInt(m[2]),unit:m[3].trim()||'',qtyThreshold:null};
+        return{name:s.trim(),qty:null,unit:'',qtyThreshold:null};
+      }).filter(s=>s.name):[];
+      const qtyVal=col('ilość')>-1?(row[col('ilość')]||'').trim():'';
+      const thrVal=col('próg')>-1?(row[col('próg')]||'').trim():'';
+      imported.push({
+        name,
+        cat:(row[col('kategoria')]||'Inne').trim()||'Inne',
+        regal:(row[col('element')]||containers[0]?.id||'R1').trim(),
+        polka:(row[col('półka')]||'P1').trim(),
+        posIndex:parseInt(row[col('pozycja')])||null,
+        posTotal:parseInt(row[col('miejsc')])||null,
+        stackLevel:parseInt(row[col('poziom')])||null,
+        stackTotal:parseInt(row[col('poziomów')])||null,
+        storage,
+        note:(row[col('notatka')]||'').trim(),
+        qty:qtyVal===''?null:parseInt(qtyVal),
+        qtyUnit:(row[col('jednostka')]||'').trim()||null,
+        qtyThreshold:thrVal===''?null:parseInt(thrVal),
+        subitems,
+        photo:null,
+        customColor:null,
+      });
+    }
+    if(!imported.length){alert('Nie znaleziono żadnych wierszy do importu.');return;}
+    if(mode==='replace'){
+      if(!confirm(`Zastąpić ${items.length} istniejących przedmiotów ${imported.length} nowymi z pliku?`))return;
+      items=[];nextId=1;
+    }
+    let added=0;
+    for(const body of imported){
+      try{await doSaveApi(body,null);added++;}catch(e){console.error('Import error:',e);}
+    }
+    closeModal();
+    alert(`Zaimportowano ${added} z ${imported.length} przedmiotów.`);
+  };
+  reader.readAsText(file,'UTF-8');
+}
 
-// ══════════════════════════════════════════════ BOOT
-(async function boot(){
-  // Załaduj lokalny layout
-  try{const l=localStorage.getItem('garaz_layout');if(l)garageLayout=l;}catch(e){}
-  // PWA lub browser — zainicjuj połączenie
-  await waitForServer();
-  // Service Worker
-  if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(()=>{});}
-  // Skrót ?action=add
+// ── PODGLĄD (prawy klik / długie przytrzymanie) ───────────────────────────────
+let longPressTimer=null;
+let hoverTimer=null;
+let hideTimer=null;
+let previewVisible=false;
+
+function startHoverPreview(e,id){
+  // Anuluj ewentualne chowanie
+  if(hideTimer){clearTimeout(hideTimer);hideTimer=null;}
+  // Anuluj poprzedni timer
+  if(hoverTimer){clearTimeout(hoverTimer);hoverTimer=null;}
+  const ex=e.clientX, ey=e.clientY;
+  hoverTimer=setTimeout(()=>{
+    hoverTimer=null;
+    showPreview({clientX:ex,clientY:ey},id,true);
+  },800);
+}
+
+function cancelHoverTimer(){
+  // Wywoływane gdy mysz opuszcza slot — anuluj timer ALE nie chowaj okienka od razu
+  if(hoverTimer){clearTimeout(hoverTimer);hoverTimer=null;}
+  // Daj 400ms żeby móc wjechać kursorem w okienko
+  hideTimer=setTimeout(()=>{
+    const wrap=document.getElementById('ctx-preview');
+    if(!wrap?.matches(':hover')) hidePreview();
+    hideTimer=null;
+  },400);
+}
+
+function showPreview(e,id,fromHover){
+  if(e&&e.preventDefault)e.preventDefault();
+  const i=items.find(x=>x.id===id);if(!i)return;
+  const sub=(i.subitems||[]).filter(s=>s.name);
+  const q=itemQty(i);const low=isLow(i);
+  const wrap=document.getElementById('ctx-preview');
+  wrap.innerHTML=`
+    ${i.photo?`<img src="${i.photo}" class="ctx-preview-img" alt="">`:''}
+    <div class="ctx-preview-name">${esc(i.name)}</div>
+    <div class="ctx-preview-loc"><i class="ti ti-map-pin" style="font-size:10px" aria-hidden="true"></i> ${esc(itemLocLabel(i))}${i.posIndex&&i.posTotal?' · poz.'+i.posIndex+'/'+i.posTotal:''}</div>
+    ${q!=null?`<div class="ctx-preview-qty${low?' qty-low':''}">${q}${i.qtyUnit?' '+esc(i.qtyUnit):''}${low?' ⚠':''}</div>`:''}
+    ${sub.length?`<div class="ctx-preview-subs">${sub.slice(0,5).map(s=>`<span>• ${esc(s.name)}${s.qty!=null?' ×'+s.qty:''}</span>`).join('<br>')}${sub.length>5?`<br><span style="color:var(--t3)">…i ${sub.length-5} więcej</span>`:''}</div>`:''}
+    <div class="ctx-preview-actions">
+      <button onclick="openDetail(${id});hidePreview()" style="background:var(--card2)"><i class="ti ti-eye" aria-hidden="true"></i> Szczegóły</button>
+      <button onclick="showQR(${id});hidePreview()" style="background:#EEEDFE;color:#3C3489;border-color:#AFA9EC"><i class="ti ti-qrcode" aria-hidden="true"></i> QR</button>
+    </div>`;
+  wrap.onmouseenter=()=>{if(hideTimer){clearTimeout(hideTimer);hideTimer=null;}};
+  wrap.onmouseleave=()=>hidePreview();
+  const x=e.clientX||e.touches?.[0]?.clientX||0;
+  const y=e.clientY||e.touches?.[0]?.clientY||0;
+  wrap.style.display='block';
+  wrap.classList.add('visible');
+  const pw=wrap.offsetWidth||260,ph=wrap.offsetHeight||200;
+  wrap.style.left=Math.min(x+12,window.innerWidth-pw-12)+'px';
+  wrap.style.top=Math.min(y+8,window.innerHeight-ph-12)+'px';
+  previewVisible=true;
+}
+
+function hidePreview(){
+  const wrap=document.getElementById('ctx-preview');
+  if(wrap){wrap.style.display='none';wrap.classList.remove('visible');}
+  previewVisible=false;
+}
+
+function startLongPress(e,id){
+  cancelLongPress();
+  longPressTimer=setTimeout(()=>{
+    longPressTimer=null;
+    showPreview(e,id);
+  },600);
+}
+function cancelLongPress(){
+  if(longPressTimer){clearTimeout(longPressTimer);longPressTimer=null;}
+}
+
+// ── QR KOD ────────────────────────────────────────────────────────────────────
+function showQR(id){
+  const i=items.find(x=>x.id===id);if(!i)return;
+  const url=`${location.origin}${location.pathname}?item=${id}`;
+  showModal(`
+    <div class="mhead"><i class="ti ti-qrcode" style="font-size:17px" aria-hidden="true"></i>
+      <h2>QR: ${esc(i.name)}</h2>
+      <button onclick="closeModal()" style="padding:4px 9px">✕</button>
+    </div>
+    <div class="qr-wrap">
+      <div id="qr-canvas"></div>
+      <div class="qr-label">${esc(url)}</div>
+      <div style="font-size:11px;color:var(--t2);margin-top:6px">Zeskanuj aparatem → od razu otwiera szczegóły przedmiotu</div>
+    </div>
+    <div style="font-size:12px;color:var(--t2);margin:8px 0 4px">Lokalizacja: <b>${esc(itemLocLabel(i))}</b></div>
+    ${i.posIndex&&i.posTotal?`<div style="font-size:12px;color:var(--t2);margin-bottom:4px">Pozycja: <b>${i.posIndex} z ${i.posTotal}</b></div>`:''}
+    <div class="brow">
+      <button onclick="printQR(${id})"><i class="ti ti-printer" aria-hidden="true"></i> Drukuj etykietę</button>
+      <button onclick="closeModal()">Zamknij</button>
+    </div>`);
+  // Generuj QR po renderowaniu modala
+  setTimeout(()=>{
+    const el=document.getElementById('qr-canvas');
+    if(el&&typeof QRCode!=='undefined'){
+      new QRCode(el,{text:url,width:200,height:200,colorDark:'#1a1a18',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+    }
+  },50);
+}
+
+function printQR(id){
+  const i=items.find(x=>x.id===id);if(!i)return;
+  const url=`${location.origin}${location.pathname}?item=${id}`;
+  const canvas=document.querySelector('#qr-canvas canvas');
+  const qrDataUrl=canvas?canvas.toDataURL():'';
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>Etykieta QR — ${i.name}</title>
+    <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,sans-serif;padding:20px}
+    .label{border:1.5px solid #ccc;border-radius:8px;padding:16px;max-width:260px;text-align:center}
+    .name{font-size:16px;font-weight:600;margin:10px 0 4px}
+    .loc{font-size:12px;color:#666;margin-bottom:4px}
+    .url{font-size:9px;color:#999;word-break:break-all;margin-top:8px}
+    @media print{body{padding:0}}</style>
+  </head><body>
+    <div class="label">
+      ${qrDataUrl?`<img src="${qrDataUrl}" width="180" height="180">`:''}
+      <div class="name">${i.name}</div>
+      <div class="loc">${itemLocLabel(i)}${i.posIndex&&i.posTotal?' · poz.'+i.posIndex+'/'+i.posTotal:''}</div>
+      <div class="url">${url}</div>
+    </div>
+    <script>window.onload=()=>window.print()<\/script>
+  </body></html>`);
+  w.document.close();
+}
+
+// Obsługa linku ?item=ID przy wejściu na stronę
+function handleItemLink(){
   const params=new URLSearchParams(location.search);
-  if(params.get('action')==='add'){setTimeout(()=>openAdd(null,null),500);}
+  const id=parseInt(params.get('item'));
+  if(id&&items.find(x=>x.id===id)){
+    setTimeout(()=>openDetail(id),300);
+    // Wyczyść URL bez przeładowania
+    history.replaceState(null,'',location.pathname);
+  }
+}
+
+function showModal(html){document.getElementById('mbox').innerHTML=html;document.getElementById('modal').style.display='flex';setTimeout(refreshPos,30);}
+function closeModal(){document.getElementById('modal').style.display='none';}
+function overlayClick(e){
+  // Celowo wyłączone — kliknięcie poza oknem NIE zamyka formularza
+  // Zamknięcie tylko przez przycisk ✕ lub Escape
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('modal').style.display!=='none')closeModal();});
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+(async function boot(){
+  lsLoad();lsLoadContainers();
+  try{const l=localStorage.getItem('garaz_layout');if(l)garageLayout=l;}catch(e){}
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('main-app').style.display='block';
+  render();
+  const saved=loadToken();
+  try{
+    const r=await fetch('/api/items',{headers:saved?{'Authorization':`Bearer ${saved}`}:{},signal:AbortSignal.timeout(2000)});
+    if(r.status===401){document.getElementById('main-app').style.display='none';document.getElementById('login-screen').style.display='flex';return;}
+    if(r.ok&&saved){
+      authToken=saved;
+      items=await r.json();
+      nextId=Math.max(0,...items.map(x=>x.id))+1;
+      await loadContainersFromServer();
+      render();tryWS();
+      handleItemLink();
+    }
+  }catch(e){}
+  // Rejestracja PWA Service Worker
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  }
+  // Obsługa skrótu ?action=add
+  const params=new URLSearchParams(location.search);
+  if(params.get('action')==='add'){setTimeout(()=>openAdd(null,null),400);}
 })();
 </script>
 </body>
