@@ -1462,27 +1462,65 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElement
 (async function boot(){
   lsLoad();lsLoadContainers();
   try{const l=localStorage.getItem('garaz_layout');if(l)garageLayout=l;}catch(e){}
-  document.getElementById('login-screen').style.display='none';
-  document.getElementById('main-app').style.display='block';
-  render();
+
   const saved=loadToken();
-  try{
-    const r=await fetch('/api/items',{headers:saved?{'Authorization':`Bearer ${saved}`}:{},signal:AbortSignal.timeout(2000)});
-    if(r.status===401){document.getElementById('main-app').style.display='none';document.getElementById('login-screen').style.display='flex';return;}
-    if(r.ok&&saved){
-      authToken=saved;
-      items=await r.json();
-      nextId=Math.max(0,...items.map(x=>x.id))+1;
-      await loadContainersFromServer();
-      render();tryWS();
-      handleItemLink();
+
+  // Pokaż lokalnie zapisane dane od razu
+  if(saved){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('main-app').style.display='block';
+    render();
+  } else {
+    document.getElementById('login-screen').style.display='flex';
+    return;
+  }
+
+  // Próbuj połączyć z serwerem - z obsługą uśpionego Render
+  let connected=false;
+  for(let attempt=0; attempt<12; attempt++){
+    // Pokaż baner dopiero po 2. nieudanej próbie
+    if(attempt===2){
+      const b=document.createElement('div');
+      b.id='wake-banner';
+      b.style.cssText='position:fixed;top:0;left:0;right:0;background:#f59e0b;color:#fff;text-align:center;padding:7px;font-size:12px;z-index:9999;font-family:inherit';
+      b.textContent='☕ Budzenie serwera… (Render usypia po 15 min bezczynności)';
+      document.body.appendChild(b);
     }
-  }catch(e){}
-  // Rejestracja PWA Service Worker
+    try{
+      const r=await fetch('/api/items',{
+        headers:{'Authorization':`Bearer ${saved}`},
+        signal:AbortSignal.timeout(7000)
+      });
+      if(r.status===401){
+        clearToken();
+        document.getElementById('main-app').style.display='none';
+        document.getElementById('login-screen').style.display='flex';
+        const b=document.getElementById('wake-banner');if(b)b.remove();
+        return;
+      }
+      if(r.ok){
+        authToken=saved;
+        items=await r.json();
+        nextId=Math.max(0,...items.map(x=>x.id))+1;
+        await loadContainersFromServer();
+        render();tryWS();handleItemLink();
+        connected=true;
+        const b=document.getElementById('wake-banner');if(b)b.remove();
+        break;
+      }
+    }catch(e){}
+    await new Promise(res=>setTimeout(res,5000));
+  }
+
+  if(!connected){
+    const b=document.getElementById('wake-banner');
+    if(b){b.style.background='#dc2626';b.innerHTML='⚠️ Brak połączenia z serwerem — wyświetlam dane lokalne. <button onclick="location.reload()" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:4px;padding:2px 8px;cursor:pointer;margin-left:8px">Odśwież</button>';}
+  }
+
+  // PWA Service Worker
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register('/sw.js').catch(()=>{});
   }
-  // Obsługa skrótu ?action=add
   const params=new URLSearchParams(location.search);
   if(params.get('action')==='add'){setTimeout(()=>openAdd(null,null),400);}
 })();

@@ -1,22 +1,12 @@
 {
-  "name": "Garaż — menedżer sprzętu",
+  "name": "Garaż",
   "short_name": "Garaż",
-  "description": "Zarządzanie sprzętem i narzędziami w garażu",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1C1C1E",
-  "theme_color": "#1C1C1E",
-  "orientation": "portrait",
+  "background_color": "#f8f7f5",
+  "theme_color": "#3C3489",
   "icons": [
-    {"src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
-    {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
-  ],
-  "shortcuts": [
-    {
-      "name": "Dodaj przedmiot",
-      "short_name": "Dodaj",
-      "url": "/?action=add",
-      "icons": [{"src": "/icon-192.png", "sizes": "192x192"}]
-    }
+    {"src": "/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png"}
   ]
 }
