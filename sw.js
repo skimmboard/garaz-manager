@@ -3,7 +3,7 @@
  * Strategia: Network First dla API, Cache First dla statycznych zasobów
  */
 
-const CACHE = 'garaz-v1';
+const CACHE = 'garaz-v2';
 const STATIC = [
   '/',
   '/index.html',
@@ -30,11 +30,11 @@ self.addEventListener('activate', e => {
   );
 });
 
-// Fetch — Network First dla API, Cache First dla reszty
+// ── Fetch — Network First dla HTML i API, Cache First dla zasobów statycznych ──
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
 
-  // API zawsze przez sieć (dane muszą być aktualne)
+  // API zawsze przez sieć
   if (url.pathname.startsWith('/api/')) {
     e.respondWith(
       fetch(e.request).catch(() =>
@@ -50,18 +50,32 @@ self.addEventListener('fetch', e => {
   // WebSocket — ignoruj
   if (e.request.url.startsWith('ws')) return;
 
-  // Statyczne zasoby — Cache First, fallback do sieci
+  // HTML — zawsze z sieci (żeby zmiany w index.html były widoczne natychmiast)
+  if (url.pathname === '/' || url.pathname.endsWith('.html')) {
+    e.respondWith(
+      fetch(e.request)
+        .then(resp => {
+          // Zaktualizuj cache
+          const clone = resp.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+          return resp;
+        })
+        .catch(() => caches.match(e.request)) // offline fallback
+    );
+    return;
+  }
+
+  // Pozostałe zasoby (CSS, JS, ikony) — Cache First
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;
       return fetch(e.request).then(resp => {
-        // Zapisz w cache tylko poprawne odpowiedzi
-        if (resp && resp.status === 200 && resp.type === 'basic') {
+        if (resp && resp.status === 200) {
           const clone = resp.clone();
           caches.open(CACHE).then(c => c.put(e.request, clone));
         }
         return resp;
-      }).catch(() => caches.match('/index.html')); // offline fallback
+      }).catch(() => caches.match('/index.html'));
     })
   );
 });
