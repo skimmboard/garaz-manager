@@ -1,4 +1,4 @@
-const CACHE = 'garaz-v2';
+const CACHE = 'garaz-v3';
 const STATIC = [
   '/',
   '/index.html',
@@ -26,15 +26,12 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const url = e.request.url;
 
-  // Ignoruj chrome-extension i inne nieobsługiwane schematy
+  // Ignoruj wszystko co nie jest http/https (np. chrome-extension://)
   if (!url.startsWith('http://') && !url.startsWith('https://')) return;
-
-  // WebSocket — ignoruj
   if (url.startsWith('ws://') || url.startsWith('wss://')) return;
 
   const path = new URL(url).pathname;
 
-  // API zawsze przez sieć
   if (path.startsWith('/api/')) {
     e.respondWith(
       fetch(e.request).catch(() =>
@@ -47,7 +44,6 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Statyczne zasoby — Cache First, fallback do sieci
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;
