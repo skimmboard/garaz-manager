@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>Garaż 🔧</title>
 <!-- PWA -->
 <link rel="manifest" href="/manifest.json">
@@ -63,6 +63,27 @@ header h1{font-size:17px;font-weight:500;flex:1}
 .tabs{display:flex;border:0.5px solid var(--b3);border-radius:var(--radius);overflow:hidden;width:fit-content;margin-bottom:1.25rem;flex-wrap:wrap}
 .tab{padding:6px 14px;font-size:13px;cursor:pointer;border:none;background:transparent;color:var(--t2);border-radius:0;display:flex;align-items:center;gap:5px}
 .tab.active{background:var(--card2);color:var(--t1);font-weight:500}
+@media(max-width:600px){
+  .tabs{width:100%;flex-wrap:nowrap}
+  .tab{flex:1;justify-content:center;font-size:11px;padding:6px 2px;gap:3px}
+  .tab i{font-size:14px}
+  .slot{min-width:32px;max-width:72px;font-size:10px;padding:2px 4px}
+  .slots{gap:3px}
+  .shelf-row{padding:4px 6px}
+  .app{padding:.6rem}
+  .topbar input{min-width:0}
+  .garage{grid-template-columns:1fr}
+  .fgrid{grid-template-columns:1fr}
+  .fgrid3{grid-template-columns:1fr 1fr}
+  .modal{padding:.9rem}
+  .brow button{flex:1;min-width:0}
+  .garage.vertical{grid-template-columns:1fr}
+  .garage.vertical .shelf-unit{grid-template-columns:1fr}
+  .garage.vertical .shelf-header{border-right:none;border-bottom:0.5px solid var(--b3);border-radius:0;flex-direction:row}
+  header{gap:4px}
+  header button{padding:5px 7px}
+  .layout-toggle{display:none}
+}
 .btn-primary{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC;font-weight:500}
 .btn-primary:hover{background:#CECBF6}
 .btn-danger{color:#A32D2D;border-color:#F09595}
@@ -447,7 +468,7 @@ function render(){
       <button class="tab${view==='list'?' active':''}" onclick="setView('list')"><i class="ti ti-list" aria-hidden="true"></i> Lista</button>
       <button class="tab${view==='stock'?' active':''}" onclick="setView('stock')"><i class="ti ti-package" aria-hidden="true"></i> Zapasy</button>
       <button class="tab${view==='manage'?' active':''}" onclick="setView('manage')"><i class="ti ti-settings" aria-hidden="true"></i> Elementy</button>
-      <button class="tab${view==='3d'?' active':''}" onclick="setView('3d')"><i class="ti ti-box" aria-hidden="true"></i> 3D</button>
+      <button class="tab${view==='3d'?' active':''}" onclick="setView('3d')" style=""><i class="ti ti-box" aria-hidden="true"></i> <span class="tab-3d-lbl">3D</span></button>
     </div>
     ${view==='garage'?`<div class="layout-toggle" title="Zmień układ">
       <button class="layout-btn${garageLayout==='horizontal'?' active':''}" onclick="setLayout('horizontal')" title="Poziomo"><i class="ti ti-layout-columns" aria-hidden="true"></i></button>
